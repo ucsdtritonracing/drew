@@ -50,7 +50,7 @@ ADC_HandleTypeDef hadc4;
 
 FDCAN_HandleTypeDef hfdcan1;
 
-TIM_HandleTypeDef htim2;
+TIM_HandleTypeDef htim3;
 
 /* Definitions for defaultTask */
 osThreadId_t defaultTaskHandle;
@@ -135,8 +135,8 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_ADC1_Init(void);
 static void MX_ADC4_Init(void);
-static void MX_TIM2_Init(void);
 static void MX_FDCAN1_Init(void);
+static void MX_TIM3_Init(void);
 void StartDefaultTask(void *argument);
 void StartReadAPPS(void *argument);
 void StartReadWSS(void *argument);
@@ -213,8 +213,8 @@ int main(void)
   MX_GPIO_Init();
   MX_ADC1_Init();
   MX_ADC4_Init();
-  MX_TIM2_Init();
   MX_FDCAN1_Init();
+  MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
 	// Start FDCAN1
 	if (HAL_FDCAN_Start(&hfdcan1) != HAL_OK) {
@@ -224,6 +224,9 @@ int main(void)
 	if (HAL_FDCAN_ActivateNotification(&hfdcan1, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0) != HAL_OK) {
 		Error_Handler();
 	}
+
+	// Start TIM2 Input Capture in interrupt mode for WSS1
+	HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_1);
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -524,50 +527,50 @@ static void MX_FDCAN1_Init(void)
 }
 
 /**
-  * @brief TIM2 Initialization Function
+  * @brief TIM3 Initialization Function
   * @param None
   * @retval None
   */
-static void MX_TIM2_Init(void)
+static void MX_TIM3_Init(void)
 {
 
-  /* USER CODE BEGIN TIM2_Init 0 */
+  /* USER CODE BEGIN TIM3_Init 0 */
 
-  /* USER CODE END TIM2_Init 0 */
+  /* USER CODE END TIM3_Init 0 */
 
   TIM_MasterConfigTypeDef sMasterConfig = {0};
   TIM_IC_InitTypeDef sConfigIC = {0};
 
-  /* USER CODE BEGIN TIM2_Init 1 */
+  /* USER CODE BEGIN TIM3_Init 1 */
 
-  /* USER CODE END TIM2_Init 1 */
-  htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 0;
-  htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 4294967295;
-  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-  if (HAL_TIM_IC_Init(&htim2) != HAL_OK)
+  /* USER CODE END TIM3_Init 1 */
+  htim3.Instance = TIM3;
+  htim3.Init.Prescaler = 17;
+  htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim3.Init.Period = 65535;
+  htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_IC_Init(&htim3) != HAL_OK)
   {
     Error_Handler();
   }
   sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-  if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) != HAL_OK)
   {
     Error_Handler();
   }
   sConfigIC.ICPolarity = TIM_INPUTCHANNELPOLARITY_RISING;
   sConfigIC.ICSelection = TIM_ICSELECTION_DIRECTTI;
   sConfigIC.ICPrescaler = TIM_ICPSC_DIV1;
-  sConfigIC.ICFilter = 0;
-  if (HAL_TIM_IC_ConfigChannel(&htim2, &sConfigIC, TIM_CHANNEL_1) != HAL_OK)
+  sConfigIC.ICFilter = 15;
+  if (HAL_TIM_IC_ConfigChannel(&htim3, &sConfigIC, TIM_CHANNEL_1) != HAL_OK)
   {
     Error_Handler();
   }
-  /* USER CODE BEGIN TIM2_Init 2 */
+  /* USER CODE BEGIN TIM3_Init 2 */
 
-  /* USER CODE END TIM2_Init 2 */
+  /* USER CODE END TIM3_Init 2 */
 
 }
 
@@ -671,6 +674,39 @@ void BSP_PB_Callback(Button_TypeDef Button)
 			BspButtonState = BUTTON_RELEASED;
 		}
 	}
+}
+volatile uint32_t ic_val1 = 0;
+volatile uint32_t ic_val2 = 0;
+volatile uint8_t  is_first_captured = 0;
+volatile float    frequency = 0;
+
+void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
+{
+    if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1) {
+        uint32_t capture = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
+        uint32_t arr = htim->Instance->ARR;
+        uint32_t psc = htim->Instance->PSC;
+
+        if (is_first_captured == 0) {
+        	ic_val1 = capture;
+        	is_first_captured = 1;
+        } else {
+        	ic_val2 = capture;
+
+            uint32_t diff;
+            if (ic_val2 >= ic_val1) {
+                diff = ic_val2 - ic_val1;
+            }
+            else
+                diff = (arr + 1 - ic_val1) + ic_val2; // handle overflow
+
+            float tick_freq = (float) HAL_RCC_GetPCLK1Freq() / (psc + 1);
+            float frequency = tick_freq / diff;
+
+            is_first_captured = 0; // ready for next period
+            printf("frequency: %.2f\n", frequency);
+        }
+    }
 }
 /* USER CODE END 4 */
 
@@ -834,9 +870,9 @@ void StartWriteCOM(void *argument)
 	/* Infinite loop */
 	for(;;)
 	{
-		if (osMessageQueueGet(COMQueue, &byte, NULL, osWaitForever) == osOK) {
-			printf("Got byte: %c\r\n", byte);
-		}
+//		if (osMessageQueueGet(COMQueue, &byte, NULL, osWaitForever) == osOK) {
+//			printf("Got byte: %c\r\n", byte);
+//		}
 	}
   /* USER CODE END StartWriteCOM */
 }
