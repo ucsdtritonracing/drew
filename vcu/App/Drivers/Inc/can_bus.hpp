@@ -4,7 +4,7 @@
 
 namespace drivers::CAN {
 
-constexpr uint32_t MAX_CLASSICAL_CAN_DATA_LENGTH = 8;
+constexpr size_t MAX_CLASSICAL_CAN_DATA_LENGTH = 8;
 constexpr uint32_t MAX_CAN_STD_ID = 0x7FF;
 
 struct Message {
