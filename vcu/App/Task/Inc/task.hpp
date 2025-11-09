@@ -4,6 +4,20 @@
 
 namespace tasks {
 
+/*
+ * Task template class.
+ *
+ *
+ * Create a new task by providing your derived class as the template parameter, e.g:
+ *
+ * namespace tasks {
+ * class ExampleTask : public Task<ExampleTask> {
+ * public:
+ * 		void setup();
+ *		void loop();
+ * };
+ * }
+ */
 template<typename Derived, osPriority_t Priority = osPriorityNormal, uint32_t StackSize = 128>
 class Task {
 public:
@@ -41,25 +55,22 @@ private:
 		}
 
 		static_assert(has_loop<Derived>::value, "Task must implement loop() method");
-		for (;;) {
+		while (true) {
 			self->loop();
 		}
 	}
 
 	/*
-	 * Template magic to deduce at compile time if the derived class has setup and loop methods
-	 * Provide more informative errors at compile time
+	 * Template magic to deduce at compile time if the derived class has setup and loop methods.
+	 * Combined with static_assert to provide more informative errors at compile time.
 	 */
 	template<typename T, typename = void>
 	struct has_setup : std::false_type {};
-
 	template<typename T>
 	struct has_setup<T, std::void_t<decltype(std::declval<T>().setup())>> : std::true_type {};
 
-
 	template<typename T, typename = void>
 	struct has_loop : std::false_type {};
-
 	template<typename T>
 	struct has_loop<T, std::void_t<decltype(std::declval<T>().loop())>> : std::true_type {};
 };
