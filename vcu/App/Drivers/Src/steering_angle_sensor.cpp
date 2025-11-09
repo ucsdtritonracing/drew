@@ -1,33 +1,50 @@
 #include "steering_angle_sensor.hpp"
-#include "can_utils.hpp"
+#include "can_bus.hpp"
+#include "can_peripheral.hpp"
 
 namespace drivers::SAS {
 
-SteeringAngleSensor::SteeringAngleSensor(FDCAN_HandleTypeDef* fdcan_)
-    : fdcan(fdcan_)
+SteeringAngleSensor::SteeringAngleSensor(drivers::CAN::CANBus& canBus)
+		: drivers::CAN::CANPeripheral<SteeringAngleSensor, State>(canBus)
 {
-    // Common TxHeader setup
-    txHeader.Identifier = CAN_ID_CONFIG;
-    txHeader.IdType = FDCAN_STANDARD_ID;
-    txHeader.TxFrameType = FDCAN_DATA_FRAME;
-    txHeader.DataLength = FDCAN_DLC_BYTES_2;
-    txHeader.ErrorStateIndicator = FDCAN_ESI_ACTIVE;
-    txHeader.BitRateSwitch = FDCAN_BRS_OFF;
-    txHeader.FDFormat = FDCAN_CLASSIC_CAN;
-    txHeader.TxEventFifoControl = FDCAN_NO_TX_EVENTS;
-    txHeader.MessageMarker = 0;
-    txData[1] = 0x00;		// unchanged byte
+	bindHandler<&SteeringAngleSensor::processCANMessage>(CAN_ID_STATUS);
+	txData[1] = 0x00;		// unchanged byte
 }
 
 void SteeringAngleSensor::resetAngle() {
     txData[0] = RESET_ANGLE_CCW;
-    drivers::CAN::transmit(fdcan, &txHeader, txData);
+    canBus.transmit(CAN_ID_CONFIG, txData, FDCAN_DLC_BYTES_2);
 }
 
 
 void SteeringAngleSensor::resetCalibration() {
     txData[0] = RESET_CALIBRATION_CCW;
-    drivers::CAN::transmit(fdcan, &txHeader, txData);
+    canBus.transmit(CAN_ID_CONFIG, txData, FDCAN_DLC_BYTES_2);
+}
+
+constexpr State::Mode SteeringAngleSensor::parseMode(const uint8_t& modeByte) {
+	switch (modeByte) {
+	case MODE_CALIBRATED_VALID:
+		return State::CALIBRATED_VALID;
+	case MODE_UNCALIBRATED_VALID:
+		return State::UNCALIBRATED_VALID;
+	case MODE_FAILURE:
+		return State::FAILURE;
+	default:
+		return State::INVALID;
+	}
+}
+
+void SteeringAngleSensor::processCANMessage(const drivers::CAN::Message& message) {
+	if (message.numBytes <= ANGLE_HIGH_BYTE ) return;
+	state.steeringAngle = (static_cast<uint16_t>(message.data[ANGLE_HIGH_BYTE]) << 8)
+							| static_cast<uint16_t>(message.data[ANGLE_LOW_BYTE]);
+
+	if (message.numBytes <= SPEED_BYTE) return;
+	state.speed = message.data[SPEED_BYTE];
+
+	if (message.numBytes <= MODE_BYTE) return;
+	state.mode = parseMode(message.data[MODE_BYTE]);
 }
 
 } // namespace drivers::SAS
