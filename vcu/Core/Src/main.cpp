@@ -22,7 +22,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "task_init.hpp"
+#include "can_bus.hpp"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -65,7 +65,8 @@ const osMessageQueueAttr_t CANBus2RxQueue_attributes = {
   .name = "CANBus2RxQueue"
 };
 /* USER CODE BEGIN PV */
-
+drivers::CAN::CANBus CANBus1(&hfdcan1, CANBus1RxQueueHandle);
+drivers::CAN::CANBus CANBus2(&hfdcan2, CANBus2RxQueueHandle);
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -160,7 +161,6 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
-  initTasks();
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_EVENTS */
@@ -739,6 +739,8 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 
 /* USER CODE END 4 */
+
+
 
 /**
   * @brief  Period elapsed callback in non blocking mode
