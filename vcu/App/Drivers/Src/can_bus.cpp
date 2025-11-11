@@ -23,7 +23,7 @@ void CANBus::transmit(uint32_t id, const uint8_t *data, uint32_t dlc) const {
 	}
 }
 
-void CANBus::addMessageHandler(uint32_t id, void *instance, CANHandler callback) {
+void CANBus::addMessageHandler(void *instance, uint32_t id, CANHandler callback) {
 	if (numHandlers >= MAX_HANDLERS) {
 		return;
 	}
@@ -35,7 +35,7 @@ void CANBus::addMessageHandler(uint32_t id, void *instance, CANHandler callback)
 			return;
 		}
 	}
-	handlers[numHandlers++] = {id, instance, callback};
+	handlers[numHandlers++] = {instance, id, callback};
 }
 
 } // namespace drivers::CAN
