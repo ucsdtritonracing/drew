@@ -54,13 +54,6 @@ TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim5;
 TIM_HandleTypeDef htim15;
 
-/* Definitions for defaultTask */
-osThreadId_t defaultTaskHandle;
-const osThreadAttr_t defaultTask_attributes = {
-  .name = "defaultTask",
-  .priority = (osPriority_t) osPriorityNormal,
-  .stack_size = 128 * 4
-};
 /* Definitions for CANBus1RxQueue */
 osMessageQueueId_t CANBus1RxQueueHandle;
 const osMessageQueueAttr_t CANBus1RxQueue_attributes = {
@@ -86,7 +79,6 @@ static void MX_FDCAN2_Init(void);
 static void MX_TIM5_Init(void);
 static void MX_TIM15_Init(void);
 static void MX_TIM3_Init(void);
-void StartDefaultTask(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -165,8 +157,6 @@ int main(void)
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
-  /* creation of defaultTask */
-  defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -749,25 +739,6 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 
 /* USER CODE END 4 */
-
-/* USER CODE BEGIN Header_StartDefaultTask */
-/**
-  * @brief  Function implementing the defaultTask thread.
-  * @param  argument: Not used
-  * @retval None
-  */
-/* USER CODE END Header_StartDefaultTask */
-void StartDefaultTask(void *argument)
-{
-  /* USER CODE BEGIN 5 */
-  printf("STM32 Started!");
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1000);
-  }
-  /* USER CODE END 5 */
-}
 
 /**
   * @brief  Period elapsed callback in non blocking mode
