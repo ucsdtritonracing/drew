@@ -23,6 +23,10 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "task_init.hpp"
+#include "pdu.hpp"
+#include "can_bus.hpp"
+
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -72,6 +76,7 @@ const osMessageQueueAttr_t CANBus2RxQueue_attributes = {
   .name = "CANBus2RxQueue"
 };
 /* USER CODE BEGIN PV */
+  // Assuming CANBus has a default constructor
 
 /* USER CODE END PV */
 
@@ -105,6 +110,8 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
+	Drivers::CAN::CANBus canBus;
+	Drivers::PDU::PDU pdu(canBus);
 
   /* USER CODE END 1 */
 
@@ -764,6 +771,7 @@ void StartDefaultTask(void *argument)
   /* Infinite loop */
   for(;;)
   {
+
     osDelay(1000);
   }
   /* USER CODE END 5 */

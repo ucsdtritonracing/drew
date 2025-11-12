@@ -47,7 +47,7 @@ protected:
 
 	template<void (Derived::*Method)(const Message&)>
 	void bindHandler(uint32_t id) {
-		if (id <= 0 || id >= MAX_CAN_STD_ID) return;
+		if (id <= 0 || id >= MAX_CAN_EXTD_ID) return;
 
 	    canBus.addMessageHandler(id, this,
 	        [](void *instance, const Message& message) {

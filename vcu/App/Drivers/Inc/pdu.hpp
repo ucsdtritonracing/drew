@@ -3,6 +3,16 @@
 #include "can_peripheral.hpp"
 
 namespace drivers::PDU {
+	struct State {
+		uint16_t measuredCurrent[8];
+		enum ErrorStatus {
+			OK,
+			OPEN_CIRCUIT,
+			CURRENT_LIMIT_EXCEEDED,
+			SHORT_CIRCUIT
+		} errorStatuses[8];
+	};
+
 
 class PDU : public drivers::CAN::CANPeripheral<PDU, State> {
 public:
@@ -29,29 +39,27 @@ public:
 	 *
 	 * @param message
 	 */
-    void processMessage1(CAN::Message& message);
-
+    void processMessage1(const CAN::Message& message);
 	/*
 	 * @brief Process an incoming message with message ID of TxMessage2
 	 *
 	 * @param message
 	 */
-    void processMessage2(CAN::Message& message);
+    void processMessage2(const CAN::Message& message);
 
-    static constexpr size_t NUM_CHANNELS = 8;
 
 private:
+    // the helper function to make code shorter
+    void processmessage(int channelStart, const CAN::Message& message);
     uint8_t txData[drivers::CAN::MAX_CLASSICAL_CAN_DATA_LENGTH];
+    uint8_t txPWMData[drivers::CAN::MAX_CLASSICAL_CAN_DATA_LENGTH];
+    static constexpr uint32_t CAN_ID_SET_PWM = 0x000A0630;
+    static constexpr uint32_t CAN_ID_SET_CURRENT = 0x000A0620;
+    static constexpr uint32_t CAN_ID_RX_1 = 0x000A0610;
+    static constexpr uint32_t CAN_ID_RX_2 = 0x000A0611;
+    static constexpr uint8_t errorMask = 0b11100000;
+    static constexpr uint16_t currentMask = 0b0000001111111111;
 };
 
-struct State {
-	uint16_t measuredCurrent[PDU::NUM_CHANNELS];
-	enum ErrorStatus {
-		OK,
-		OPEN_CIRCUIT,
-		CURRENT_LIMIT_EXCEEDED,
-		SHORT_CIRCUIT
-	} errorStatuses[PDU::NUM_CHANNELS];
-};
 
 } // namespace drivers::PDU
