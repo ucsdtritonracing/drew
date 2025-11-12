@@ -3,16 +3,17 @@
 #include "can_peripheral.hpp"
 
 namespace drivers::PDU {
+	static constexpr size_t NUM_CHANNELS = 8;
 	struct State {
-		uint16_t measuredCurrent[8];
+		uint16_t measuredCurrent[NUM_CHANNELS];
 		enum ErrorStatus {
 			OK,
 			OPEN_CIRCUIT,
 			CURRENT_LIMIT_EXCEEDED,
-			SHORT_CIRCUIT
-		} errorStatuses[8];
+			SHORT_CIRCUIT,
+			UNKNOWN
+		} errorStatuses[NUM_CHANNELS];
 	};
-
 
 class PDU : public drivers::CAN::CANPeripheral<PDU, State> {
 public:
@@ -46,19 +47,30 @@ public:
 	 * @param message
 	 */
     void processMessage2(const CAN::Message& message);
+    /*
+     * @brief Shut off all output from PDU
+     *
+     * @param message
+     */
+    void stopAllChannels();
 
 
 private:
     // the helper function to make code shorter
     void processmessage(int channelStart, const CAN::Message& message);
-    uint8_t txData[drivers::CAN::MAX_CLASSICAL_CAN_DATA_LENGTH];
-    uint8_t txPWMData[drivers::CAN::MAX_CLASSICAL_CAN_DATA_LENGTH];
-    static constexpr uint32_t CAN_ID_SET_PWM = 0x000A0630;
-    static constexpr uint32_t CAN_ID_SET_CURRENT = 0x000A0620;
-    static constexpr uint32_t CAN_ID_RX_1 = 0x000A0610;
-    static constexpr uint32_t CAN_ID_RX_2 = 0x000A0611;
-    static constexpr uint8_t errorMask = 0b11100000;
-    static constexpr uint16_t currentMask = 0b0000001111111111;
+
+    uint8_t txData[drivers::CAN::MAX_CLASSICAL_CAN_DATA_LENGTH] = {};
+    uint8_t txPWMData[drivers::CAN::MAX_CLASSICAL_CAN_DATA_LENGTH] = {};
+
+    static constexpr uint32_t PDU_BIT_TO_POWER_SCALE = 	2.5; 		// need 2.5 bits per unit increase in duty/current
+    static constexpr uint32_t CAN_ID_SET_PWM = 			0x000A0630;
+    static constexpr uint32_t CAN_ID_SET_CURRENT = 		0x000A0620;
+    static constexpr uint32_t CAN_ID_RX_1 = 			0x000A0610;
+    static constexpr uint32_t CAN_ID_RX_2 = 			0x000A0611;
+    static constexpr uint8_t errorMask = 				0b11100000;
+    static constexpr uint16_t currentMask = 			0b0000001111111111;
+    static constexpr int RX_1_CHANNEL_BEGIN =			0;
+    static constexpr int RX_2_CHANNEL_BEGIN = 			4;
 };
 
 
