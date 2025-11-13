@@ -23,4 +23,4 @@ def convert_main_to_cpp():
         return
     
     MAIN_C.rename(MAIN_CPP)
-    logger.info(f"Renamed {MAIN_CPP} to {MAIN_C}")
+    logger.info(f"Renamed {MAIN_C} to {MAIN_CPP}")
