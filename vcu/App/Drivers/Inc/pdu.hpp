@@ -13,6 +13,8 @@ namespace drivers::PDU {
 			SHORT_CIRCUIT,
 			UNKNOWN
 		} errorStatuses[NUM_CHANNELS];
+		uint8_t requestedCurrentLimit[drivers::CAN::MAX_CLASSICAL_CAN_DATA_LENGTH] = {};
+		uint8_t requestedPWMDutyPercent[drivers::CAN::MAX_CLASSICAL_CAN_DATA_LENGTH] = {};
 	};
 
 class PDU : public drivers::CAN::CANPeripheral<PDU, State> {
@@ -59,8 +61,8 @@ private:
     // the helper function to make code shorter
     void processmessage(int channelStart, const CAN::Message& message);
 
-    uint8_t txData[drivers::CAN::MAX_CLASSICAL_CAN_DATA_LENGTH] = {};
-    uint8_t txPWMData[drivers::CAN::MAX_CLASSICAL_CAN_DATA_LENGTH] = {};
+    uint8_t txCurrentLimit[drivers::CAN::MAX_CLASSICAL_CAN_DATA_LENGTH] = {};
+    uint8_t txPWM[drivers::CAN::MAX_CLASSICAL_CAN_DATA_LENGTH] = {};
 
     static constexpr uint32_t PDU_BIT_TO_POWER_SCALE = 	2.5; 		// need 2.5 bits per unit increase in duty/current
     static constexpr uint32_t CAN_ID_SET_PWM = 			0x000A0630;

@@ -15,25 +15,26 @@ PDU::PDU(drivers::CAN::CANBus& canBus)
 
 void PDU::setCurrentLimit(uint8_t channel, float amps)
 {
-	if(amps<0) {
+	if(amps < 0) {
 		return; // how did we get here?
 	}
 	if(channel != 0 && channel < NUM_CHANNELS) { // check channel in range
-	txData[channel-1] = static_cast<uint8_t>(std::clamp(
+		state.requestedCurrentLimit[channel-1] = std::clamp(amps,0.0f,255.0f);
+		txCurrentLimit[channel-1] = static_cast<uint8_t>(std::clamp(
 			std::round(amps*PDU_BIT_TO_POWER_SCALE),0.0f,255.0f)
 	);
-	canBus.transmit(CAN_ID_SET_CURRENT, txData, FDCAN_DLC_BYTES_8);
+	canBus.transmit(CAN_ID_SET_CURRENT, txCurrentLimit, FDCAN_DLC_BYTES_8);
 	}
 	return;
 }
-
 void PDU::setPWMDutyCycle(uint8_t channel, uint8_t dutyCyclePercent)
 {
 	if(channel != 0 && channel < NUM_CHANNELS) {
-	txPWMData[channel-1] = static_cast<uint8_t>(std::clamp(
+		state.requestedPWMDutyPercent[channel-1] = dutyCyclePercent;
+		txPWM[channel-1] = static_cast<uint8_t>(std::clamp(
 			std::round(dutyCyclePercent*PDU_BIT_TO_POWER_SCALE),0.0,255.0)
 	);
-	canBus.transmit(CAN_ID_SET_PWM, txPWMData, FDCAN_DLC_BYTES_8);
+	canBus.transmit(CAN_ID_SET_PWM, txPWM, FDCAN_DLC_BYTES_8);
 	}
 	return;
 }
@@ -77,10 +78,12 @@ void PDU::processMessage2(const CAN::Message& message)
 
 void PDU::stopAllChannels()
 {
-	memset(txData, 0, sizeof(txData)); // set all bytes to 0
-	memset(txPWMData, 0, sizeof(txPWMData));
-	canBus.transmit(CAN_ID_SET_CURRENT, txData, FDCAN_DLC_BYTES_8);
-	canBus.transmit(CAN_ID_SET_PWM, txPWMData, FDCAN_DLC_BYTES_8); // current command won't shut off outputs by itself if PWM commands are present
+	memset(state.requestedCurrentLimit, 0, NUM_CHANNELS); // set all bytes to 0
+	memset(state.requestedPWMDutyPercent, 0, NUM_CHANNELS);
+	memset(txCurrentLimit, 0, NUM_CHANNELS); // set all bytes to 0
+	memset(txPWM, 0, NUM_CHANNELS);
+	canBus.transmit(CAN_ID_SET_CURRENT, txCurrentLimit, FDCAN_DLC_BYTES_8);
+	canBus.transmit(CAN_ID_SET_PWM, txPWM, FDCAN_DLC_BYTES_8); // current command won't shut off outputs by itself if PWM commands are present
 }
 
 }
