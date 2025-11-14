@@ -4,9 +4,6 @@
 
 namespace drivers::CAN {
 
-CANBus::CANBus(FDCAN_HandleTypeDef *fdcan, osMessageQueueId_t rxQueue)
-		: fdcan(fdcan), rxQueue(rxQueue) {}
-
 void CANBus::transmit(uint32_t id, const uint8_t *data, uint32_t dlc) const {
 	FDCAN_TxHeaderTypeDef txHeader;
 	txHeader.Identifier 			= id;
@@ -36,6 +33,15 @@ void CANBus::addMessageHandler(void *instance, uint32_t id, CANHandler callback)
 		}
 	}
 	handlers[numHandlers++] = {instance, id, callback};
+}
+
+void CANBus::processMessage(Message *message) {
+	for (size_t i = 0; i < numHandlers; i++) {
+		HandlerEntry handler = handlers[i];
+		if (handler.id == message->rxHeader.Identifier) {
+			(handler.instance->*handler.callback)(message);
+		}
+	}
 }
 
 } // namespace drivers::CAN
