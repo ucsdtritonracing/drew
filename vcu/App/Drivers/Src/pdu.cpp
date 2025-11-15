@@ -13,25 +13,36 @@ PDU::PDU(drivers::CAN::CANBus &canBus) :
 }
 
 void PDU::setCurrentLimit(uint8_t channel, float amps) {
+	float PDU_MAX_CURRENT = 20; // assume 20A channel, check later
 	if (amps < 0) {
 		return; // how did we get here?
 	}
 	if (channel != 0 && channel < NUM_CHANNELS) { // check channel in range
-		state.requestedCurrentLimit[channel - 1] = std::clamp(amps, 0.0f,
-				255.0f); // accurately reflect max/min value sent to the PDU
-		txCurrentLimit[channel - 1] = static_cast<uint8_t>(std::clamp(
-				std::round(amps * PDU_BIT_TO_POWER_SCALE), 0.0f, 255.0f));
-		canBus.transmit(CAN_ID_SET_CURRENT, txCurrentLimit, FDCAN_DLC_BYTES_8);
+		for (int i = 0; i < NUM_CHANNELS / 2; i++) { // only half the channels are 10A
+			if (channel == tenAmpChannels[i]) { // if it is a 10 amp channel, set clamp accordingly
+				PDU_MAX_CURRENT = 10;
+				break;
+			}
+		}
+		state.requestedCurrentLimit[channel - 1] = std::min(amps, PDU_MAX_CURRENT);
+		for (int i = 0; i < NUM_CHANNELS; i++) {
+			txData[i] = static_cast<uint8_t>(
+				std::round(state.requestedCurrentLimit[i] * PDU_BIT_TO_POWER_SCALE)
+				);
+		}
+		canBus.transmit(CAN_ID_SET_CURRENT, txData, FDCAN_DLC_BYTES_8);
 	}
 	return;
 }
 void PDU::setPWMDutyCycle(uint8_t channel, uint8_t dutyCyclePercent) {
 	if (channel != 0 && channel < NUM_CHANNELS) {
-		state.requestedPWMDutyPercent[channel - 1] = dutyCyclePercent;
-		txPWM[channel - 1] = static_cast<uint8_t>(std::clamp(
-				std::round(dutyCyclePercent * PDU_BIT_TO_POWER_SCALE), 0.0,
-				255.0));
-		canBus.transmit(CAN_ID_SET_PWM, txPWM, FDCAN_DLC_BYTES_8);
+		state.requestedPWMDutyPercent[channel - 1] = std::min(dutyCyclePercent, PDU_MAX_PWM);
+		for (int i = 0; i < NUM_CHANNELS; i++) {
+			txData[i] = static_cast<uint8_t>(
+				std::round(state.requestedPWMDutyPercent[i] * PDU_BIT_TO_POWER_SCALE)
+				);
+		}
+		canBus.transmit(CAN_ID_SET_PWM, txData, FDCAN_DLC_BYTES_8);
 	}
 	return;
 }
@@ -75,10 +86,9 @@ void PDU::processMessage2(const CAN::Message &message) {
 void PDU::stopAllChannels() {
 	memset(state.requestedCurrentLimit, 0, NUM_CHANNELS); // set all bytes to 0
 	memset(state.requestedPWMDutyPercent, 0, NUM_CHANNELS);
-	memset(txCurrentLimit, 0, NUM_CHANNELS); // set all bytes to 0
-	memset(txPWM, 0, NUM_CHANNELS);
-	canBus.transmit(CAN_ID_SET_CURRENT, txCurrentLimit, FDCAN_DLC_BYTES_8);
-	canBus.transmit(CAN_ID_SET_PWM, txPWM, FDCAN_DLC_BYTES_8); // current command won't shut off outputs by itself if PWM commands are present
+	memset(txData, 0, NUM_CHANNELS); // set all bytes to 0
+	canBus.transmit(CAN_ID_SET_CURRENT, txData, FDCAN_DLC_BYTES_8);
+	canBus.transmit(CAN_ID_SET_PWM, txData, FDCAN_DLC_BYTES_8); // current command won't shut off outputs by itself if PWM commands are present
 }
 
 }

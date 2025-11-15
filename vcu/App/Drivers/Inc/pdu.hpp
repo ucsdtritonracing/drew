@@ -3,23 +3,19 @@
 #include "can_peripheral.hpp"
 
 namespace drivers::PDU {
-	static constexpr size_t NUM_CHANNELS = 8;
-	struct State {
-		uint16_t measuredCurrent[NUM_CHANNELS];
-		enum ErrorStatus {
-			OK,
-			OPEN_CIRCUIT,
-			CURRENT_LIMIT_EXCEEDED,
-			SHORT_CIRCUIT,
-			UNKNOWN
-		} errorStatuses[NUM_CHANNELS];
-		uint8_t requestedCurrentLimit[drivers::CAN::MAX_CLASSICAL_CAN_DATA_LENGTH] = {};
-		uint8_t requestedPWMDutyPercent[drivers::CAN::MAX_CLASSICAL_CAN_DATA_LENGTH] = {};
-	};
+static constexpr size_t NUM_CHANNELS = 8;
+struct State {
+	uint16_t measuredCurrent[NUM_CHANNELS];
+	enum ErrorStatus {
+		OK, OPEN_CIRCUIT, CURRENT_LIMIT_EXCEEDED, SHORT_CIRCUIT, UNKNOWN
+	} errorStatuses[NUM_CHANNELS];
+	uint8_t requestedCurrentLimit[drivers::CAN::MAX_CLASSICAL_CAN_DATA_LENGTH] = {};
+	uint8_t requestedPWMDutyPercent[drivers::CAN::MAX_CLASSICAL_CAN_DATA_LENGTH] = {};
+};
 
-class PDU : public drivers::CAN::CANPeripheral<PDU, State> {
+class PDU: public drivers::CAN::CANPeripheral<PDU, State> {
 public:
-	PDU(drivers::CAN::CANBus& canBus);
+	PDU(drivers::CAN::CANBus &canBus);
 
 	/*
 	 * @brief Set the current limit for a given channel.
@@ -27,7 +23,7 @@ public:
 	 * @param channel
 	 * @param amps Current in Amperes
 	 */
-    void setCurrentLimit(uint8_t channel, float amps);
+	void setCurrentLimit(uint8_t channel, float amps);
 
 	/*
 	 * @brief Set the PWM duty cycle for a given channel.
@@ -35,45 +31,44 @@ public:
 	 * @param channel
 	 * @param dutyCyclePercent Duty cycle in percent (0-100)
 	 */
-    void setPWMDutyCycle(uint8_t channel, uint8_t dutyCyclePercent);
+	void setPWMDutyCycle(uint8_t channel, uint8_t dutyCyclePercent);
 
 	/*
 	 * @brief Process an incoming message with message ID of TxMessage1
 	 *
 	 * @param message
 	 */
-    void processMessage1(const CAN::Message& message);
+	void processMessage1(const CAN::Message &message);
 	/*
 	 * @brief Process an incoming message with message ID of TxMessage2
 	 *
 	 * @param message
 	 */
-    void processMessage2(const CAN::Message& message);
-    /*
-     * @brief Shut off all output from PDU
-     *
-     * @param message
-     */
-    void stopAllChannels();
-
+	void processMessage2(const CAN::Message &message);
+	/*
+	 * @brief Shut off all output from PDU
+	 *
+	 * @param message
+	 */
+	void stopAllChannels();
 
 private:
-    // the helper function to make code shorter
-    void processmessage(int channelStart, const CAN::Message& message);
+	// the helper function to make code shorter
+	void processMessage(int channelStart, const CAN::Message &message);
 
-    uint8_t txCurrentLimit[drivers::CAN::MAX_CLASSICAL_CAN_DATA_LENGTH] = {};
-    uint8_t txPWM[drivers::CAN::MAX_CLASSICAL_CAN_DATA_LENGTH] = {};
+	uint8_t txData[drivers::CAN::MAX_CLASSICAL_CAN_DATA_LENGTH] = {};
+	uint8_t tenAmpChannels[4] = {2,3,6,7}; // because ten is shorter than twenty
 
-    static constexpr uint32_t PDU_BIT_TO_POWER_SCALE = 	2.5; 		// need 2.5 bits per unit increase in duty/current
-    static constexpr uint32_t CAN_ID_SET_PWM = 			0x000A0630;
-    static constexpr uint32_t CAN_ID_SET_CURRENT = 		0x000A0620;
-    static constexpr uint32_t CAN_ID_RX_1 = 			0x000A0610;
-    static constexpr uint32_t CAN_ID_RX_2 = 			0x000A0611;
-    static constexpr uint8_t errorMask = 				0b11100000;
-    static constexpr uint16_t currentMask = 			0b0000001111111111;
-    static constexpr int RX_1_CHANNEL_BEGIN =			0;
-    static constexpr int RX_2_CHANNEL_BEGIN = 			4;
+	static constexpr uint32_t PDU_BIT_TO_POWER_SCALE = 	2.5; // need 2.5 bits per unit increase in duty/current
+	static constexpr uint8_t PDU_MAX_PWM = 				100;
+	static constexpr uint32_t CAN_ID_SET_PWM = 			0x000A0630;
+	static constexpr uint32_t CAN_ID_SET_CURRENT = 		0x000A0620;
+	static constexpr uint32_t CAN_ID_RX_1 = 			0x000A0610;
+	static constexpr uint32_t CAN_ID_RX_2 = 			0x000A0611;
+	static constexpr uint8_t errorMask = 				0b11100000;
+	static constexpr uint16_t currentMask = 			0b0000001111111111;
+	static constexpr int RX_1_CHANNEL_BEGIN = 			0;
+	static constexpr int RX_2_CHANNEL_BEGIN = 			4;
 };
-
 
 } // namespace drivers::PDU
