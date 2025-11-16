@@ -17,7 +17,6 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-#include <task_can_bus.hpp>
 #include "main.h"
 #include "cmsis_os.h"
 
@@ -70,11 +69,7 @@ const osMessageQueueAttr_t CANBus2RxQueue_attributes = {
   .name = "CANBus2RxQueue"
 };
 /* USER CODE BEGIN PV */
-drivers::CAN::CANBus CANBus1(&hfdcan1);
-drivers::CAN::CANBus CANBus2(&hfdcan2);
 
-tasks::CANBusTask CANBus1Task(&CANBus1, CANBus1RxQueueHandle);
-tasks::CANBusTask CANBus2Task(&CANBus2, CANBus2RxQueueHandle);
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -90,7 +85,7 @@ static void MX_TIM15_Init(void);
 static void MX_TIM3_Init(void);
 
 /* USER CODE BEGIN PFP */
-static void APP_TASKS_Init(void);
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -136,7 +131,8 @@ int main(void)
   MX_TIM15_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
-
+  static drivers::CAN::CANBus CANBus1(&hfdcan1);
+  static drivers::CAN::CANBus CANBus2(&hfdcan2);
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -156,10 +152,10 @@ int main(void)
 
   /* Create the queue(s) */
   /* creation of CANBus1RxQueue */
-  CANBus1RxQueueHandle = osMessageQueueNew (64, sizeof(uint16_t), &CANBus1RxQueue_attributes);
+  CANBus1RxQueueHandle = osMessageQueueNew (8, sizeof(drivers::CAN::Message), &CANBus1RxQueue_attributes);
 
   /* creation of CANBus2RxQueue */
-  CANBus2RxQueueHandle = osMessageQueueNew (64, sizeof(uint16_t), &CANBus2RxQueue_attributes);
+  CANBus2RxQueueHandle = osMessageQueueNew (8, sizeof(drivers::CAN::Message), &CANBus2RxQueue_attributes);
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
@@ -169,8 +165,13 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
+  static tasks::CANBusTask CANBus1Task(CANBus1, CANBus1RxQueueHandle);
   CANBus1Task.start("CAN Bus 1 Task");
+
+  static tasks::CANBusTask CANBus2Task(CANBus2, CANBus2RxQueueHandle);
   CANBus2Task.start("CAN Bus 2 Task");
+
+
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_EVENTS */
@@ -536,7 +537,7 @@ static void MX_FDCAN2_Init(void)
 		Error_Handler();
 	}
 	// Enable callback for new messages
-	if (HAL_FDCAN_ActivateNotification(&hfdcan2, FDCAN_IT_RX_FIFO1_NEW_MESSAGE, 0) != HAL_OK) {
+	if (HAL_FDCAN_ActivateNotification(&hfdcan2, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0) != HAL_OK) {
 		Error_Handler();
 	}
   /* USER CODE END FDCAN2_Init 2 */
@@ -760,33 +761,30 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 /*
- *	@brief Initialize all tasks
- *	@retval None
- */
-void APP_TASKS_Init() {
-
-}
-
-/*
  *	@brief FDCAN Rx FIFO0 Callback
  *	@param hfdcan Pointer to an FDCAN_HandleTypeDef structure that contains the configuration information for the specified FDCAN.
  *	@param RxFifo0ITs Indicates which Rx FIFO 0 interrupts are signaled. This parameter can be any combination of FDCAN_Rx_Fifo0_Interrupts.
  *	@retval None
  */
-void HAL_FDCAN_RxFifo0Callback (FDCAN_HandleTypeDef * hfdcan, uint32_t RxFifo0ITs) {
+void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs) {
 	if ((RxFifo0ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) != RESET) {
 		// Get new message
-		drivers::CAN::Message message;
+		static drivers::CAN::Message message;
 	    if (HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &message.rxHeader, message.data) != HAL_OK) {
 	    	Error_Handler();
 	    }
 	    message.numBytes = message.rxHeader.DataLength;
 
 	    // Send CAN message to correct CANBus
-		if (hfdcan->Instance == hfdcan1.Instance) {
-		    osMessageQueuePut(CANBus1RxQueueHandle, &message, 0, 0);
-		} else if (hfdcan->Instance == hfdcan2.Instance) {
+		if (hfdcan->Instance == FDCAN1) {
+			osMessageQueuePut(CANBus1RxQueueHandle, &message, 0, 0);
+		} else if (hfdcan->Instance == FDCAN2) {
 			osMessageQueuePut(CANBus2RxQueueHandle, &message, 0, 0);
+		}
+
+		// Enable callback for new messages
+		if (HAL_FDCAN_ActivateNotification(hfdcan, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0) != HAL_OK) {
+			Error_Handler();
 		}
 	}
 }
