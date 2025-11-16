@@ -35,11 +35,11 @@ void CANBus::addMessageHandler(void *instance, uint32_t id, CANHandler callback)
 	handlers[numHandlers++] = {instance, id, callback};
 }
 
-void CANBus::processMessage(Message *message) {
+void CANBus::processMessage(Message *message) const {
 	for (size_t i = 0; i < numHandlers; i++) {
 		HandlerEntry handler = handlers[i];
 		if (handler.id == message->rxHeader.Identifier) {
-			(handler.instance->*handler.callback)(message);
+			handler.callback(handler.instance, *message);
 		}
 	}
 }

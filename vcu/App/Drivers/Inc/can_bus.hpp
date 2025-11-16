@@ -26,9 +26,9 @@ class CANBus {
 public:
     CANBus(FDCAN_HandleTypeDef *fdcan) : fdcan(fdcan) {}
 
-    void transmit(uint32_t id, const uint8_t *data, uint32_t dlc) const;
     void addMessageHandler(void *instance, uint32_t id, CANHandler callback);
-    void processMessage(Message *message);
+    void processMessage(Message *message) const;
+    void transmit(uint32_t id, const uint8_t *data, uint32_t dlc) const;
 
 private:
 	static constexpr size_t MAX_HANDLERS = 32;
