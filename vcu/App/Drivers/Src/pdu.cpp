@@ -18,11 +18,7 @@ void PDU::setCurrentLimit(uint8_t channel, float amps) {
 		return; // how did we get here?
 	}
 	if (channel != 0 && channel < NUM_CHANNELS) { // check channel in range
-		for (int i = 0; i < NUM_CHANNELS / 2; i++) { // only half the channels are 10A
-			if (channel == tenAmpChannels[i]) { // if it is a 10 amp channel, set clamp accordingly
-				PDU_MAX_CURRENT = 10;
-				break;
-			}
+		PDU_MAX_CURRENT = channelMask & (1 << (channel - 1)) ? 10 : 20; // set to 10A if 1, 20 if 0
 		}
 		state.requestedCurrentLimit[channel - 1] = std::min(amps, PDU_MAX_CURRENT);
 		for (int i = 0; i < NUM_CHANNELS; i++) {
@@ -31,7 +27,7 @@ void PDU::setCurrentLimit(uint8_t channel, float amps) {
 				);
 		}
 		canBus.transmit(CAN_ID_SET_CURRENT, txData, FDCAN_DLC_BYTES_8);
-	}
+
 	return;
 }
 void PDU::setPWMDutyCycle(uint8_t channel, uint8_t dutyCyclePercent) {

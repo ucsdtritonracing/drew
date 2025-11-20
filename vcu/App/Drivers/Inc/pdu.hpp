@@ -3,7 +3,7 @@
 #include "can_peripheral.hpp"
 
 namespace drivers::PDU {
-static constexpr size_t NUM_CHANNELS = 8;
+constexpr size_t NUM_CHANNELS = 8;
 struct State {
 	uint16_t measuredCurrent[NUM_CHANNELS];
 	enum ErrorStatus {
@@ -57,7 +57,7 @@ private:
 	void processMessage(int channelStart, const CAN::Message &message);
 
 	uint8_t txData[drivers::CAN::MAX_CLASSICAL_CAN_DATA_LENGTH] = {};
-	uint8_t tenAmpChannels[4] = {2,3,6,7}; // because ten is shorter than twenty
+	uint8_t channelMask = 0b01100110;
 
 	static constexpr uint32_t PDU_BIT_TO_POWER_SCALE = 	2.5; // need 2.5 bits per unit increase in duty/current
 	static constexpr uint8_t PDU_MAX_PWM = 				100;
