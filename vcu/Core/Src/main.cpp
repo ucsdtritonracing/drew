@@ -61,9 +61,15 @@ TIM_HandleTypeDef htim15;
 /* Definitions for defaultTask */
 osThreadId_t defaultTaskHandle;
 const osThreadAttr_t defaultTask_attributes = {
-  .name = "defaultTask",
-  .priority = (osPriority_t) osPriorityNormal,
-  .stack_size = 128 * 4
+    .name      = "defaultTask",
+    .attr_bits = 0,
+    .cb_mem    = NULL,
+    .cb_size   = 0,
+    .stack_mem = NULL,
+    .stack_size = 128 * 4,
+    .priority  = (osPriority_t)osPriorityNormal,
+    .tz_module = 0,
+    .reserved  = 0
 };
 /* Definitions for CANBus1RxQueue */
 osMessageQueueId_t CANBus1RxQueueHandle;

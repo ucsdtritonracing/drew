@@ -13,13 +13,12 @@ PDU::PDU(drivers::CAN::CANBus &canBus) :
 }
 
 void PDU::setCurrentLimit(uint8_t channel, float amps) {
-	float PDU_MAX_CURRENT = 20; // assume 20A channel, check later
+	float PDU_MAX_CURRENT; // assume 20A channel, check later
 	if (amps < 0) {
 		return; // how did we get here?
 	}
 	if (channel != 0 && channel < NUM_CHANNELS) { // check channel in range
-		PDU_MAX_CURRENT = channelMask & (1 << (channel - 1)) ? 10 : 20; // set to 10A if 1, 20 if 0
-		}
+		PDU_MAX_CURRENT = CHANNEL_MASK & (1 << (channel - 1)) ? LOW_CURRENT_LIMIT : HIGH_CURRENT_LIMIT; // set to 10A if 1, 20 if 0
 		state.requestedCurrentLimit[channel - 1] = std::min(amps, PDU_MAX_CURRENT);
 		for (int i = 0; i < NUM_CHANNELS; i++) {
 			txData[i] = static_cast<uint8_t>(
@@ -27,8 +26,7 @@ void PDU::setCurrentLimit(uint8_t channel, float amps) {
 				);
 		}
 		canBus.transmit(CAN_ID_SET_CURRENT, txData, FDCAN_DLC_BYTES_8);
-
-	return;
+	}
 }
 void PDU::setPWMDutyCycle(uint8_t channel, uint8_t dutyCyclePercent) {
 	if (channel != 0 && channel < NUM_CHANNELS) {
@@ -40,7 +38,6 @@ void PDU::setPWMDutyCycle(uint8_t channel, uint8_t dutyCyclePercent) {
 		}
 		canBus.transmit(CAN_ID_SET_PWM, txData, FDCAN_DLC_BYTES_8);
 	}
-	return;
 }
 
 void PDU::processMessage(int channelStart, const CAN::Message &message) {
@@ -48,7 +45,7 @@ void PDU::processMessage(int channelStart, const CAN::Message &message) {
 		return; // incorrect number of bytes received, bad message
 	}
 	for (int i = 0; i < NUM_CHANNELS; i += 2) {
-		uint8_t errorCode = ((message.data[i] & errorMask) >> 5);
+		uint8_t errorCode = ((message.data[i] & ERROR_MASK) >> 5);
 		switch (errorCode) {
 		case 0x00:
 			state.errorStatuses[channelStart] = state.OK;
@@ -66,8 +63,7 @@ void PDU::processMessage(int channelStart, const CAN::Message &message) {
 			state.errorStatuses[channelStart] = state.UNKNOWN;
 			break;
 		}
-		state.measuredCurrent[channelStart] = ((message.data[i] << 8)
-				| message.data[i + 1]) & currentMask;
+		state.measuredCurrent[channelStart] = ((message.data[i] << 8) | message.data[i + 1]) & CURRENT_MASK;
 		channelStart++;
 	}
 }
