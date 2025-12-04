@@ -22,7 +22,11 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "task_init.hpp"
+#include "task.hpp"
+#include "can_bus.hpp"
+
+// Tasks
+#include "task_can_bus.hpp"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -54,13 +58,6 @@ TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim5;
 TIM_HandleTypeDef htim15;
 
-/* Definitions for defaultTask */
-osThreadId_t defaultTaskHandle;
-const osThreadAttr_t defaultTask_attributes = {
-  .name = "defaultTask",
-  .priority = (osPriority_t) osPriorityNormal,
-  .stack_size = 128 * 4
-};
 /* Definitions for CANBus1RxQueue */
 osMessageQueueId_t CANBus1RxQueueHandle;
 const osMessageQueueAttr_t CANBus1RxQueue_attributes = {
@@ -86,7 +83,6 @@ static void MX_FDCAN2_Init(void);
 static void MX_TIM5_Init(void);
 static void MX_TIM15_Init(void);
 static void MX_TIM3_Init(void);
-void StartDefaultTask(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -135,7 +131,8 @@ int main(void)
   MX_TIM15_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
-
+  static drivers::CAN::CANBus CANBus1(&hfdcan1);
+  static drivers::CAN::CANBus CANBus2(&hfdcan2);
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -155,22 +152,26 @@ int main(void)
 
   /* Create the queue(s) */
   /* creation of CANBus1RxQueue */
-  CANBus1RxQueueHandle = osMessageQueueNew (64, sizeof(uint16_t), &CANBus1RxQueue_attributes);
+  CANBus1RxQueueHandle = osMessageQueueNew (8, sizeof(drivers::CAN::Message), &CANBus1RxQueue_attributes);
 
   /* creation of CANBus2RxQueue */
-  CANBus2RxQueueHandle = osMessageQueueNew (64, sizeof(uint16_t), &CANBus2RxQueue_attributes);
+  CANBus2RxQueueHandle = osMessageQueueNew (8, sizeof(drivers::CAN::Message), &CANBus2RxQueue_attributes);
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
-  /* creation of defaultTask */
-  defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
-  initTasks();
+  static tasks::CANBusTask CANBus1Task(CANBus1, CANBus1RxQueueHandle);
+  CANBus1Task.start("CAN Bus 1 Task");
+
+  static tasks::CANBusTask CANBus2Task(CANBus2, CANBus2RxQueueHandle);
+  CANBus2Task.start("CAN Bus 2 Task");
+
+
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_EVENTS */
@@ -483,7 +484,13 @@ static void MX_FDCAN1_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN FDCAN1_Init 2 */
-
+	if (HAL_FDCAN_Start(&hfdcan1) != HAL_OK) {
+		Error_Handler();
+	}
+	// Enable callback for new messages
+	if (HAL_FDCAN_ActivateNotification(&hfdcan1, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0) != HAL_OK) {
+		Error_Handler();
+	}
   /* USER CODE END FDCAN1_Init 2 */
 
 }
@@ -526,7 +533,13 @@ static void MX_FDCAN2_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN FDCAN2_Init 2 */
-
+	if (HAL_FDCAN_Start(&hfdcan2) != HAL_OK) {
+		Error_Handler();
+	}
+	// Enable callback for new messages
+	if (HAL_FDCAN_ActivateNotification(&hfdcan2, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0) != HAL_OK) {
+		Error_Handler();
+	}
   /* USER CODE END FDCAN2_Init 2 */
 
 }
@@ -747,27 +760,37 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+/*
+ *	@brief FDCAN Rx FIFO0 Callback
+ *	@param hfdcan Pointer to an FDCAN_HandleTypeDef structure that contains the configuration information for the specified FDCAN.
+ *	@param RxFifo0ITs Indicates which Rx FIFO 0 interrupts are signaled. This parameter can be any combination of FDCAN_Rx_Fifo0_Interrupts.
+ *	@retval None
+ */
+void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs) {
+	if ((RxFifo0ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) != RESET) {
+		// Get new message
+		static drivers::CAN::Message message;
+	    if (HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &message.rxHeader, message.data) != HAL_OK) {
+	    	Error_Handler();
+	    }
+	    message.numBytes = message.rxHeader.DataLength;
 
+	    // Send CAN message to correct CANBus
+		if (hfdcan->Instance == FDCAN1) {
+			osMessageQueuePut(CANBus1RxQueueHandle, &message, 0, 0);
+		} else if (hfdcan->Instance == FDCAN2) {
+			osMessageQueuePut(CANBus2RxQueueHandle, &message, 0, 0);
+		}
+
+		// Enable callback for new messages
+		if (HAL_FDCAN_ActivateNotification(hfdcan, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0) != HAL_OK) {
+			Error_Handler();
+		}
+	}
+}
 /* USER CODE END 4 */
 
-/* USER CODE BEGIN Header_StartDefaultTask */
-/**
-  * @brief  Function implementing the defaultTask thread.
-  * @param  argument: Not used
-  * @retval None
-  */
-/* USER CODE END Header_StartDefaultTask */
-void StartDefaultTask(void *argument)
-{
-  /* USER CODE BEGIN 5 */
-  printf("STM32 Started!");
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1000);
-  }
-  /* USER CODE END 5 */
-}
+
 
 /**
   * @brief  Period elapsed callback in non blocking mode
