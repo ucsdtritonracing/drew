@@ -49,7 +49,7 @@ protected:
 	void bindHandler(uint32_t id) {
 		if (id <= 0 || id >= MAX_CAN_EXTD_ID) return;
 
-	    canBus.addMessageHandler(id, this,
+	    canBus.addMessageHandler(this, id,
 	        [](void *instance, const Message& message) {
 	    		Derived* d = static_cast<Derived*>(instance);
 	            (d->*Method)(message);
