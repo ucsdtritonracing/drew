@@ -12,19 +12,26 @@ class Inverter: public drivers::CAN::CANPeripheral<Inverter, State> {
 public:
 	Inverter(drivers::CAN::CANBus &canBus);
 
-	/*
-	 * TODO: list all methods required
-	 */
-
-	void processMessageFaultCodes(const CAN::Message &message);
-
-	bool checkError(const uint8_t bitMask);
+	void commandMessage(uint16_t torqueRequest);
 
 private:
 
-	/*
-	 * TODO: Fill in constants and private variables
-	 */
+	uint8_t txData[drivers::CAN::MAX_CLASSICAL_CAN_DATA_LENGTH] = {};
+
+	static constexpr uint32_t COMMAND_MESSAGE_ID = 0x0C0;
+	static constexpr uint8_t TORQUE_SCALE = 10;
+	static constexpr uint8_t DIRECTION_COMMAND = 1; // Forward
+	static constexpr uint8_t INVERTER_ON = 1;
+	static constexpr uint8_t INVERTER_OFF = 0;
+	static constexpr uint8_t INVERTER_DISCHARGE = 0; // Discharge disabled
+	static constexpr uint8_t SPEED_MODE_ENABLE = 0; // Do not override Torque Mode
+	// Set motor to max speed of 4100 RPM
+	static constexpr uint8_t SPEED_COMMAND_BYTE_2 = 0b00010100;
+	static constexpr uint8_t SPEED_COMMAND_BYTE_3 = 0b00010000;
+	// Set motor torque limit to 210 N.m --> 210 * 10 = 2100 (scaled)
+	static constexpr uint8_t COMMANDED_TORQUE_LIMIT_BYTE_6 = 0b00110100;
+	static constexpr uint8_t COMMANDED_TORQUE_LIMIT_BYTE_7 = 0b00001000;
+
 };
 
 } // namespace drivers::inverter
