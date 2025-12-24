@@ -8,6 +8,7 @@ namespace drivers::inverter {
 		bindHandler<&Inverter::processTemperature1>(CAN_ID_TEMP_1);
 		bindHandler<&Inverter::processTemperature2>(CAN_ID_TEMP_2);
 		bindHandler<&Inverter::processTemperature3>(CAN_ID_TEMP_3);
+		bindHandler<&Inverter::processMotorPosition>(CAN_ID_MOTOR_POSITION);
 	}
 
 	void Inverter::commandMessage(uint16_t torqueRequest, bool inverterEnable) {
@@ -25,34 +26,19 @@ namespace drivers::inverter {
 	}
 
 	void Inverter::processTemperature1(const CAN::Message &message) {
-		state.temperatures.moduleA = ((uint16_t)message.data[1] << 8) | message.data[0];
-		state.temperatures.moduleB = ((uint16_t)message.data[3] << 8) | message.data[2];
-		state.temperatures.moduleC = ((uint16_t)message.data[5] << 8) | message.data[4];
-		state.temperatures.gateDriverBoard = ((uint16_t)message.data[7] << 8) | message.data[6];
+		processStandardMessage(message, state.temperatures, DATA_1_BEGIN);
 	}
 
 	void Inverter::processTemperature2(const CAN::Message &message) {
-		state.temperatures.controlBoard = ((uint16_t)message.data[1] << 8) | message.data[0];
-		state.temperatures.rtd1 = ((uint16_t)message.data[3] << 8) | message.data[2];
-		state.temperatures.rtd2 = ((uint16_t)message.data[5] << 8) | message.data[4];
-		state.temperatures.rtd3 = ((uint16_t)message.data[7] << 8) | message.data[6];
+		processStandardMessage(message, state.temperatures, DATA_2_BEGIN);
 	}
 
 	void Inverter::processTemperature3(const CAN::Message &message) {
-		state.temperatures.coolant = ((uint16_t)message.data[1] << 8) | message.data[0];
-		state.temperatures.hotSpot = ((uint16_t)message.data[3] << 8) | message.data[2];
-		state.temperatures.motor = ((uint16_t)message.data[5] << 8) | message.data[4];
-		state.torqueShudder = ((uint16_t)message.data[7] << 8) | message.data[6];
+		processStandardMessage(message, state.temperatures, DATA_3_BEGIN);
+	}
+
+	void Inverter::processMotorPosition(const CAN::Message &message) {
+		processStandardMessage(message, state.motorPosition, DATA_1_BEGIN);
 	}
 
 } // namespace drivers::inverter
-/*
- * static constexpr size_t NUM_TEMPS = 4;
- * std::array<int16_t, NUM_TEMPS> Inverter::processTemperature(const CAN::Message &message) {
-		std::array<int16_t, NUM_TEMPS> temperatures;
-		for (int i = 0; i < NUM_TEMPS; i++) {
-			temperatures[i] = (int16_t)(((uint16_t)message.data[i*2+1] << 8) | message.data[i*2]);
-		}
-		return temperatures;
-	}
- */
