@@ -5,19 +5,19 @@
 namespace drivers::inverter {
 	Inverter::Inverter(drivers::CAN::CANBus &canBus) :
 			drivers::CAN::CANPeripheral<Inverter, State>(canBus) {
-		bindHandler<&Inverter::processTemperature1>(CAN_ID_TEMP_1);
-		bindHandler<&Inverter::processTemperature2>(CAN_ID_TEMP_2);
-		bindHandler<&Inverter::processTemperature3>(CAN_ID_TEMP_3);
-		bindHandler<&Inverter::processMotorPosition>(CAN_ID_MOTOR_POSITION);
-		bindHandler<&Inverter::processTorqueInformation>(CAN_ID_TORQUE_INFORMATION);
-		bindHandler<&Inverter::processTorqueCapability>(CAN_ID_TORQUE_CAPABILITY);
-		bindHandler<&Inverter::processFaultCodes>(CAN_ID_FAULT_CODES);
-		bindHandler<&Inverter::processInternalStates>(CAN_ID_INTERNAL_STATES);
+		bindHandler<&Inverter::processTemperature1Message>(CAN_ID_TEMP_1);
+		bindHandler<&Inverter::processTemperature2Message>(CAN_ID_TEMP_2);
+		bindHandler<&Inverter::processTemperature3Message>(CAN_ID_TEMP_3);
+		bindHandler<&Inverter::processMotorPositionMessage>(CAN_ID_MOTOR_POSITION);
+		bindHandler<&Inverter::processTorqueInformationMessage>(CAN_ID_TORQUE_INFORMATION);
+		bindHandler<&Inverter::processTorqueCapabilityMessage>(CAN_ID_TORQUE_CAPABILITY);
+		bindHandler<&Inverter::processfaultFlagsMessage>(CAN_ID_FAULT_CODES);
+		bindHandler<&Inverter::processInternalStatesMessage>(CAN_ID_INTERNAL_STATES);
 	}
 
-	void Inverter::commandMessage(uint16_t torqueRequest, bool inverterEnable) {
+	void Inverter::sendCommandMessage(uint16_t torqueRequest, bool inverterEnable) {
 		uint16_t scaledTorque = torqueRequest * COMMON_SCALE;
-		if (scaledTorque > 2100) scaledTorque = 2100; // If too redundant, delete
+		if (scaledTorque > (MAX_TORQUE_ALLOWED * COMMON_SCALE)) scaledTorque = MAX_TORQUE_ALLOWED * COMMON_SCALE;
 		txData[0] = scaledTorque & 0xFF;
 		txData[1] = (scaledTorque >> 8) & 0xFF;
 		txData[2] = SPEED_COMMAND_BYTE_2;
@@ -29,36 +29,71 @@ namespace drivers::inverter {
 		canBus.transmit(COMMAND_MESSAGE_ID, txData, FDCAN_DLC_BYTES_8);
 	}
 
-	void Inverter::processTemperature1(const CAN::Message &message) {
+	template <size_t dataLength>
+	void Inverter::processStandardMessage(const CAN::Message &message, size_t numData, float (&data)[dataLength], size_t dataStart, uint8_t scale) {
+		if (message.numBytes != FDCAN_DLC_BYTES_8) {
+			return; // incorrect number of bytes received, bad message
+		}
+		for (size_t i = 0; i < numData; i++) {
+			int16_t raw = (static_cast<uint16_t>(message.data[i*2+1]) << 8) | message.data[i*2];
+			data[dataStart + i] = static_cast<float>(raw) / scale;
+		}
+	}
+
+	template <size_t dataLength, size_t scalerLength>
+	void Inverter::processStandardMessage(const CAN::Message &message, size_t numData, float (&data)[dataLength], size_t dataStart, const uint8_t (&scale)[scalerLength]) {
+		if (message.numBytes != FDCAN_DLC_BYTES_8) {
+			return; // incorrect number of bytes received, bad message
+		}
+		for (size_t i = 0; i < numData; i++) {
+			int16_t raw = (static_cast<uint16_t>(message.data[i*2+1]) << 8) | message.data[i*2];
+			data[dataStart + i] = static_cast<float>(raw) / scale[i];
+		}
+	}
+
+	void Inverter::processTemperature1Message(const CAN::Message &message) {
 		processStandardMessage(message, FOUR_DATA, state.temperatures, TEMP_1_START, COMMON_SCALE);
 	}
 
-	void Inverter::processTemperature2(const CAN::Message &message) {
+	void Inverter::processTemperature2Message(const CAN::Message &message) {
 		processStandardMessage(message, FOUR_DATA, state.temperatures, TEMP_2_START, COMMON_SCALE);
 	}
 
-	void Inverter::processTemperature3(const CAN::Message &message) {
+	void Inverter::processTemperature3Message(const CAN::Message &message) {
 		processStandardMessage(message, FOUR_DATA, state.temperatures, TEMP_3_START, COMMON_SCALE);
 	}
 
-	void Inverter::processMotorPosition(const CAN::Message &message) {
+	void Inverter::processMotorPositionMessage(const CAN::Message &message) {
 		processStandardMessage(message, FOUR_DATA, state.motorPosition, MOTOR_POSITION_START, MOTOR_POSITION_SCALES);
 	}
 
-	void Inverter::processTorqueInformation(const CAN::Message &message) {
+	void Inverter::processTorqueInformationMessage(const CAN::Message &message) {
 		processStandardMessage(message, TWO_DATA, state.torqueInformation, TORQUE_INFO_START, COMMON_SCALE);
 	}
 
-	void Inverter::processTorqueCapability(const CAN::Message &message) {
+	void Inverter::processTorqueCapabilityMessage(const CAN::Message &message) {
 		processStandardMessage(message, ONE_DATA, state.torqueInformation, TORQUE_CAP_START, COMMON_SCALE);
 	}
 
-	void Inverter::processFaultCodes(const CAN::Message &message) {
-		processStandardMessage(message, FOUR_DATA, state.faultCodes, FAULT_START, NO_SCALE);
+	void Inverter::processfaultFlagsMessage(const CAN::Message &message) {
+		//processStandardMessage(message, FOUR_DATA, state.faultFlags, FAULT_START, NO_SCALE);
+		if (message.numBytes != FDCAN_DLC_BYTES_8) {
+			return; // incorrect number of bytes received, bad message
+		}
+		state.faultFlags[static_cast<size_t>(FaultFlags::PostFault)] = (message.data[3] << 24) | (message.data[2] << 16) | (message.data[1] << 8) | message.data[0];
+		state.faultFlags[static_cast<size_t>(FaultFlags::RunFault)] = (message.data[7] << 24) | (message.data[6] << 16) | (message.data[5] << 8) | message.data[4];
 	}
 
-	void Inverter::processInternalStates(const CAN::Message &message) {
-		if (message.numBytes != 8) {
+	bool Inverter::checkFault(PostFault fault) {
+		return state.faultFlags[static_cast<size_t>(FaultFlags::PostFault)] & static_cast<uint32_t>(1u << static_cast<uint8_t>(fault));
+	}
+
+	bool Inverter::checkFault(RunFault fault) {
+		return state.faultFlags[static_cast<size_t>(FaultFlags::RunFault)] & static_cast<uint32_t>(1u << static_cast<uint8_t>(fault));
+	}
+
+	void Inverter::processInternalStatesMessage(const CAN::Message &message) {
+		if (message.numBytes != FDCAN_DLC_BYTES_8) {
 			return; // incorrect number of bytes received, bad message
 		}
 		// Hard-coded b/c it takes least runtime and storage
