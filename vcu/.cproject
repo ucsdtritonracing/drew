@@ -64,6 +64,7 @@
 									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/FreeRTOS/Source/include"/>
 									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2"/>
 									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F"/>
+									<listOptionValue builtIn="false" value="../App/Inc"/>
 									<listOptionValue builtIn="false" value="../App/Task/Inc"/>
 									<listOptionValue builtIn="false" value="../App/Drivers/Inc"/>
 								</option>
@@ -88,6 +89,7 @@
 									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/FreeRTOS/Source/include"/>
 									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2"/>
 									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F"/>
+									<listOptionValue builtIn="false" value="../App/Inc"/>
 									<listOptionValue builtIn="false" value="../App/Task/Inc"/>
 									<listOptionValue builtIn="false" value="../App/Drivers/Inc"/>
 								</option>
