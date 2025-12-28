@@ -18,8 +18,14 @@ struct State {
 
 class SteeringAngleSensor : public drivers::can::CANPeripheral<SteeringAngleSensor, State> {
 public:
-    SteeringAngleSensor(drivers::can::CANBus& canBus);
+    SteeringAngleSensor() = default;
 
+    /*
+     * @brief Initialize the SAS driver.
+     *
+     * @param canBus CAN Bus that the driver will be attached to
+     */
+    void init(drivers::can::CANBus& canBus);
     void resetAngle();
     void resetCalibration();
     void processCANMessage(const can::Message& message);

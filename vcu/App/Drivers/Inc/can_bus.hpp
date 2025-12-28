@@ -25,8 +25,14 @@ struct HandlerEntry {
 
 class CANBus {
 public:
-    CANBus(FDCAN_HandleTypeDef *fdcan) : fdcan(fdcan) {}
+    CANBus();
 
+    /*
+     * @brief Initialize the CAN Bus.
+     *
+     * @param fdcan FDCAN peripheral to attach the CAN Bus to.
+     */
+    void init(FDCAN_HandleTypeDef *fdcan);
     void addMessageHandler(void *instance, uint32_t id, CANHandler callback);
     void processMessage(Message *message) const;
     void transmit(uint32_t id, const uint8_t *data, uint32_t dlc) const;

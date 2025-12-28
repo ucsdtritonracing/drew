@@ -4,7 +4,7 @@
 
 namespace drivers::sas {
 
-SteeringAngleSensor::SteeringAngleSensor(drivers::can::CANBus& canBus)
+void SteeringAngleSensor::init(drivers::can::CANBus& canBus)
 		: drivers::can::CANPeripheral<SteeringAngleSensor, State>(canBus)
 {
 	bindHandler<&SteeringAngleSensor::processCANMessage>(CAN_ID_STATUS);

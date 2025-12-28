@@ -6,7 +6,7 @@
 #include <cstring>
 
 namespace drivers::pdu {
-PDU::PDU(drivers::can::CANBus &canBus) :
+void PDU::init(drivers::can::CANBus &canBus) :
 		drivers::can::CANPeripheral<PDU, State>(canBus) {
 	bindHandler<&PDU::processMessage1>(CAN_ID_RX_1);
 	bindHandler<&PDU::processMessage2>(CAN_ID_RX_2);
