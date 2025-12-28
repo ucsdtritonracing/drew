@@ -3,6 +3,8 @@
 #include "stdint.h"
 
 
+namespace vehicle {
+
 class VehicleState {
 public:
 	VehicleState();
@@ -37,8 +39,9 @@ public:
 
 	// State
     bool readyToDrive;
+
 };
 
-
-// Global declaration
 extern VehicleState vehicleState;
+
+} // namespace vehicle

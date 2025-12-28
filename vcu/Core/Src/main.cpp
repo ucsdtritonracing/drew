@@ -17,12 +17,12 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+#include "vehicle_state.hpp"
 #include "main.h"
 #include "cmsis_os.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "vehicle_state.hpp"
 #include "drivers.hpp"
 #include "task.hpp"
 #include "can_bus.hpp"
@@ -134,11 +134,12 @@ int main(void)
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
 
-  CANBus1.init(&hfdcan1);
-  CANBus2.init(&hfdcan2);
+  vehicle::CANBus1.init(&hfdcan1);
+  vehicle::CANBus2.init(&hfdcan2);
 
-  pdu.init(CANBus1);
-  sas.init(CANBus1);
+  vehicle::pdu.init(vehicle::CANBus1);
+  vehicle::sas.init(vehicle::CANBus1);
+
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -171,10 +172,10 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
-  static tasks::CANBusTask CANBus1Task(CANBus1, CANBus1RxQueueHandle);
+  static tasks::CANBusTask CANBus1Task(vehicle::CANBus1, CANBus1RxQueueHandle);
   CANBus1Task.start("CAN Bus 1 Task");
 
-  static tasks::CANBusTask CANBus2Task(CANBus2, CANBus2RxQueueHandle);
+  static tasks::CANBusTask CANBus2Task(vehicle::CANBus2, CANBus2RxQueueHandle);
   CANBus2Task.start("CAN Bus 2 Task");
 
 
