@@ -1,7 +1,7 @@
 #pragma once
 #include "stm32g4xx_hal.h"
 
-namespace drivers::CAN {
+namespace drivers::can {
 
 constexpr size_t MAX_CLASSICAL_CAN_DATA_LENGTH = 8;
 constexpr uint32_t MAX_CAN_STD_ID = 0x7FF;
@@ -39,4 +39,4 @@ private:
     FDCAN_HandleTypeDef* fdcan;
 };
 
-} // namespace drivers::CAN
+} // namespace drivers::can

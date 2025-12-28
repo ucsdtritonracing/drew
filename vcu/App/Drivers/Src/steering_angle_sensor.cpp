@@ -2,10 +2,10 @@
 #include "can_bus.hpp"
 #include "can_peripheral.hpp"
 
-namespace drivers::SAS {
+namespace drivers::sas {
 
-SteeringAngleSensor::SteeringAngleSensor(drivers::CAN::CANBus& canBus)
-		: drivers::CAN::CANPeripheral<SteeringAngleSensor, State>(canBus)
+SteeringAngleSensor::SteeringAngleSensor(drivers::can::CANBus& canBus)
+		: drivers::can::CANPeripheral<SteeringAngleSensor, State>(canBus)
 {
 	bindHandler<&SteeringAngleSensor::processCANMessage>(CAN_ID_STATUS);
 	txData[1] = 0x00;		// unchanged byte
@@ -35,7 +35,7 @@ constexpr State::Mode SteeringAngleSensor::parseMode(const uint8_t& modeByte) {
 	}
 }
 
-void SteeringAngleSensor::processCANMessage(const drivers::CAN::Message& message) {
+void SteeringAngleSensor::processCANMessage(const drivers::can::Message& message) {
 	if (message.numBytes <= ANGLE_HIGH_BYTE ) return;
 	state.steeringAngle = (static_cast<uint16_t>(message.data[ANGLE_HIGH_BYTE]) << 8)
 							| static_cast<uint16_t>(message.data[ANGLE_LOW_BYTE]);
@@ -47,4 +47,4 @@ void SteeringAngleSensor::processCANMessage(const drivers::CAN::Message& message
 	state.mode = parseMode(message.data[MODE_BYTE]);
 }
 
-} // namespace drivers::SAS
+} // namespace drivers::sas

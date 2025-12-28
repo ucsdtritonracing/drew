@@ -2,7 +2,7 @@
 #include "can_bus.hpp"
 #include <utility>
 
-namespace drivers::CAN {
+namespace drivers::can {
 
 /*
  * CAN peripheral template class.
@@ -63,4 +63,4 @@ protected:
 	}
 };
 
-} // namespace drivers::CAN
+} // namespace drivers::can
