@@ -1,5 +1,7 @@
-#include "vehicle_state.hpp"
+#include <vehicle_state.hpp>
 
+
+namespace vehicle {
 
 VehicleState::VehicleState() {
 	wheelSpeeds 				= {0, 0, 0, 0};
@@ -17,3 +19,5 @@ VehicleState::VehicleState() {
 }
 
 VehicleState vehicleState{};
+
+} // namespace vehicle
