@@ -22,6 +22,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "vehicle_state.hpp"
+#include "drivers.hpp"
 #include "task.hpp"
 #include "can_bus.hpp"
 
@@ -131,8 +133,12 @@ int main(void)
   MX_TIM15_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
-  static drivers::CAN::CANBus CANBus1(&hfdcan1);
-  static drivers::CAN::CANBus CANBus2(&hfdcan2);
+
+  CANBus1.init(&hfdcan1);
+  CANBus2.init(&hfdcan2);
+
+  pdu.init(CANBus1);
+  sas.init(CANBus1);
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -152,10 +158,10 @@ int main(void)
 
   /* Create the queue(s) */
   /* creation of CANBus1RxQueue */
-  CANBus1RxQueueHandle = osMessageQueueNew (8, sizeof(drivers::CAN::Message), &CANBus1RxQueue_attributes);
+  CANBus1RxQueueHandle = osMessageQueueNew (8, sizeof(drivers::can::Message), &CANBus1RxQueue_attributes);
 
   /* creation of CANBus2RxQueue */
-  CANBus2RxQueueHandle = osMessageQueueNew (8, sizeof(drivers::CAN::Message), &CANBus2RxQueue_attributes);
+  CANBus2RxQueueHandle = osMessageQueueNew (8, sizeof(drivers::can::Message), &CANBus2RxQueue_attributes);
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
@@ -769,7 +775,7 @@ static void MX_GPIO_Init(void)
 void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs) {
 	if ((RxFifo0ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) != RESET) {
 		// Get new message
-		static drivers::CAN::Message message;
+		static drivers::can::Message message;
 	    if (HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &message.rxHeader, message.data) != HAL_OK) {
 	    	Error_Handler();
 	    }
