@@ -26,8 +26,22 @@ public:
      * @param canBus CAN Bus that the driver will be attached to
      */
     void init(drivers::can::CANBus& canBus);
+
+    /*
+     * @brief Reset the SAS angle reading to 0.
+     */
     void resetAngle();
+
+    /*
+     * @brief Reset the SAS calibration status.
+     */
     void resetCalibration();
+
+    /*
+     * @brief Process an incoming CAN Message with ID of CAN_ID_STATUS
+     *
+     * @param message
+     */
     void processCANMessage(const can::Message& message);
 
 private:
