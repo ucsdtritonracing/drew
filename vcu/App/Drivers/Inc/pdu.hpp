@@ -15,7 +15,14 @@ struct State {
 
 class PDU: public drivers::can::CANPeripheral<PDU, State> {
 public:
-	PDU(drivers::can::CANBus &canBus);
+	PDU() = default;
+
+	/*
+	 * @brief Initialize the PDU driver.
+	 *
+	 * @param canBus CAN Bus that the driver will be attached to
+	 */
+	void init(drivers::can::CANBus &canBus);
 
 	/*
 	 * @brief Set the current limit for a given channel.
