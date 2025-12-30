@@ -17,7 +17,7 @@ void PDU::setCurrentLimit(uint8_t channel, float amps) {
 	if (amps < 0) {
 		return; // how did we get here?
 	}
-	if (channel != 0 && channel < NUM_CHANNELS) { // check channel in range
+	if (channel != 0 && channel <= NUM_CHANNELS) { // check channel in range
 		PDU_MAX_CURRENT = CHANNEL_MASK & (1 << (channel - 1)) ? LOW_CURRENT_LIMIT : HIGH_CURRENT_LIMIT; // set to 10A if 1, 20 if 0
 		state.requestedCurrentLimit[channel - 1] = std::min(amps, PDU_MAX_CURRENT);
 		for (int i = 0; i < NUM_CHANNELS; i++) {
@@ -29,7 +29,7 @@ void PDU::setCurrentLimit(uint8_t channel, float amps) {
 	}
 }
 void PDU::setPWMDutyCycle(uint8_t channel, uint8_t dutyCyclePercent) {
-	if (channel != 0 && channel < NUM_CHANNELS) {
+	if (channel != 0 && channel <= NUM_CHANNELS) {
 		state.requestedPWMDutyPercent[channel - 1] = std::min(dutyCyclePercent, PDU_MAX_PWM);
 		for (int i = 0; i < NUM_CHANNELS; i++) {
 			txData[i] = static_cast<uint8_t>(

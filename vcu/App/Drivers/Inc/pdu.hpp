@@ -48,7 +48,7 @@ public:
 	/*
 	 * @brief Shut off all output from PDU
 	 *
-	 * @param message
+	 *
 	 */
 	void stopAllChannels();
 
