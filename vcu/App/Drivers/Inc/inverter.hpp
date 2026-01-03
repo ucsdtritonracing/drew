@@ -2,11 +2,10 @@
 #include "can_bus.hpp"
 #include "can_peripheral.hpp"
 #include <type_traits>
-#include <cassert>
 
 namespace drivers::inverter {
 
-enum class Temperatures : uint8_t {
+enum class TemperatureSensors : uint8_t {
 	ModuleA, ModuleB, ModuleC, GateDriverBoard, ControlBoard,
 	RTD1, RTD2, RTD3, Coolant, HotSpot, Motor, TorqueShudder, Count
 };
@@ -48,7 +47,7 @@ enum class InternalStates : uint8_t {
 };
 
 struct State {
-	float temperatures[static_cast<size_t>(Temperatures::Count)];
+	float temperatures[static_cast<size_t>(TemperatureSensors::Count)];
 	float motorPosition[static_cast<size_t>(MotorPosition::Count)];
 	float torqueInformation[static_cast<size_t>(TorqueInformation::Count)];
 	uint32_t faultFlags[static_cast<size_t>(FaultFlags::Count)];
@@ -140,50 +139,50 @@ public:
 
 private:
 
-	uint8_t txData[drivers::CAN::MAX_CLASSICAL_CAN_DATA_LENGTH] = {};
+	uint8_t txData[drivers::CAN::MAX_CLASSICAL_CAN_DATA_LENGTH] = 	{};
 
-	static constexpr uint8_t COMMON_SCALE = 					10; //temperature, torque, angle, frequency
-	static constexpr uint8_t NO_SCALE = 						1; // angular velocity, internal
+	static constexpr uint8_t COMMON_SCALE = 						10; // temperature, torque, angle, frequency
+	static constexpr uint8_t NO_SCALE = 							1; // angular velocity, internal
 
-	static constexpr uint32_t COMMAND_MESSAGE_ID = 				0x0C0;
-	static constexpr uint8_t DIRECTION_COMMAND = 				1; // Forward
-	static constexpr uint8_t INVERTER_DISCHARGE = 				0; // Discharge disabled
-	static constexpr uint8_t SPEED_MODE_ENABLE = 				0; // Do not override Torque Mode
+	static constexpr uint32_t COMMAND_MESSAGE_ID = 					0x0C0;
+	static constexpr uint8_t DIRECTION_COMMAND = 					1; // Forward
+	static constexpr uint8_t INVERTER_DISCHARGE = 					0; // Discharge disabled
+	static constexpr uint8_t SPEED_MODE_ENABLE = 					0; // Do not override Torque Mode
 	// Set motor to max speed of 4100 RPM
-	static constexpr uint8_t SPEED_COMMAND_BYTE_2 = 			0b00010100;
-	static constexpr uint8_t SPEED_COMMAND_BYTE_3 = 			0b00010000;
+	static constexpr uint8_t SPEED_COMMAND_BYTE_2 = 				0b00010100;
+	static constexpr uint8_t SPEED_COMMAND_BYTE_3 = 				0b00010000;
 	// Set motor torque limit to 210 N.m --> 210 * 10 = 2100 (scaled)
-	static constexpr uint8_t COMMANDED_TORQUE_LIMIT_BYTE_6 = 	0b00110100;
-	static constexpr uint8_t COMMANDED_TORQUE_LIMIT_BYTE_7 = 	0b00001000;
-	static constexpr uint8_t MAX_TORQUE_ALLOWED = 				210;
+	static constexpr uint8_t COMMANDED_TORQUE_LIMIT_BYTE_6 = 		0b00110100;
+	static constexpr uint8_t COMMANDED_TORQUE_LIMIT_BYTE_7 = 		0b00001000;
+	static constexpr uint8_t MAX_TORQUE_ALLOWED = 					210;
 
-	static constexpr uint32_t CAN_ID_TEMP_1 = 					0x0A0;
-	static constexpr uint32_t CAN_ID_TEMP_2 = 					0x0A1;
-	static constexpr uint32_t CAN_ID_TEMP_3 = 					0x0A2;
-	static constexpr size_t TEMP_1_START = 						static_cast<size_t>(Temperatures::ModuleA);
-	static constexpr size_t TEMP_2_START = 						static_cast<size_t>(Temperatures::ControlBoard);
-	static constexpr size_t TEMP_3_START = 						static_cast<size_t>(Temperatures::Coolant);
+	static constexpr uint32_t CAN_ID_TEMP_1 = 						0x0A0;
+	static constexpr uint32_t CAN_ID_TEMP_2 = 						0x0A1;
+	static constexpr uint32_t CAN_ID_TEMP_3 = 						0x0A2;
+	static constexpr size_t TEMP_1_START = 							static_cast<size_t>(TemperatureSensors::ModuleA);
+	static constexpr size_t TEMP_2_START = 							static_cast<size_t>(TemperatureSensors::ControlBoard);
+	static constexpr size_t TEMP_3_START = 							static_cast<size_t>(TemperatureSensors::Coolant);
 
-	static constexpr uint32_t CAN_ID_MOTOR_POSITION = 			0x0A5;
-	static constexpr size_t MOTOR_POSITION_START = 				static_cast<size_t>(MotorPosition::MotorAngle);
+	static constexpr uint32_t CAN_ID_MOTOR_POSITION = 				0x0A5;
+	static constexpr size_t MOTOR_POSITION_START = 					static_cast<size_t>(MotorPosition::MotorAngle);
 
-	static constexpr uint32_t CAN_ID_TORQUE_INFORMATION = 		0x0AC;
-	static constexpr uint32_t CAN_ID_TORQUE_CAPABILITY = 		0x0B1;
-	static constexpr size_t TORQUE_INFO_START = 				static_cast<size_t>(TorqueInformation::CommandedTorque);
-	static constexpr size_t TORQUE_CAP_START = 					static_cast<size_t>(TorqueInformation::TorqueCapability);
+	static constexpr uint32_t CAN_ID_TORQUE_INFORMATION = 			0x0AC;
+	static constexpr uint32_t CAN_ID_TORQUE_CAPABILITY = 			0x0B1;
+	static constexpr size_t TORQUE_INFO_START = 					static_cast<size_t>(TorqueInformation::CommandedTorque);
+	static constexpr size_t TORQUE_CAP_START = 						static_cast<size_t>(TorqueInformation::TorqueCapability);
 
-	static constexpr uint32_t CAN_ID_FAULT_CODES = 				0x0AB;
+	static constexpr uint32_t CAN_ID_FAULT_CODES = 					0x0AB;
 
-	static constexpr uint32_t CAN_ID_INTERNAL_STATES = 			0x0AA;
-	static constexpr uint8_t INVERTER_ENABLE_STATE_MASK = 		0x01;
-	static constexpr uint8_t INVERTER_ENABLE_LOCKOUT_MASK = 	0x80;
-	static constexpr uint8_t BMS_ACTIVE_MASK = 					0x02;
-	static constexpr uint8_t BMS_LIMITING_TORQUE_MASK = 		0x04;
+	static constexpr uint32_t CAN_ID_INTERNAL_STATES = 				0x0AA;
+	static constexpr uint8_t INVERTER_ENABLE_STATE_MASK = 			0x01;
+	static constexpr uint8_t INVERTER_ENABLE_LOCKOUT_MASK = 		0x80;
+	static constexpr uint8_t BMS_ACTIVE_MASK = 						0x02;
+	static constexpr uint8_t BMS_LIMITING_TORQUE_MASK = 			0x04;
 
-	static constexpr size_t ONE_DATA = 							1;
-	static constexpr size_t TWO_DATA = 							2;
-	static constexpr size_t FOUR_DATA = 						4;
-	static constexpr uint8_t MOTOR_POSITION_SCALES[FOUR_DATA] = {COMMON_SCALE, NO_SCALE, COMMON_SCALE, COMMON_SCALE};
+	static constexpr size_t ONE_DATA = 								1;
+	static constexpr size_t TWO_DATA = 								2;
+	static constexpr size_t FOUR_DATA = 							4;
+	static constexpr uint8_t MOTOR_POSITION_SCALES[FOUR_DATA] = 	{COMMON_SCALE, NO_SCALE, COMMON_SCALE, COMMON_SCALE};
 
 	template <size_t dataLength>
 	void processStandardMessage(const CAN::Message &message, size_t numData, float (&data)[dataLength], size_t dataStart, uint8_t scale);
