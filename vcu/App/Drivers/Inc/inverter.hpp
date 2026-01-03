@@ -66,7 +66,7 @@ public:
 	 * @param torque request
 	 * @param inverter enabled or disabled
 	 */
-	void sendCommandMessage(uint16_t torqueRequest, bool inverterEnable);
+	void sendCommandMessage(uint16_t torqueRequestNm, bool inverterEnable);
 
 	/*
 	 * @brief Process Temperature 1 message
@@ -118,7 +118,7 @@ public:
 	void processFaultFlagsMessage(const CAN::Message &message);
 
 	/*
-	 * @brief Returns if a specific POST fault has occured
+	 * @brief Returns if a specific POST (at power up) fault has occured
 	 *
 	 * @param Specific POST fault
 	 */
