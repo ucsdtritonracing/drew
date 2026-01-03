@@ -137,6 +137,40 @@ public:
 	 */
 	void processInternalStatesMessage(const CAN::Message &message);
 
+	/*
+	 * @brief Get specified Temperature reading
+	 *
+	 * @param Desired Temperature reading
+	 */
+	float getTemperature(TemperatureSensors sensor);
+
+	/*
+	 * @brief Get current motor speed
+	 */
+	float getMotorSpeed();
+
+	/*
+	 * @brief Get current commanded torque
+	 */
+	float getCommandedTorque();
+
+	/*
+	 * @brief Get estimated motor torque based on motor parameters and feedbacks
+	 */
+	float getTorqueFeedback();
+
+	/*
+	 * @brief Get the inverter’s available torque
+	 */
+	float getTorqueCapability();
+
+	/*
+	 * @brief Get specified internal state
+	 *
+	 * @param Desired internal state
+	 */
+	bool getInternalStates(InternalStates internalState);
+
 private:
 
 	uint8_t txData[drivers::CAN::MAX_CLASSICAL_CAN_DATA_LENGTH] = 	{};

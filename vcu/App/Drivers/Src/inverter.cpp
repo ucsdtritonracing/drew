@@ -102,4 +102,28 @@ namespace drivers::inverter {
 		state.internalStates[3] = message.data[7] & BMS_LIMITING_TORQUE_MASK;
 	}
 
+	float Inverter::getTemperature(TemperatureSensors sensor) {
+		return state.temperatures[static_cast<size_t>(sensor)];
+	}
+
+	float Inverter::getMotorSpeed() {
+		return state.motorPosition[static_cast<size_t>(MotorPosition::MotorSpeed)];
+	}
+
+	float Inverter::getCommandedTorque() {
+		return state.torqueInformation[static_cast<size_t>(TorqueInformation::CommandedTorque)];
+	}
+
+	float Inverter::getTorqueFeedback() {
+		return state.torqueInformation[static_cast<size_t>(TorqueInformation::TorqueFeedback)];
+	}
+
+	float Inverter::getTorqueCapability() {
+		return state.torqueInformation[static_cast<size_t>(TorqueInformation::TorqueCapability)];
+	}
+
+	bool Inverter::getInternalStates(InternalStates internalState) {
+		return state.internalStates[static_cast<size_t>(internalState)];
+	}
+
 } // namespace drivers::inverter
