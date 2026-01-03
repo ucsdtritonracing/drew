@@ -11,7 +11,7 @@ namespace drivers::inverter {
 		bindHandler<&Inverter::processMotorPositionMessage>(CAN_ID_MOTOR_POSITION);
 		bindHandler<&Inverter::processTorqueInformationMessage>(CAN_ID_TORQUE_INFORMATION);
 		bindHandler<&Inverter::processTorqueCapabilityMessage>(CAN_ID_TORQUE_CAPABILITY);
-		bindHandler<&Inverter::processfaultFlagsMessage>(CAN_ID_FAULT_CODES);
+		bindHandler<&Inverter::processFaultFlagsMessage>(CAN_ID_FAULT_CODES);
 		bindHandler<&Inverter::processInternalStatesMessage>(CAN_ID_INTERNAL_STATES);
 	}
 
@@ -75,7 +75,7 @@ namespace drivers::inverter {
 		processStandardMessage(message, ONE_DATA, state.torqueInformation, TORQUE_CAP_START, COMMON_SCALE);
 	}
 
-	void Inverter::processfaultFlagsMessage(const CAN::Message &message) {
+	void Inverter::processFaultFlagsMessage(const CAN::Message &message) {
 		//processStandardMessage(message, FOUR_DATA, state.faultFlags, FAULT_START, NO_SCALE);
 		if (message.numBytes != FDCAN_DLC_BYTES_8) {
 			return; // incorrect number of bytes received, bad message

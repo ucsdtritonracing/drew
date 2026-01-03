@@ -115,7 +115,7 @@ public:
 	 *
 	 * @param CAN message
 	 */
-	void processfaultFlagsMessage(const CAN::Message &message);
+	void processFaultFlagsMessage(const CAN::Message &message);
 
 	/*
 	 * @brief Returns if a specific POST fault has occured
