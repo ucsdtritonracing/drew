@@ -76,7 +76,6 @@ namespace drivers::inverter {
 	}
 
 	void Inverter::processFaultFlagsMessage(const CAN::Message &message) {
-		//processStandardMessage(message, FOUR_DATA, state.faultFlags, FAULT_START, NO_SCALE);
 		if (message.numBytes != FDCAN_DLC_BYTES_8) {
 			return; // incorrect number of bytes received, bad message
 		}
