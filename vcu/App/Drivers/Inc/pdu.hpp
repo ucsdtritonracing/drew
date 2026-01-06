@@ -12,11 +12,12 @@ struct State {
 	uint8_t requestedCurrentLimit[drivers::CAN::MAX_CLASSICAL_CAN_DATA_LENGTH] = {};
 	uint8_t requestedPWMDutyPercent[drivers::CAN::MAX_CLASSICAL_CAN_DATA_LENGTH] = {};
 };
-
+enum CommandMode {
+	CurrentLimit, PWM
+};
 class PDU: public drivers::CAN::CANPeripheral<PDU, State> {
 public:
 	PDU(drivers::CAN::CANBus &canBus);
-
 	/*
 	 * @brief Set the current limit for a given channel.
 	 *
@@ -24,7 +25,6 @@ public:
 	 * @param amps Current in Amperes
 	 */
 	void setCurrentLimit(uint8_t channel, float amps);
-
 	/*
 	 * @brief Set the PWM duty cycle for a given channel.
 	 *
@@ -32,7 +32,12 @@ public:
 	 * @param dutyCyclePercent Duty cycle in percent (0-100)
 	 */
 	void setPWMDutyCycle(uint8_t channel, uint8_t dutyCyclePercent);
-
+	/*
+	 * @brief Send Current/PWM command to the PDU, based on current state
+	 *
+	 * @param mode, CurrentLimit or PWM
+	 */
+	void sendCommand(CommandMode mode);
 	/*
 	 * @brief Process an incoming message with message ID of TxMessage1
 	 *
@@ -48,7 +53,7 @@ public:
 	/*
 	 * @brief Shut off all output from PDU
 	 *
-	 * @param message
+	 *
 	 */
 	void stopAllChannels();
 
