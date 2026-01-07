@@ -22,7 +22,7 @@ namespace drivers::inverter {
 		txData[1] = (scaledTorque >> 8) & 0xFF;
 		txData[2] = SPEED_COMMAND_BYTE_2;
 		txData[3] = SPEED_COMMAND_BYTE_3;
-		txData[4] = DIRECTION_COMMAND;
+		txData[4] = DIRECTION_FORWARD;
 		txData[5] = inverterEnable | (INVERTER_DISCHARGE << 1) | (SPEED_MODE_ENABLE << 2);
 		txData[6] = COMMANDED_TORQUE_LIMIT_BYTE_6;
 		txData[7] = COMMANDED_TORQUE_LIMIT_BYTE_7;
@@ -122,7 +122,7 @@ namespace drivers::inverter {
 		return state.torqueInformation[static_cast<size_t>(TorqueInformation::TorqueCapability)];
 	}
 
-	bool Inverter::getInternalStates(InternalStates internalState) {
+	bool Inverter::getInternalState(InternalStates internalState) {
 		return state.internalStates[static_cast<size_t>(internalState)];
 	}
 

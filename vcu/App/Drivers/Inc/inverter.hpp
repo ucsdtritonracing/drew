@@ -169,7 +169,7 @@ public:
 	 *
 	 * @param Desired internal state
 	 */
-	bool getInternalStates(InternalStates internalState);
+	bool getInternalState(InternalStates internalState);
 
 private:
 
@@ -179,7 +179,7 @@ private:
 	static constexpr uint8_t NO_SCALE = 							1; // angular velocity, internal
 
 	static constexpr uint32_t COMMAND_MESSAGE_ID = 					0x0C0;
-	static constexpr uint8_t DIRECTION_COMMAND = 					1; // Forward
+	static constexpr uint8_t DIRECTION_FORWARD = 					1; // Forward
 	static constexpr uint8_t INVERTER_DISCHARGE = 					0; // Discharge disabled
 	static constexpr uint8_t SPEED_MODE_ENABLE = 					0; // Do not override Torque Mode
 	// Set motor to max speed of 4100 RPM
