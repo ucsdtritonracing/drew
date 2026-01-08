@@ -8,7 +8,7 @@ namespace vehicle {
 
 drivers::can::CANBus CANBus1{};
 drivers::can::CANBus CANBus2{};
-drivers::pdu::PDU pdu{};
-drivers::sas::SteeringAngleSensor sas{};
+drivers::pdu::PDU pdu(CANBus1);
+drivers::sas::SteeringAngleSensor sas(CANBus1);
 
 } // namespace vehicle
