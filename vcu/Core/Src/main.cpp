@@ -29,6 +29,7 @@
 
 // Tasks
 #include "task_can_bus.hpp"
+#include "task_tssi_lights.hpp"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -178,6 +179,8 @@ int main(void)
   static tasks::CANBusTask CANBus2Task(vehicle::CANBus2, CANBus2RxQueueHandle);
   CANBus2Task.start("CAN Bus 2 Task");
 
+  static tasks::TSSILightsTask TSSILights(vehicle::CANBus1);
+  TSSILights.start("Lights");
 
   /* USER CODE END RTOS_THREADS */
 
