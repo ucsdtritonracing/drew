@@ -135,7 +135,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   vehicle::CANBus1.init(&hfdcan1);
-  vehicle::CANBus1.init(&hfdcan2);
+  vehicle::CANBus2.init(&hfdcan2);
 
   vehicle::pdu.init();
   vehicle::sas.init();
