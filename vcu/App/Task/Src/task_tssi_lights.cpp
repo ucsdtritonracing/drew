@@ -16,9 +16,13 @@ void TSSILightsTask::loop() {
 	if (faultStateBMS || faultStateIMD) {
 		vehicle::pdu.setCurrentLimit(1, 0); // green light off
 		vehicle::pdu.setCurrentLimit(2, 1); // red flash on (hardware implemented)
+		faultStateBMS ? HAL_GPIO_WritePin(GPIOC, 8, GPIO_PIN_SET) : HAL_GPIO_WritePin(GPIOC, 8, GPIO_PIN_RESET); // one of these will be on
+		faultStateIMD ? HAL_GPIO_WritePin(GPIOC, 6, GPIO_PIN_SET) : HAL_GPIO_WritePin(GPIOC, 6, GPIO_PIN_RESET);
 	} else {
 		vehicle::pdu.setCurrentLimit(1, 1); // green light on
 		vehicle::pdu.setCurrentLimit(2, 0); // red flash off
+		HAL_GPIO_WritePin(GPIOC, 8, GPIO_PIN_RESET); // indicator lights off
+		HAL_GPIO_WritePin(GPIOC, 6, GPIO_PIN_RESET);
 	}
 
 	osDelay(250);
