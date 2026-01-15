@@ -10,8 +10,6 @@ VehicleState::VehicleState() {
 
 	steeringAngleDegrees 		= 0;
 
-	bmsFault 					= false;
-	imdFault 					= false;
 	readyToDriveButtonPressed 	= false;
 	shutdownCircuitClosed 		= false;
 
