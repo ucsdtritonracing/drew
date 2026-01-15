@@ -6,22 +6,19 @@
 
 namespace tasks {
 
-TSSILightsTask::TSSILightsTask(const drivers::can::CANBus& CANBus)
-		: CANBus(CANBus) {}
+TSSILightsTask::TSSILightsTask() {}
 
 void TSSILightsTask::loop() {
-	faultStateBMS = HAL_GPIO_ReadPin(BMS_Fault_GPIO_Port, BMS_Fault_Pin) == GPIO_PIN_SET;
-	faultStateIMD = HAL_GPIO_ReadPin(IMD_Fault_GPIO_Port, IMD_Fault_Pin) == GPIO_PIN_RESET;
-	if(faultStateBMS || faultStateIMD){
-		vehicle::pdu.setCurrentLimit(1,0); // green light off
-		vehicle::pdu.setCurrentLimit(2, flash ? 0 : 1); // alternate on/off
-		flash = !flash;
-		printf("FAULT\n");
-	}
-	else {
-		vehicle::pdu.setCurrentLimit(1,1); //ok? green light on
-		vehicle::pdu.setCurrentLimit(2,0); // red light off
-		printf("OK\n");
+	faultStateBMS = HAL_GPIO_ReadPin(BMS_Fault_GPIO_Port, BMS_Fault_Pin)
+			== GPIO_PIN_RESET;
+	faultStateIMD = HAL_GPIO_ReadPin(IMD_Fault_GPIO_Port, IMD_Fault_Pin)
+			== GPIO_PIN_RESET;
+	if (faultStateBMS || faultStateIMD) {
+		vehicle::pdu.setCurrentLimit(1, 0); // green light off
+		vehicle::pdu.setCurrentLimit(2, 1); // red flash on (hardware implemented)
+	} else {
+		vehicle::pdu.setCurrentLimit(1, 1); // green light on
+		vehicle::pdu.setCurrentLimit(2, 0); // red flash off
 	}
 
 	osDelay(250);
