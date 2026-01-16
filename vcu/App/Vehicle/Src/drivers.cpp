@@ -2,6 +2,7 @@
 #include "can_bus.hpp"
 #include "pdu.hpp"
 #include "steering_angle_sensor.hpp"
+#include "inverter.hpp"
 
 
 namespace vehicle {
