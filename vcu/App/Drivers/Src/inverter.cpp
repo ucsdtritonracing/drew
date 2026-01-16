@@ -79,8 +79,15 @@ namespace drivers::inverter {
 		if (message.numBytes != FDCAN_DLC_BYTES_8) {
 			return; // incorrect number of bytes received, bad message
 		}
-		state.faultFlags[static_cast<size_t>(FaultFlags::PostFault)] = (message.data[3] << 24) | (message.data[2] << 16) | (message.data[1] << 8) | message.data[0];
-		state.faultFlags[static_cast<size_t>(FaultFlags::RunFault)] = (message.data[7] << 24) | (message.data[6] << 16) | (message.data[5] << 8) | message.data[4];
+		state.faultFlags[static_cast<size_t>(FaultFlags::PostFault)] = 	(static_cast<uint32_t>(message.data[3] << 24)) |
+																		(static_cast<uint32_t>(message.data[2] << 16)) |
+																		(static_cast<uint32_t>(message.data[1] << 8))  |
+																		(static_cast<uint32_t>(message.data[0]));
+
+		state.faultFlags[static_cast<size_t>(FaultFlags::RunFault)] = 	(static_cast<uint32_t>(message.data[7] << 24)) |
+																		(static_cast<uint32_t>(message.data[6] << 16)) |
+																		(static_cast<uint32_t>(message.data[5] << 8))  |
+																		(static_cast<uint32_t>(message.data[4]));
 	}
 
 	bool Inverter::checkFault(PostFault fault) {
