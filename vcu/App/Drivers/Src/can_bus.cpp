@@ -23,9 +23,7 @@ void CANBus::transmit(uint32_t id, const uint8_t *data, uint32_t dlc) const {
 	txHeader.FDFormat				= FDCAN_CLASSIC_CAN;
 	txHeader.TxEventFifoControl		= FDCAN_NO_TX_EVENTS;
 	txHeader.MessageMarker			= 0;
-	if (HAL_FDCAN_AddMessageToTxFifoQ(fdcan, &txHeader, data) != HAL_OK) {
-		Error_Handler();
-	}
+	HAL_FDCAN_AddMessageToTxFifoQ(fdcan, &txHeader, data);
 }
 
 void CANBus::addMessageHandler(void *instance, uint32_t id, CANHandler callback) {
