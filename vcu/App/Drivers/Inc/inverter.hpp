@@ -54,10 +54,16 @@ struct State {
 	bool internalStates[static_cast<size_t>(InternalStates::Count)];
 };
 
-class Inverter: public drivers::CAN::CANPeripheral<Inverter, State> {
+class Inverter: public drivers::can::CANPeripheral<Inverter, State> {
 public:
 
-	Inverter(drivers::CAN::CANBus &canBus);
+	Inverter(drivers::can::CANBus &canBus);
+
+	/*
+	 * @brief Initialize the inverter driver.
+	 */
+
+	void init();
 
 	/*
 	 * @brief Send torque request to motor.
@@ -72,49 +78,49 @@ public:
 	 *
 	 * @param CAN message
 	 */
-	void processTemperature1Message(const CAN::Message &message);
+	void processTemperature1Message(const can::Message &message);
 
 	/*
 	 * @brief Process Temperature 2 message
 	 *
 	 * @param CAN message
 	 */
-	void processTemperature2Message(const CAN::Message &message);
+	void processTemperature2Message(const can::Message &message);
 
 	/*
 	 * @brief Process Temperature 3 message
 	 *
 	 * @param CAN message
 	 */
-	void processTemperature3Message(const CAN::Message &message);
+	void processTemperature3Message(const can::Message &message);
 
 	/*
 	 * @brief Process Motor Position message
 	 *
 	 * @param CAN message
 	 */
-	void processMotorPositionMessage(const CAN::Message &message);
+	void processMotorPositionMessage(const can::Message &message);
 
 	/*
 	 * @brief Process Torque Information message
 	 *
 	 * @param CAN message
 	 */
-	void processTorqueInformationMessage(const CAN::Message &message);
+	void processTorqueInformationMessage(const can::Message &message);
 
 	/*
 	 * @brief Process Torque Capability message
 	 *
 	 * @param CAN message
 	 */
-	void processTorqueCapabilityMessage(const CAN::Message &message);
+	void processTorqueCapabilityMessage(const can::Message &message);
 
 	/*
 	 * @brief Process Fault Codes message
 	 *
 	 * @param CAN message
 	 */
-	void processFaultFlagsMessage(const CAN::Message &message);
+	void processFaultFlagsMessage(const can::Message &message);
 
 	/*
 	 * @brief Returns if a specific POST (at power up) fault has occured
@@ -135,7 +141,7 @@ public:
 	 *
 	 * @param CAN message
 	 */
-	void processInternalStatesMessage(const CAN::Message &message);
+	void processInternalStatesMessage(const can::Message &message);
 
 	/*
 	 * @brief Get specified Temperature reading
@@ -173,7 +179,7 @@ public:
 
 private:
 
-	uint8_t txData[drivers::CAN::MAX_CLASSICAL_CAN_DATA_LENGTH] = 	{};
+	uint8_t txData[drivers::can::MAX_CLASSICAL_CAN_DATA_LENGTH] = 	{};
 
 	static constexpr uint8_t COMMON_SCALE = 						10; // temperature, torque, angle, frequency
 	static constexpr uint8_t NO_SCALE = 							1; // angular velocity, internal
@@ -219,10 +225,10 @@ private:
 	static constexpr uint8_t MOTOR_POSITION_SCALES[FOUR_DATA] = 	{COMMON_SCALE, NO_SCALE, COMMON_SCALE, COMMON_SCALE};
 
 	template <size_t dataLength>
-	void processStandardMessage(const CAN::Message &message, size_t numData, float (&data)[dataLength], size_t dataStart, uint8_t scale);
+	void processStandardMessage(const can::Message &message, size_t numData, float (&data)[dataLength], size_t dataStart, uint8_t scale);
 
 	template <size_t dataLength, size_t scalerLength>
-	void processStandardMessage(const CAN::Message &message, size_t numData, float (&data)[dataLength], size_t dataStart, const uint8_t (&scale)[scalerLength]);
+	void processStandardMessage(const can::Message &message, size_t numData, float (&data)[dataLength], size_t dataStart, const uint8_t (&scale)[scalerLength]);
 
 };
 

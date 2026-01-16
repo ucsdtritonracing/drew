@@ -137,6 +137,7 @@ int main(void)
   vehicle::CANBus1.init(&hfdcan1);
   vehicle::CANBus2.init(&hfdcan2);
 
+  vehicle::inverter.init();
   vehicle::pdu.init();
   vehicle::sas.init();
 
