@@ -10,7 +10,7 @@ namespace tasks {
 void ControlLoopTask::loop() {
 	if (vehicle::vehicleState.readyToDrive) {
 		float torque; /* = computeDriverTorqueRequest(
-				vehicle::vehicleState.acceleratorPedalPositions,
+				vehicle::vehicleState.getAcceleratorPedalPositions(),
 				vehicle::inverter.getMotorRPM());
 				*/
 
