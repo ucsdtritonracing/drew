@@ -3,7 +3,7 @@
 #include "can_peripheral.hpp"
 #include "stm32g4xx_hal.h"
 
-namespace drivers::SAS {
+namespace drivers::sas {
 
 struct State {
 	uint16_t steeringAngle;
@@ -16,13 +16,31 @@ struct State {
 	} mode;
 };
 
-class SteeringAngleSensor : public drivers::CAN::CANPeripheral<SteeringAngleSensor, State> {
+class SteeringAngleSensor : public drivers::can::CANPeripheral<SteeringAngleSensor, State> {
 public:
-    SteeringAngleSensor(drivers::CAN::CANBus& canBus);
+    SteeringAngleSensor(drivers::can::CANBus& canBus);
 
+    /*
+     * @brief Initialize the SAS driver.
+     */
+    void init();
+
+    /*
+     * @brief Reset the SAS angle reading to 0.
+     */
     void resetAngle();
+
+    /*
+     * @brief Reset the SAS calibration status.
+     */
     void resetCalibration();
-    void processCANMessage(const CAN::Message& message);
+
+    /*
+     * @brief Process an incoming CAN Message with ID of CAN_ID_STATUS
+     *
+     * @param message
+     */
+    void processCANMessage(const can::Message& message);
 
 private:
     constexpr State::Mode parseMode(const uint8_t& modeByte);
@@ -44,4 +62,4 @@ private:
     uint8_t txData[2];
 };
 
-} // namespace drivers::SAS
+} // namespace drivers::sas

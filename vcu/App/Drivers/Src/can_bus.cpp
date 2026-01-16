@@ -2,7 +2,15 @@
 #include "can_peripheral.hpp"
 #include "main.h"
 
-namespace drivers::CAN {
+namespace drivers::can {
+
+CANBus::CANBus() {
+	fdcan = nullptr;
+}
+
+void CANBus::init(FDCAN_HandleTypeDef *fdcan) {
+	this->fdcan = fdcan;
+}
 
 void CANBus::transmit(uint32_t id, const uint8_t *data, uint32_t dlc) const {
 	FDCAN_TxHeaderTypeDef txHeader;
@@ -44,4 +52,4 @@ void CANBus::processMessage(Message *message) const {
 	}
 }
 
-} // namespace drivers::CAN
+} // namespace drivers::can

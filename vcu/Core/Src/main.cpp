@@ -17,11 +17,13 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+#include "vehicle_state.hpp"
 #include "main.h"
 #include "cmsis_os.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "drivers.hpp"
 #include "task.hpp"
 #include "can_bus.hpp"
 
@@ -131,8 +133,13 @@ int main(void)
   MX_TIM15_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
-  static drivers::CAN::CANBus CANBus1(&hfdcan1);
-  static drivers::CAN::CANBus CANBus2(&hfdcan2);
+
+  vehicle::CANBus1.init(&hfdcan1);
+  vehicle::CANBus2.init(&hfdcan2);
+
+  vehicle::pdu.init();
+  vehicle::sas.init();
+
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -152,10 +159,10 @@ int main(void)
 
   /* Create the queue(s) */
   /* creation of CANBus1RxQueue */
-  CANBus1RxQueueHandle = osMessageQueueNew (8, sizeof(drivers::CAN::Message), &CANBus1RxQueue_attributes);
+  CANBus1RxQueueHandle = osMessageQueueNew (8, sizeof(drivers::can::Message), &CANBus1RxQueue_attributes);
 
   /* creation of CANBus2RxQueue */
-  CANBus2RxQueueHandle = osMessageQueueNew (8, sizeof(drivers::CAN::Message), &CANBus2RxQueue_attributes);
+  CANBus2RxQueueHandle = osMessageQueueNew (8, sizeof(drivers::can::Message), &CANBus2RxQueue_attributes);
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
@@ -165,10 +172,10 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
-  static tasks::CANBusTask CANBus1Task(CANBus1, CANBus1RxQueueHandle);
+  static tasks::CANBusTask CANBus1Task(vehicle::CANBus1, CANBus1RxQueueHandle);
   CANBus1Task.start("CAN Bus 1 Task");
 
-  static tasks::CANBusTask CANBus2Task(CANBus2, CANBus2RxQueueHandle);
+  static tasks::CANBusTask CANBus2Task(vehicle::CANBus2, CANBus2RxQueueHandle);
   CANBus2Task.start("CAN Bus 2 Task");
 
 
@@ -769,7 +776,7 @@ static void MX_GPIO_Init(void)
 void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs) {
 	if ((RxFifo0ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) != RESET) {
 		// Get new message
-		static drivers::CAN::Message message;
+		static drivers::can::Message message;
 	    if (HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &message.rxHeader, message.data) != HAL_OK) {
 	    	Error_Handler();
 	    }
