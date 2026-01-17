@@ -151,9 +151,9 @@ public:
 	float getTemperature(TemperatureSensors sensor);
 
 	/*
-	 * @brief Get current motor speed
+	 * @brief Get current motor speed in RPM
 	 */
-	float getMotorSpeed();
+	float getMotorRPM();
 
 	/*
 	 * @brief Get current commanded torque
