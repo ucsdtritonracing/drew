@@ -115,7 +115,7 @@ namespace drivers::inverter {
 		return state.temperatures[static_cast<size_t>(sensor)];
 	}
 
-	float Inverter::getMotorSpeed() {
+	float Inverter::getMotorRPM() {
 		return state.motorPosition[static_cast<size_t>(MotorPosition::MotorSpeed)];
 	}
 
