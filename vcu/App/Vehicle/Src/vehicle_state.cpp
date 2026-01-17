@@ -60,12 +60,12 @@ void VehicleState::setWheelSpeedRR(float wheelSpeed) {
 	wheelSpeeds.rearRight = std::isfinite(wheelSpeed) ? wheelSpeed : 0;
 }
 
-void VehicleState::setAcceleratorPedalPositions(uint16_t app1, uint16_t app2) {
+void VehicleState::setAcceleratorPedalPositions(float app1, float app2) {
 	acceleratorPedalPositions.app1 = app1;
 	acceleratorPedalPositions.app2 = app2;
 }
 
-void VehicleState::setBrakePressures(uint16_t front, uint16_t rear) {
+void VehicleState::setBrakePressures(float front, float rear) {
 	brakePressures.front = front;
 	brakePressures.rear = rear;
 }
