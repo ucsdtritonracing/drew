@@ -16,13 +16,13 @@ public:
 	};
 
 	struct AcceleratorPedalPositions {
-		uint16_t app1;
-		uint16_t app2;
+		float app1;
+		float app2;
 	};
 
 	struct BrakePressures {
-		uint16_t front;
-		uint16_t rear;
+		float front;
+		float rear;
 	};
 
 	VehicleState();
@@ -38,8 +38,8 @@ public:
     void setWheelSpeedFR(float wheelSpeed);
     void setWheelSpeedRL(float wheelSpeed);
     void setWheelSpeedRR(float wheelSpeed);
-    void setAcceleratorPedalPositions(uint16_t app1, uint16_t app2);
-    void setBrakePressures(uint16_t front, uint16_t rear);
+    void setAcceleratorPedalPositions(float app1, float app2);
+    void setBrakePressures(float front, float rear);
 	void setSteeringAngleDegrees(float degrees);
 	void setReadyToDriveButtonPressed(bool status);
 	void setShutdownCircuitClosed(bool status);
