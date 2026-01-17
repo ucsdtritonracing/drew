@@ -1,10 +1,8 @@
 #pragma once
-#include "can_utils.hpp"
-#pragma once
 #include "can_bus.hpp"
 #include <utility>
 
-namespace drivers::CAN {
+namespace drivers::can {
 
 /*
  * CAN peripheral template class.
@@ -49,9 +47,9 @@ protected:
 
 	template<void (Derived::*Method)(const Message&)>
 	void bindHandler(uint32_t id) {
-		if (id <= 0 || id >= MAX_CAN_STD_ID) return;
+		if (id <= 0 || id >= MAX_CAN_EXTD_ID) return;
 
-	    canBus.addMessageHandler(id, this,
+	    canBus.addMessageHandler(this, id,
 	        [](void *instance, const Message& message) {
 	    		Derived* d = static_cast<Derived*>(instance);
 	            (d->*Method)(message);
@@ -65,4 +63,4 @@ protected:
 	}
 };
 
-} // namespace drivers::CAN
+} // namespace drivers::can

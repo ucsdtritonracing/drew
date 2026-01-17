@@ -3,7 +3,7 @@
 #include "cmsis_os.h"
 #include <cstring>
 
-namespace drivers::IMU {
+namespace drivers::imu {
 
 IMU::IMU() {
 	// TODO: Potentially add constructor arguments (change imu.hpp to match)
@@ -40,4 +40,4 @@ void IMU::updateState(Message m) {
 	}
 }
 
-}
+} // namespace imu

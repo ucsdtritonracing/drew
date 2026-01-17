@@ -1,7 +1,7 @@
 #pragma once
 #include "cmsis_os.h"
 
-namespace drivers::IMU {
+namespace drivers::imu {
 
 constexpr size_t NUM_AXES =    3;
 constexpr size_t PACKET_SIZE = 19;
@@ -50,4 +50,4 @@ private:
 	static constexpr uint8_t CSUM_LOC = 		18;
 };
 
-}
+} // namespace imu

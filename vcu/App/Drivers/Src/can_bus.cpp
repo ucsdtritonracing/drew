@@ -2,10 +2,15 @@
 #include "can_peripheral.hpp"
 #include "main.h"
 
-namespace drivers::CAN {
+namespace drivers::can {
 
-CANBus::CANBus(FDCAN_HandleTypeDef *fdcan, osMessageQueueId_t rxQueue)
-		: fdcan(fdcan), rxQueue(rxQueue) {}
+CANBus::CANBus() {
+	fdcan = nullptr;
+}
+
+void CANBus::init(FDCAN_HandleTypeDef *fdcan) {
+	this->fdcan = fdcan;
+}
 
 void CANBus::transmit(uint32_t id, const uint8_t *data, uint32_t dlc) const {
 	FDCAN_TxHeaderTypeDef txHeader;
@@ -18,12 +23,10 @@ void CANBus::transmit(uint32_t id, const uint8_t *data, uint32_t dlc) const {
 	txHeader.FDFormat				= FDCAN_CLASSIC_CAN;
 	txHeader.TxEventFifoControl		= FDCAN_NO_TX_EVENTS;
 	txHeader.MessageMarker			= 0;
-	if (HAL_FDCAN_AddMessageToTxFifoQ(fdcan, &txHeader, data) != HAL_OK) {
-		Error_Handler();
-	}
+	HAL_FDCAN_AddMessageToTxFifoQ(fdcan, &txHeader, data);
 }
 
-void CANBus::addMessageHandler(uint32_t id, void *instance, CANHandler callback) {
+void CANBus::addMessageHandler(void *instance, uint32_t id, CANHandler callback) {
 	if (numHandlers >= MAX_HANDLERS) {
 		return;
 	}
@@ -35,7 +38,16 @@ void CANBus::addMessageHandler(uint32_t id, void *instance, CANHandler callback)
 			return;
 		}
 	}
-	handlers[numHandlers++] = {id, instance, callback};
+	handlers[numHandlers++] = {instance, id, callback};
 }
 
-} // namespace drivers::CAN
+void CANBus::processMessage(Message *message) const {
+	for (size_t i = 0; i < numHandlers; i++) {
+		HandlerEntry handler = handlers[i];
+		if (handler.id == message->rxHeader.Identifier) {
+			handler.callback(handler.instance, *message);
+		}
+	}
+}
+
+} // namespace drivers::can
