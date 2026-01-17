@@ -2,22 +2,30 @@
 #include "can_bus.hpp"
 #include "can_peripheral.hpp"
 
-namespace drivers::PDU {
+namespace drivers::pdu {
 constexpr size_t NUM_CHANNELS = 8;
 struct State {
 	uint16_t measuredCurrent[NUM_CHANNELS];
 	enum ErrorStatus {
 		OK, OPEN_CIRCUIT, CURRENT_LIMIT_EXCEEDED, SHORT_CIRCUIT, UNKNOWN
 	} errorStatuses[NUM_CHANNELS];
-	uint8_t requestedCurrentLimit[drivers::CAN::MAX_CLASSICAL_CAN_DATA_LENGTH] = {};
-	uint8_t requestedPWMDutyPercent[drivers::CAN::MAX_CLASSICAL_CAN_DATA_LENGTH] = {};
+	uint8_t requestedCurrentLimit[drivers::can::MAX_CLASSICAL_CAN_DATA_LENGTH] = {};
+	uint8_t requestedPWMDutyPercent[drivers::can::MAX_CLASSICAL_CAN_DATA_LENGTH] = {};
 };
+
 enum CommandMode {
 	CurrentLimit, PWM
 };
-class PDU: public drivers::CAN::CANPeripheral<PDU, State> {
+
+class PDU: public drivers::can::CANPeripheral<PDU, State> {
 public:
-	PDU(drivers::CAN::CANBus &canBus);
+	PDU(drivers::can::CANBus &canBus);
+
+	/*
+	 * @brief Initialize the PDU driver.
+	 */
+	void init();
+
 	/*
 	 * @brief Set the current limit for a given channel.
 	 *
@@ -43,13 +51,13 @@ public:
 	 *
 	 * @param message
 	 */
-	void processMessage1(const CAN::Message &message);
+	void processMessage1(const can::Message &message);
 	/*
 	 * @brief Process an incoming message with message ID of TxMessage2
 	 *
 	 * @param message
 	 */
-	void processMessage2(const CAN::Message &message);
+	void processMessage2(const can::Message &message);
 	/*
 	 * @brief Shut off all output from PDU
 	 *
@@ -59,9 +67,9 @@ public:
 
 private:
 	// the helper function to make code shorter
-	void processMessage(int channelStart, const CAN::Message &message);
+	void processMessage(int channelStart, const can::Message &message);
 
-	uint8_t txData[drivers::CAN::MAX_CLASSICAL_CAN_DATA_LENGTH] = {};
+	uint8_t txData[drivers::can::MAX_CLASSICAL_CAN_DATA_LENGTH] = {};
 	static constexpr uint8_t CHANNEL_MASK = 0b01100110;
 
 	static constexpr uint8_t LOW_CURRENT_LIMIT = 		10;
@@ -78,4 +86,4 @@ private:
 	static constexpr int RX_2_CHANNEL_BEGIN = 			4;
 };
 
-} // namespace drivers::PDU
+} // namespace drivers::pdu

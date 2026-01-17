@@ -6,11 +6,11 @@ namespace tasks {
 
 class CANBusTask: public Task<CANBusTask, osPriorityHigh, 512> {
 public:
-	CANBusTask(const drivers::CAN::CANBus& CANBus, osMessageQueueId_t queue);
+	CANBusTask(const drivers::can::CANBus& CANBus, osMessageQueueId_t queue);
 	void loop();
 
 private:
-	const drivers::CAN::CANBus& CANBus;
+	const drivers::can::CANBus& CANBus;
 	osMessageQueueId_t queue;
 };
 

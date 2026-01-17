@@ -1,7 +1,7 @@
 #pragma once
 #include "stdint.h"
 
-namespace drivers::CAN {
+namespace drivers::can {
 
 /**
  * @brief Convert from FDCAN Data Length Code to data length in bytes
@@ -13,4 +13,4 @@ inline uint8_t numBytes(uint32_t dlc) {
     return dlcTable[dlc & 0x0F];
 }
 
-} // namespace drivers::CAN
+} // namespace drivers::can
