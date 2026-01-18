@@ -1,6 +1,7 @@
 #include "torque.hpp"
 #include "vehicle_state.hpp"
 #include <algorithm>
+#include <cmath>
 
 namespace torque {
 
@@ -10,8 +11,7 @@ uint16_t computeDriverTorqueRequest(vehicle::VehicleState::AcceleratorPedalPosit
 }
 
 bool isAPPSPlausible(vehicle::VehicleState::AcceleratorPedalPositions apps) {
-	// TODO: Compute whether APPS readings are plausible
-	return false;
+	return (apps.app1Valid && apps.app2Valid && ( std::abs(apps.app1 - apps.app2) <= 0.1 ) );
 }
 
 } // namespace torque

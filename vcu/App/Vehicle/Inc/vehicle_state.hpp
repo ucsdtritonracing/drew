@@ -17,12 +17,16 @@ public:
 
 	struct AcceleratorPedalPositions {
 		float app1;
+		bool app1Valid;
 		float app2;
+		bool app2Valid;
 	};
 
 	struct BrakePressures {
 		float front;
+		bool frontValid;
 		float rear;
+		bool rearValid;
 	};
 
 	VehicleState();

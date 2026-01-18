@@ -16,7 +16,7 @@ void ControlLoopTask::loop() {
 		if (torque::isAPPSPlausible(vehicle::vehicleState.getAcceleratorPedalPositions())) {
 			torqueScalar = torque::computeDriverTorqueRequest(
 					vehicle::vehicleState.getAcceleratorPedalPositions(),
-					vehicle::inverter.getMotorRPM()
+					vehicle::inverter.getTorqueCapability()
 			);
 		}
 
