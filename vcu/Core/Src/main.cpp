@@ -22,6 +22,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "vehicle_state.hpp"
+#include "vehicle_configuration.hpp"
 #include "drivers.hpp"
 #include "task.hpp"
 #include "can_bus.hpp"
@@ -143,6 +145,12 @@ int main(void)
   vehicle::inverter.init();
   vehicle::pdu.init();
   vehicle::sas.init();
+  vehicle::apps1.init(&hadc3,
+					  vehicle::vehicleConfiguration.APPS1_LOW_THRESHOLD_VOLTAGE,
+					  vehicle::vehicleConfiguration.APPS1_HIGH_THRESHOLD_VOLTAGE);
+  vehicle::apps2.init(&hadc2,
+		  	  	  	  vehicle::vehicleConfiguration.APPS2_LOW_THRESHOLD_VOLTAGE,
+					  vehicle::vehicleConfiguration.APPS2_HIGH_THRESHOLD_VOLTAGE);
 
   /* USER CODE END 2 */
 
@@ -796,6 +804,26 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
 		if (HAL_FDCAN_ActivateNotification(hfdcan, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0) != HAL_OK) {
 			Error_Handler();
 		}
+	}
+}
+
+void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc) {
+	if (hadc == vehicle::apps1.getHADC()) {
+		drivers::apps::State state = vehicle::apps1.processHalfBuffer();
+		vehicle::vehicleState.setAcceleratorPedalPosition1(state.app, state.valid);
+	} else if (hadc == vehicle::apps2.getHADC()) {
+		drivers::apps::State state = vehicle::apps2.processHalfBuffer();
+		vehicle::vehicleState.setAcceleratorPedalPosition2(state.app, state.valid);
+	}
+}
+
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc) {
+	if (hadc == vehicle::apps1.getHADC()) {
+		drivers::apps::State state = vehicle::apps1.processFullBuffer();
+		vehicle::vehicleState.setAcceleratorPedalPosition1(state.app, state.valid);
+	} else if (hadc == vehicle::apps2.getHADC()) {
+		drivers::apps::State state = vehicle::apps2.processFullBuffer();
+		vehicle::vehicleState.setAcceleratorPedalPosition2(state.app, state.valid);
 	}
 }
 /* USER CODE END 4 */
