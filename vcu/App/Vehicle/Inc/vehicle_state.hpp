@@ -18,11 +18,15 @@ public:
 	struct AcceleratorPedalPositions {
 		float app1;
 		float app2;
+		bool app1Valid;
+		bool app2Valid;
 	};
 
 	struct BrakePressures {
 		float front;
 		float rear;
+		bool frontValid;
+		bool rearValid;
 	};
 
 	VehicleState();
@@ -38,7 +42,8 @@ public:
     void setWheelSpeedFR(float wheelSpeed);
     void setWheelSpeedRL(float wheelSpeed);
     void setWheelSpeedRR(float wheelSpeed);
-    void setAcceleratorPedalPositions(float app1, float app2);
+    void setAcceleratorPedalPosition1(float app, bool valid);
+    void setAcceleratorPedalPosition2(float app, bool valid);
     void setBrakePressures(float front, float rear);
 	void setSteeringAngleDegrees(float degrees);
 	void setReadyToDriveButtonPressed(bool status);
