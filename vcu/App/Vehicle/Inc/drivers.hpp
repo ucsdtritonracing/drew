@@ -4,6 +4,7 @@
 #include "pdu.hpp"
 #include "steering_angle_sensor.hpp"
 #include "inverter.hpp"
+#include "apps.hpp"
 
 
 namespace vehicle {
@@ -13,5 +14,7 @@ extern drivers::can::CANBus CANBus2;
 extern drivers::pdu::PDU pdu;
 extern drivers::sas::SteeringAngleSensor sas;
 extern drivers::inverter::Inverter inverter;
+extern drivers::apps::APPS apps1;
+extern drivers::apps::APPS apps2;
 
 } // namespace vehicle
