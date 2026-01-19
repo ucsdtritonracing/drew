@@ -146,7 +146,7 @@ int main(void)
   vehicle::inverter.init();
   vehicle::pdu.init();
   vehicle::sas.init();
-  vehicle::imu.init();
+  vehicle::imu.init(&huart5, drivers::imu::imuBuf);
 
   /* USER CODE END 2 */
 
@@ -860,6 +860,13 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
 		if (HAL_FDCAN_ActivateNotification(hfdcan, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0) != HAL_OK) {
 			Error_Handler();
 		}
+	}
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
+	vehicle::imu.updateState(drivers::imu::imuBuf);
+	if(HAL_UART_Receive_DMA(huart, drivers::imu::imuBuf, drivers::imu::PACKET_SIZE)!= HAL_OK){
+		Error_Handler();
 	}
 }
 /* USER CODE END 4 */
