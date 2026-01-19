@@ -1,17 +1,23 @@
 #include "torque.hpp"
 #include "vehicle_state.hpp"
-#include <algorithm>
 #include <cmath>
 
 namespace torque {
 
-uint16_t computeDriverTorqueRequest(vehicle::VehicleState::AcceleratorPedalPositions apps, float torqueCapability) {
-	uint16_t torqueRequestNm = static_cast<uint16_t>(std::lroundf(std::min(apps.app1 * MAX_TORQUE_LIMIT, torqueCapability)));
-	return torqueRequestNm;
+float computeDriverTorqueRequest(vehicle::VehicleState::AcceleratorPedalPositions apps) {
+	// return apps.app1;
+	return 1.0f / (1.0f + std::exp(-11.0f * (apps.app1 - 0.5f)));
 }
 
 bool isAPPSPlausible(vehicle::VehicleState::AcceleratorPedalPositions apps) {
-	return (apps.app1Valid && apps.app2Valid && ( std::abs(apps.app1 - apps.app2) <= 0.1 ) );
+	if ((apps.app1 < 0.1) || (apps.app2 < 0.1)) {
+		return true;
+	}
+	return std::abs(apps.app1 - apps.app2) <= 0.1;
+}
+
+bool isAPPSBrakePedalPlausible(vehicle::VehicleState::AcceleratorPedalPositions apps, vehicle::VehicleState::BrakePressures brake) {
+	return !((apps.app1 > 0.25) && (brake.front > 0.25));
 }
 
 } // namespace torque

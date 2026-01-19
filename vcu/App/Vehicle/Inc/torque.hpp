@@ -5,7 +5,7 @@
 
 namespace torque {
 
-static constexpr uint16_t MAX_TORQUE_LIMIT = 90;	// N.m
+static constexpr uint16_t MAX_TORQUE_LIMIT = 90; // N.m
 
 /*
  * @brief Compute the driver torque request as a scalar from 0 to 1
@@ -13,7 +13,7 @@ static constexpr uint16_t MAX_TORQUE_LIMIT = 90;	// N.m
  * @param apps Accelerator pedal positions
  * @param motorRPM Motor speed in RPM
  */
-uint16_t computeDriverTorqueRequest(vehicle::VehicleState::AcceleratorPedalPositions apps, float torqueCapability);
+float computeDriverTorqueRequest(vehicle::VehicleState::AcceleratorPedalPositions apps);
 
 /*
  * @brief Compute whether accelerator pedal positions are plausible
@@ -21,5 +21,13 @@ uint16_t computeDriverTorqueRequest(vehicle::VehicleState::AcceleratorPedalPosit
  * @param apps Accelerator pedal positions
  */
 bool isAPPSPlausible(vehicle::VehicleState::AcceleratorPedalPositions apps);
+
+/*
+ * @brief Compute whether accelerator pedal position + BSE signals are plausible
+ *
+ * @param apps Accelerator pedal positions
+ * @param bse Brake Pressure readings
+ */
+bool isAPPSBrakePedalPlausible(vehicle::VehicleState::AcceleratorPedalPositions apps, vehicle::VehicleState::BrakePressures);
 
 } // namespace torque
