@@ -11,7 +11,6 @@ enum PacketStatus {
 	badPacket, okPacket
 };
 
-extern uint8_t imuBuf[PACKET_SIZE];
 
 struct State {
 	float rotation[NUM_AXES] = {}; // yaw pitch roll
@@ -27,17 +26,21 @@ struct State {
 class IMU {
 public:
 	IMU();
-	void init(UART_HandleTypeDef *huart, uint8_t buf[]);
+	void init(UART_HandleTypeDef *huart);
 	/*
 	 * Poll the IMU for updated data
 	 *
 	 */
-	State getState();
+	const State& getState();
+	/*
+		 * Get IMU DMA buffer
+		 *
+		 */
+	uint8_t* getBuffer();
 	/*
 	 * Pass updated IMU readings to driver
 	 */
-
-	void updateState(uint8_t m[]);
+	void updateState();
 private:
 	State state;
 	uint8_t checksum;
@@ -46,7 +49,7 @@ private:
 	static constexpr uint8_t HEADER_BYTE = 		0xAA;
 	static constexpr double DEGREE_SCALE = 		0.01;
 	static constexpr double MILLI_G_TO_MS2 = 	0.0098067;
-	static constexpr uint8_t CSUM_LOC = 		18; // location of checksum byte
+	static constexpr uint8_t CHECKSUM_INDEX = 		18; // location of checks	um byte
 };
 
 } // namespace imu
