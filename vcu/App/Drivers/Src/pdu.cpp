@@ -23,44 +23,24 @@ void PDU::setCurrentLimit(uint8_t channel, float amps) {
 	if (channel != 0 && channel <= NUM_CHANNELS) { // check channel in range
 		PDU_MAX_CURRENT = CHANNEL_MASK & (1 << (channel - 1)) ? LOW_CURRENT_LIMIT : HIGH_CURRENT_LIMIT; // set to 10A if 1, 20 if 0
 		state.requestedCurrentLimit[channel - 1] = std::min(amps, PDU_MAX_CURRENT);
-		for (int i = 0; i < NUM_CHANNELS; i++) {
+		for (size_t i = 0; i < NUM_CHANNELS; i++) {
 			txData[i] = static_cast<uint8_t>(
 				std::round(state.requestedCurrentLimit[i] * PDU_BIT_TO_POWER_SCALE)
 				);
 		}
 	}
 }
-void PDU::setPWMDutyCycle(uint8_t channel, uint8_t dutyCyclePercent) {
-	if (channel != 0 && channel <= NUM_CHANNELS) {
-		state.requestedPWMDutyPercent[channel - 1] = std::min(dutyCyclePercent, PDU_MAX_PWM);
-		for (int i = 0; i < NUM_CHANNELS; i++) {
-			txData[i] = static_cast<uint8_t>(
-				std::round(state.requestedPWMDutyPercent[i] * PDU_BIT_TO_POWER_SCALE)
-				);
-		}
-	}
-}
 
-void PDU::sendCommand(CommandMode mode) {
-	switch (mode) {
-	case CurrentLimit:
-		memcpy(txData, state.requestedCurrentLimit, drivers::can::MAX_CLASSICAL_CAN_DATA_LENGTH);
-		canBus.transmit(CAN_ID_SET_CURRENT, txData, FDCAN_DLC_BYTES_8);
-		break;
-	case PWM:
-		memcpy(txData, state.requestedCurrentLimit, drivers::can::MAX_CLASSICAL_CAN_DATA_LENGTH);
-		canBus.transmit(CAN_ID_SET_PWM, txData, FDCAN_DLC_BYTES_8);
-		break;
-	default:
-		return; // bad mode, reject
-	}
+void PDU::sendCommand() {
+	memcpy(txData, state.requestedCurrentLimit, drivers::can::MAX_CLASSICAL_CAN_DATA_LENGTH);
+	canBus.transmit(CAN_ID_SET_CURRENT, txData, FDCAN_DLC_BYTES_8);
 }
 
 void PDU::processMessage(int channelStart, const can::Message &message) {
 	if (message.numBytes != 8) {
 		return; // incorrect number of bytes received, bad message
 	}
-	for (int i = 0; i < NUM_CHANNELS; i += 2) {
+	for (size_t i = 0; i < NUM_CHANNELS; i += 2) {
 		uint8_t errorCode = ((message.data[i] & ERROR_MASK) >> 5);
 		switch (errorCode) {
 		case 0x00:

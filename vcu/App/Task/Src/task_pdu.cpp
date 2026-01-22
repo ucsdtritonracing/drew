@@ -8,8 +8,7 @@ namespace tasks {
 PDUTask::PDUTask() {}
 
 void PDUTask::loop() {
-	//TODO: mode control?
-	//vehicle::pdu.sendCommand()
+	vehicle::pdu.sendCommand();
 	osDelay(PDU_REFRESH_RATE);
 }
 

@@ -34,18 +34,18 @@ public:
 	 */
 	void setCurrentLimit(uint8_t channel, float amps);
 	/*
-	 * @brief Set the PWM duty cycle for a given channel.
+	 * @brief UNUSED: Set the PWM duty cycle for a given channel.
 	 *
 	 * @param channel
 	 * @param dutyCyclePercent Duty cycle in percent (0-100)
 	 */
 	void setPWMDutyCycle(uint8_t channel, uint8_t dutyCyclePercent);
 	/*
-	 * @brief Send Current/PWM command to the PDU, based on current state
+	 * @brief Send CurrentLimit command to the PDU, based on current state
 	 *
-	 * @param mode, CurrentLimit or PWM
+	 *
 	 */
-	void sendCommand(CommandMode mode);
+	void sendCommand();
 	/*
 	 * @brief Process an incoming message with message ID of TxMessage1
 	 *
