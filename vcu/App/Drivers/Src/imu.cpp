@@ -7,7 +7,7 @@
 
 namespace drivers::imu {
 
-uint8_t imuBuf[PACKET_SIZE] = {};
+
 
 IMU::IMU() {
 }

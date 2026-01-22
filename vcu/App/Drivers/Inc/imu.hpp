@@ -33,9 +33,9 @@ public:
 	 */
 	const State& getState();
 	/*
-		 * Get IMU DMA buffer
-		 *
-		 */
+	 * Get IMU DMA buffer
+	 *
+	 */
 	uint8_t* getBuffer();
 	/*
 	 * Pass updated IMU readings to driver
@@ -45,11 +45,12 @@ private:
 	State state;
 	uint8_t checksum;
 	uint8_t measurements[NUM_AXES*4] = {};  // 2 bytes per axis, 2 sets of axes
+	uint8_t imuBuf[PACKET_SIZE] = {};
 
 	static constexpr uint8_t HEADER_BYTE = 		0xAA;
 	static constexpr double DEGREE_SCALE = 		0.01;
 	static constexpr double MILLI_G_TO_MS2 = 	0.0098067;
-	static constexpr uint8_t CHECKSUM_INDEX = 		18; // location of checks	um byte
+	static constexpr uint8_t CHECKSUM_INDEX = 	18; // location of checksum byte
 };
 
 } // namespace imu
