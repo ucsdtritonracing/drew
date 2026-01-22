@@ -9,7 +9,6 @@ class PDUTask: public Task<PDUTask, osPriorityHigh, 512> {
 public:
 	PDUTask();
 	void loop();
-
 private:
 	const uint8_t PDU_REFRESH_RATE = 250;
 };
