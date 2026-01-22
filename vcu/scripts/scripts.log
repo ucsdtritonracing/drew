@@ -1,0 +1,156 @@
+[2026-01-17 13:29:53] [INFO] [Pre-generation Script] Started...
+[2026-01-17 13:29:53] [INFO] Renaming C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.cpp to C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.c
+[2026-01-17 13:29:53] [INFO] [Pre-generation Script] Finished!
+[2026-01-17 13:30:01] [INFO] [Post-generation Script] Started...
+[2026-01-17 13:30:01] [INFO] Removed defaultTask definition
+[2026-01-17 13:30:01] [INFO] Removed StartDefaultTask forward declaration
+[2026-01-17 13:30:01] [INFO] Removed defaultTask creation
+[2026-01-17 13:30:01] [INFO] Removed StartDefaultTask implementation
+[2026-01-17 13:30:01] [INFO] Successfully removed defaultTask code from main
+[2026-01-17 13:30:01] [INFO] Wrote cleaned code to C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.c
+[2026-01-17 13:30:01] [INFO] Renamed C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.c to C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.cpp
+[2026-01-17 13:30:01] [INFO] [Post-generation Script] Finished!
+[2026-01-17 13:31:04] [INFO] [Pre-generation Script] Started...
+[2026-01-17 13:31:04] [INFO] Renaming C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.cpp to C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.c
+[2026-01-17 13:31:04] [INFO] [Pre-generation Script] Finished!
+[2026-01-17 13:31:09] [INFO] [Post-generation Script] Started...
+[2026-01-17 13:31:09] [INFO] Removed defaultTask definition
+[2026-01-17 13:31:09] [INFO] Removed StartDefaultTask forward declaration
+[2026-01-17 13:31:09] [INFO] Removed defaultTask creation
+[2026-01-17 13:31:09] [INFO] Removed StartDefaultTask implementation
+[2026-01-17 13:31:09] [INFO] Successfully removed defaultTask code from main
+[2026-01-17 13:31:09] [INFO] Wrote cleaned code to C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.c
+[2026-01-17 13:31:09] [INFO] Renamed C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.c to C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.cpp
+[2026-01-17 13:31:09] [INFO] [Post-generation Script] Finished!
+[2026-01-17 13:40:17] [INFO] [Pre-generation Script] Started...
+[2026-01-17 13:40:17] [INFO] Renaming C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.cpp to C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.c
+[2026-01-17 13:40:17] [INFO] [Pre-generation Script] Finished!
+[2026-01-17 13:40:22] [INFO] [Post-generation Script] Started...
+[2026-01-17 13:40:22] [INFO] Removed defaultTask definition
+[2026-01-17 13:40:22] [INFO] Removed StartDefaultTask forward declaration
+[2026-01-17 13:40:22] [INFO] Removed defaultTask creation
+[2026-01-17 13:40:22] [INFO] Removed StartDefaultTask implementation
+[2026-01-17 13:40:22] [INFO] Successfully removed defaultTask code from main
+[2026-01-17 13:40:22] [INFO] Wrote cleaned code to C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.c
+[2026-01-17 13:40:22] [INFO] Renamed C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.c to C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.cpp
+[2026-01-17 13:40:22] [INFO] [Post-generation Script] Finished!
+[2026-01-17 13:40:45] [INFO] [Pre-generation Script] Started...
+[2026-01-17 13:40:45] [INFO] Renaming C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.cpp to C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.c
+[2026-01-17 13:40:45] [INFO] [Pre-generation Script] Finished!
+[2026-01-17 13:40:49] [INFO] [Post-generation Script] Started...
+[2026-01-17 13:40:49] [INFO] Removed defaultTask definition
+[2026-01-17 13:40:49] [INFO] Removed StartDefaultTask forward declaration
+[2026-01-17 13:40:49] [INFO] Removed defaultTask creation
+[2026-01-17 13:40:49] [INFO] Removed StartDefaultTask implementation
+[2026-01-17 13:40:49] [INFO] Successfully removed defaultTask code from main
+[2026-01-17 13:40:49] [INFO] Wrote cleaned code to C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.c
+[2026-01-17 13:40:49] [INFO] Renamed C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.c to C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.cpp
+[2026-01-17 13:40:49] [INFO] [Post-generation Script] Finished!
+[2026-01-17 13:49:53] [INFO] [Pre-generation Script] Started...
+[2026-01-17 13:49:53] [INFO] Renaming C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.cpp to C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.c
+[2026-01-17 13:49:53] [INFO] [Pre-generation Script] Finished!
+[2026-01-17 13:49:59] [INFO] [Post-generation Script] Started...
+[2026-01-17 13:49:59] [INFO] Removed defaultTask definition
+[2026-01-17 13:49:59] [INFO] Removed StartDefaultTask forward declaration
+[2026-01-17 13:49:59] [INFO] Removed defaultTask creation
+[2026-01-17 13:49:59] [INFO] Removed StartDefaultTask implementation
+[2026-01-17 13:49:59] [INFO] Successfully removed defaultTask code from main
+[2026-01-17 13:49:59] [INFO] Wrote cleaned code to C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.c
+[2026-01-17 13:49:59] [INFO] Renamed C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.c to C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.cpp
+[2026-01-17 13:49:59] [INFO] [Post-generation Script] Finished!
+[2026-01-17 13:50:49] [INFO] [Pre-generation Script] Started...
+[2026-01-17 13:50:49] [INFO] Renaming C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.cpp to C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.c
+[2026-01-17 13:50:49] [INFO] [Pre-generation Script] Finished!
+[2026-01-17 13:51:06] [INFO] [Post-generation Script] Started...
+[2026-01-17 13:51:06] [INFO] Removed defaultTask definition
+[2026-01-17 13:51:06] [INFO] Removed StartDefaultTask forward declaration
+[2026-01-17 13:51:06] [INFO] Removed defaultTask creation
+[2026-01-17 13:51:06] [INFO] Removed StartDefaultTask implementation
+[2026-01-17 13:51:06] [INFO] Successfully removed defaultTask code from main
+[2026-01-17 13:51:06] [INFO] Wrote cleaned code to C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.c
+[2026-01-17 13:51:06] [INFO] Renamed C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.c to C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.cpp
+[2026-01-17 13:51:06] [INFO] [Post-generation Script] Finished!
+[2026-01-17 14:07:38] [INFO] [Pre-generation Script] Started...
+[2026-01-17 14:07:38] [INFO] Renaming C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.cpp to C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.c
+[2026-01-17 14:07:38] [INFO] [Pre-generation Script] Finished!
+[2026-01-17 14:07:54] [INFO] [Post-generation Script] Started...
+[2026-01-17 14:07:54] [INFO] Removed defaultTask definition
+[2026-01-17 14:07:54] [INFO] Removed StartDefaultTask forward declaration
+[2026-01-17 14:07:54] [INFO] Removed defaultTask creation
+[2026-01-17 14:07:54] [INFO] Removed StartDefaultTask implementation
+[2026-01-17 14:07:54] [INFO] Successfully removed defaultTask code from main
+[2026-01-17 14:07:54] [INFO] Wrote cleaned code to C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.c
+[2026-01-17 14:07:54] [INFO] Renamed C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.c to C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.cpp
+[2026-01-17 14:07:54] [INFO] [Post-generation Script] Finished!
+[2026-01-17 14:10:25] [INFO] [Pre-generation Script] Started...
+[2026-01-17 14:10:25] [INFO] Renaming C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.cpp to C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.c
+[2026-01-17 14:10:25] [INFO] [Pre-generation Script] Finished!
+[2026-01-17 14:10:32] [INFO] [Post-generation Script] Started...
+[2026-01-17 14:10:32] [INFO] Removed defaultTask definition
+[2026-01-17 14:10:32] [INFO] Removed StartDefaultTask forward declaration
+[2026-01-17 14:10:32] [INFO] Removed defaultTask creation
+[2026-01-17 14:10:32] [INFO] Removed StartDefaultTask implementation
+[2026-01-17 14:10:32] [INFO] Successfully removed defaultTask code from main
+[2026-01-17 14:10:32] [INFO] Wrote cleaned code to C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.c
+[2026-01-17 14:10:32] [INFO] Renamed C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.c to C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.cpp
+[2026-01-17 14:10:32] [INFO] [Post-generation Script] Finished!
+[2026-01-17 14:24:39] [INFO] [Pre-generation Script] Started...
+[2026-01-17 14:24:39] [INFO] Renaming C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.cpp to C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.c
+[2026-01-17 14:24:39] [INFO] [Pre-generation Script] Finished!
+[2026-01-17 14:24:47] [INFO] [Post-generation Script] Started...
+[2026-01-17 14:24:47] [INFO] Removed defaultTask definition
+[2026-01-17 14:24:47] [INFO] Removed StartDefaultTask forward declaration
+[2026-01-17 14:24:47] [INFO] Removed defaultTask creation
+[2026-01-17 14:24:47] [INFO] Removed StartDefaultTask implementation
+[2026-01-17 14:24:47] [INFO] Successfully removed defaultTask code from main
+[2026-01-17 14:24:47] [INFO] Wrote cleaned code to C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.c
+[2026-01-17 14:24:47] [INFO] Renamed C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.c to C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.cpp
+[2026-01-17 14:24:47] [INFO] [Post-generation Script] Finished!
+[2026-01-17 14:26:16] [INFO] [Pre-generation Script] Started...
+[2026-01-17 14:26:16] [INFO] Renaming C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.cpp to C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.c
+[2026-01-17 14:26:16] [INFO] [Pre-generation Script] Finished!
+[2026-01-17 14:26:22] [INFO] [Post-generation Script] Started...
+[2026-01-17 14:26:22] [INFO] Removed defaultTask definition
+[2026-01-17 14:26:22] [INFO] Removed StartDefaultTask forward declaration
+[2026-01-17 14:26:22] [INFO] Removed defaultTask creation
+[2026-01-17 14:26:22] [INFO] Removed StartDefaultTask implementation
+[2026-01-17 14:26:22] [INFO] Successfully removed defaultTask code from main
+[2026-01-17 14:26:22] [INFO] Wrote cleaned code to C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.c
+[2026-01-17 14:26:22] [INFO] Renamed C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.c to C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.cpp
+[2026-01-17 14:26:22] [INFO] [Post-generation Script] Finished!
+[2026-01-17 14:28:05] [INFO] [Pre-generation Script] Started...
+[2026-01-17 14:28:05] [INFO] Renaming C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.cpp to C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.c
+[2026-01-17 14:28:05] [INFO] [Pre-generation Script] Finished!
+[2026-01-17 14:28:12] [INFO] [Post-generation Script] Started...
+[2026-01-17 14:28:13] [INFO] Removed defaultTask definition
+[2026-01-17 14:28:13] [INFO] Removed StartDefaultTask forward declaration
+[2026-01-17 14:28:13] [INFO] Removed defaultTask creation
+[2026-01-17 14:28:13] [INFO] Removed StartDefaultTask implementation
+[2026-01-17 14:28:13] [INFO] Successfully removed defaultTask code from main
+[2026-01-17 14:28:13] [INFO] Wrote cleaned code to C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.c
+[2026-01-17 14:28:13] [INFO] Renamed C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.c to C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.cpp
+[2026-01-17 14:28:13] [INFO] [Post-generation Script] Finished!
+[2026-01-17 14:49:53] [INFO] [Pre-generation Script] Started...
+[2026-01-17 14:49:53] [INFO] Renaming C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.cpp to C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.c
+[2026-01-17 14:49:53] [INFO] [Pre-generation Script] Finished!
+[2026-01-17 14:49:58] [INFO] [Post-generation Script] Started...
+[2026-01-17 14:49:58] [INFO] Removed defaultTask definition
+[2026-01-17 14:49:58] [INFO] Removed StartDefaultTask forward declaration
+[2026-01-17 14:49:58] [INFO] Removed defaultTask creation
+[2026-01-17 14:49:58] [INFO] Removed StartDefaultTask implementation
+[2026-01-17 14:49:58] [INFO] Successfully removed defaultTask code from main
+[2026-01-17 14:49:58] [INFO] Wrote cleaned code to C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.c
+[2026-01-17 14:49:58] [INFO] Renamed C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.c to C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.cpp
+[2026-01-17 14:49:58] [INFO] [Post-generation Script] Finished!
+[2026-01-17 19:14:29] [INFO] [Pre-generation Script] Started...
+[2026-01-17 19:14:29] [INFO] Renaming C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.cpp to C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.c
+[2026-01-17 19:14:29] [INFO] [Pre-generation Script] Finished!
+[2026-01-17 19:14:37] [INFO] [Post-generation Script] Started...
+[2026-01-17 19:14:37] [INFO] Removed defaultTask definition
+[2026-01-17 19:14:37] [INFO] Removed StartDefaultTask forward declaration
+[2026-01-17 19:14:37] [INFO] Removed defaultTask creation
+[2026-01-17 19:14:37] [INFO] Removed StartDefaultTask implementation
+[2026-01-17 19:14:37] [INFO] Successfully removed defaultTask code from main
+[2026-01-17 19:14:37] [INFO] Wrote cleaned code to C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.c
+[2026-01-17 19:14:37] [INFO] Renamed C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.c to C:\Users\njshi\Documents\GitHub\drew\vcu\Core\Src\main.cpp
+[2026-01-17 19:14:37] [INFO] [Post-generation Script] Finished!
