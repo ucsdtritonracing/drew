@@ -26,8 +26,10 @@
 #include "task.hpp"
 #include "can_bus.hpp"
 
+
 // Tasks
 #include "task_can_bus.hpp"
+#include "test_task.hpp"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -180,12 +182,17 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
-  static tasks::CANBusTask CANBus1Task(vehicle::CANBus1, CANBus1RxQueueHandle);
-  CANBus1Task.start("CAN Bus 1 Task");
+  //static tasks::CANBusTask CANBus1Task(vehicle::CANBus1, CANBus1RxQueueHandle);
+  //CANBus1Task.start("CAN Bus 1 Task");
 
   static tasks::CANBusTask CANBus2Task(vehicle::CANBus2, CANBus2RxQueueHandle);
   CANBus2Task.start("CAN Bus 2 Task");
 
+  static tasks::TestTask TestTask(1);
+  TestTask.start("Test Task");
+
+  static tasks::TestTask TestTask2(2);
+  TestTask2.start("TEST NUMBER 2");
 
   /* USER CODE END RTOS_THREADS */
 

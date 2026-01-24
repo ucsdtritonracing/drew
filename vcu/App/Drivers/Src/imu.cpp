@@ -26,6 +26,7 @@ uint8_t* IMU::getBuffer() {
 }
 
 void IMU::updateState() {
+	printf("yo wassup\n");
 	checksum = imuBuf[CHECKSUM_INDEX];
 	memcpy(measurements, &imuBuf[3], 12 * sizeof(uint8_t));
 	if (imuBuf[0] == imuBuf[1] && imuBuf[0] == HEADER_BYTE) {
