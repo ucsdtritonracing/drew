@@ -81,8 +81,6 @@ void Error_Handler(void);
 #define LD2_GPIO_Port GPIOA
 #define APPS1_IN_Pin GPIO_PIN_0
 #define APPS1_IN_GPIO_Port GPIOB
-#define RRWSS_Pin GPIO_PIN_1
-#define RRWSS_GPIO_Port GPIOB
 #define RLWSS_Pin GPIO_PIN_2
 #define RLWSS_GPIO_Port GPIOB
 #define FLWSS_Pin GPIO_PIN_14
@@ -99,10 +97,6 @@ void Error_Handler(void);
 #define T_SWCLK_GPIO_Port GPIOA
 #define R2D_Button_Pin GPIO_PIN_10
 #define R2D_Button_GPIO_Port GPIOC
-#define IMD_Fault_Pin GPIO_PIN_11
-#define IMD_Fault_GPIO_Port GPIOC
-#define BMS_Fault_Pin GPIO_PIN_2
-#define BMS_Fault_GPIO_Port GPIOD
 #define T_SWO_Pin GPIO_PIN_3
 #define T_SWO_GPIO_Port GPIOB
 
