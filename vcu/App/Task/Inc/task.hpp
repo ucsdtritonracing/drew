@@ -23,11 +23,6 @@ class Task {
 public:
 	Task() = default;
 
-	Task(Task&&) 					= delete;
-	Task(const Task&)				= delete;
-	Task& operator=(const Task&) 	= delete;
-	Task& operator=(Task&&) 		= delete;
-
 	void start(const char* name) {
 		if (taskHandle) {
 			return;

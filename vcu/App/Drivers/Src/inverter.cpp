@@ -17,7 +17,7 @@ namespace drivers::inverter {
 		bindHandler<&Inverter::processInternalStatesMessage>(CAN_ID_INTERNAL_STATES);
 	}
 
-	void Inverter::sendCommandMessage(uint16_t torqueRequestNm, bool inverterEnable) {
+	void Inverter::sendCommandMessage(float torqueRequestNm, bool inverterEnable) {
 		uint16_t scaledTorque = torqueRequestNm * COMMON_SCALE;
 		if (scaledTorque > (MAX_TORQUE_ALLOWED * COMMON_SCALE)) scaledTorque = MAX_TORQUE_ALLOWED * COMMON_SCALE;
 		txData[0] = scaledTorque & 0xFF;

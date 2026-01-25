@@ -6,10 +6,11 @@ namespace tasks {
 
 void ExampleTask::setup() {
 	// initializing methods
+	counter = 100;
 }
 
 void ExampleTask::loop() {
-	printf("hello!");
+	counter++;
 	osDelay(DELAY);
 }
 

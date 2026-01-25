@@ -10,6 +10,7 @@ public:
 
 private:
 	static const uint32_t DELAY = 1000;
+	int counter = 0;
 };
 
 } // namespace tasks

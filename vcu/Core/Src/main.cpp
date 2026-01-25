@@ -30,6 +30,9 @@
 
 // Tasks
 #include "task_can_bus.hpp"
+#include "task_control_loop.hpp"
+#include "example_task.hpp"
+#include "task_apps1.hpp"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -74,7 +77,10 @@ const osMessageQueueAttr_t CANBus2RxQueue_attributes = {
   .name = "CANBus2RxQueue"
 };
 /* USER CODE BEGIN PV */
-
+tasks::CANBusTask CANBus1Task;
+tasks::ControlLoopTask ControlLoopTask;
+tasks::ExampleTask ExampleTask;
+tasks::APPS1Task APPS1Task;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -113,7 +119,8 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+
+	HAL_Init();
 
   /* USER CODE BEGIN Init */
 
@@ -138,6 +145,7 @@ int main(void)
   MX_TIM15_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
+  osKernelInitialize();
 
   vehicle::CANBus1.init(&hfdcan1);
   vehicle::CANBus2.init(&hfdcan2);
@@ -145,17 +153,19 @@ int main(void)
   vehicle::inverter.init();
   vehicle::pdu.init();
   vehicle::sas.init();
+
   vehicle::apps1.init(&hadc3,
 					  vehicle::vehicleConfiguration.APPS1_LOW_THRESHOLD_VOLTAGE,
 					  vehicle::vehicleConfiguration.APPS1_HIGH_THRESHOLD_VOLTAGE);
-  vehicle::apps2.init(&hadc2,
-		  	  	  	  vehicle::vehicleConfiguration.APPS2_LOW_THRESHOLD_VOLTAGE,
-					  vehicle::vehicleConfiguration.APPS2_HIGH_THRESHOLD_VOLTAGE);
+
+//  vehicle::apps2.init(&hadc2,
+//		  	  	  	  vehicle::vehicleConfiguration.APPS2_LOW_THRESHOLD_VOLTAGE,
+//					  vehicle::vehicleConfiguration.APPS2_HIGH_THRESHOLD_VOLTAGE);
 
   /* USER CODE END 2 */
 
   /* Init scheduler */
-  osKernelInitialize();
+
 
   /* USER CODE BEGIN RTOS_MUTEX */
   /* add mutexes, ... */
@@ -184,11 +194,12 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
-  static tasks::CANBusTask CANBus1Task(vehicle::CANBus1, CANBus1RxQueueHandle);
+  CANBus1Task.init(&vehicle::CANBus1, CANBus1RxQueueHandle);
   CANBus1Task.start("CAN Bus 1 Task");
+  ControlLoopTask.start("Control Loop Task");
 
-  static tasks::CANBusTask CANBus2Task(vehicle::CANBus2, CANBus2RxQueueHandle);
-  CANBus2Task.start("CAN Bus 2 Task");
+  ExampleTask.start("Example Task");
+  APPS1Task.start("APPS1 Task");
 
 
   /* USER CODE END RTOS_THREADS */
@@ -809,8 +820,9 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
 
 void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc) {
 	if (hadc == vehicle::apps1.getHADC()) {
-		drivers::apps::State state = vehicle::apps1.processHalfBuffer();
-		vehicle::vehicleState.setAcceleratorPedalPosition1(state.app, state.valid);
+//		drivers::apps::State state = vehicle::apps1.processHalfBuffer();
+//		vehicle::vehicleState.setAcceleratorPedalPosition1(state.app, state.valid);
+		osThreadFlagsSet(APPS1Task.getHandle(), 0x01U);
 	} else if (hadc == vehicle::apps2.getHADC()) {
 		drivers::apps::State state = vehicle::apps2.processHalfBuffer();
 		vehicle::vehicleState.setAcceleratorPedalPosition2(state.app, state.valid);
@@ -819,8 +831,9 @@ void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc) {
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc) {
 	if (hadc == vehicle::apps1.getHADC()) {
-		drivers::apps::State state = vehicle::apps1.processFullBuffer();
-		vehicle::vehicleState.setAcceleratorPedalPosition1(state.app, state.valid);
+//		drivers::apps::State state = vehicle::apps1.processFullBuffer();
+//		vehicle::vehicleState.setAcceleratorPedalPosition1(state.app, state.valid);
+		osThreadFlagsSet(APPS1Task.getHandle(), 0x01U);
 	} else if (hadc == vehicle::apps2.getHADC()) {
 		drivers::apps::State state = vehicle::apps2.processFullBuffer();
 		vehicle::vehicleState.setAcceleratorPedalPosition2(state.app, state.valid);

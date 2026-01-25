@@ -5,15 +5,15 @@ namespace vehicle {
 
 VehicleState::VehicleState() {
 	wheelSpeeds 				= {0, 0, 0, 0};
-	acceleratorPedalPositions 	= {0, 0};
-	brakePressures 				= {0, 0};
+	acceleratorPedalPositions 	= {0, 0, true, true};
+	brakePressures 				= {0, 0, true, true};
 
 	steeringAngleDegrees 		= 0;
 
 	readyToDriveButtonPressed 	= false;
 	shutdownCircuitClosed 		= false;
 
-	readyToDrive 				= false;
+	readyToDrive 				= true;
 }
 
 const VehicleState::WheelSpeeds VehicleState::getWheelSpeeds() const {

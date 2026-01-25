@@ -21,18 +21,18 @@ void ControlLoopTask::updateAPPSBrakePedalPlausibility() {
 
 void ControlLoopTask::loop() {
 	if (vehicle::vehicleState.getReadyToDrive()) {
-		float torqueScalar = 0.0f;
+		torqueScalar = 0.0f;
 
 		app1Fault.update(!vehicle::vehicleState.getAcceleratorPedalPositions().app1Valid);
-		app2Fault.update(!vehicle::vehicleState.getAcceleratorPedalPositions().app2Valid);
-		frontBSEFault.update(!vehicle::vehicleState.getBrakePressures().frontValid);
-		rearBSEFault.update(!vehicle::vehicleState.getBrakePressures().rearValid);
-		appsPlausibilityFault.update(!torque::isAPPSPlausible(vehicle::vehicleState.getAcceleratorPedalPositions()));
-		if(!torque::isAPPSBrakePedalPlausible(vehicle::vehicleState.getAcceleratorPedalPositions(),
-									vehicle::vehicleState.getBrakePressures()) ||
-									appsBrakePedalPlausibilityFaulted) {
-			updateAPPSBrakePedalPlausibility();
-		}
+//		app2Fault.update(!vehicle::vehicleState.getAcceleratorPedalPositions().app2Valid);
+//		frontBSEFault.update(!vehicle::vehicleState.getBrakePressures().frontValid);
+//		rearBSEFault.update(!vehicle::vehicleState.getBrakePressures().rearValid);
+//		appsPlausibilityFault.update(!torque::isAPPSPlausible(vehicle::vehicleState.getAcceleratorPedalPositions()));
+//		if(!torque::isAPPSBrakePedalPlausible(vehicle::vehicleState.getAcceleratorPedalPositions(),
+//									vehicle::vehicleState.getBrakePressures()) ||
+//									appsBrakePedalPlausibilityFaulted) {
+//			updateAPPSBrakePedalPlausibility();
+//		}
 
 		requestZeroTorque = app1Fault.torqueInhibited() || app2Fault.torqueInhibited() ||
 							frontBSEFault.torqueInhibited() || rearBSEFault.torqueInhibited() ||
@@ -44,7 +44,7 @@ void ControlLoopTask::loop() {
 		}
 
 		torqueScalar = std::clamp(torqueScalar, 0.0f, 1.0f);
-		uint16_t requestedTorque = static_cast<uint16_t>(std::lroundf(std::min(torqueScalar * torque::MAX_TORQUE_LIMIT, vehicle::inverter.getTorqueCapability())));
+		float requestedTorque = 0.1f * std::lroundf(10 * std::min(torqueScalar * torque::MAX_TORQUE_LIMIT, 100000 + vehicle::inverter.getTorqueCapability()));
 		vehicle::inverter.sendCommandMessage(requestedTorque, true);
 
 	} else {

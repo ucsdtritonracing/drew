@@ -13,8 +13,8 @@ struct VehicleConfiguration {
 
 	float APPS1_LOW_THRESHOLD_VOLTAGE					= 0.6f;
 	float APPS1_HIGH_THRESHOLD_VOLTAGE					= 3.1f;
-	float APPS2_LOW_THRESHOLD_VOLTAGE					= 0.2f;
-	float APPS2_HIGH_THRESHOLD_VOLTAGE					= 2.7f;
+	float APPS2_LOW_THRESHOLD_VOLTAGE					= 0.0f;
+	float APPS2_HIGH_THRESHOLD_VOLTAGE					= 3.5f;
 };
 
 extern VehicleConfiguration vehicleConfiguration;

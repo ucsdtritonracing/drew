@@ -25,12 +25,12 @@ struct TimedFault {
 	}
 };
 
-class ControlLoopTask : public Task<ControlLoopTask> {
+class ControlLoopTask : public Task<ControlLoopTask, osPriorityHigh, 256> {
 public:
 	void loop();
 
 private:
-	static const uint32_t CONTROL_LOOP_PERIOD_MS = 				3;
+	static const uint32_t CONTROL_LOOP_PERIOD_MS = 				10;
 	static constexpr float APPS_PEDAL_TRAVEL_RESET_THRESHOLD = 	0.05;
 
 	TimedFault app1Fault;
@@ -41,6 +41,7 @@ private:
 
 	bool appsBrakePedalPlausibilityFaulted = 					false;
 	bool requestZeroTorque;
+	float torqueScalar;
 
 	void updateAPPSBrakePedalPlausibility();
 };
