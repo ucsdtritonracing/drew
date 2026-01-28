@@ -10,7 +10,7 @@ public:
 	PDUTask();
 	void loop();
 private:
-	const uint8_t PDU_REFRESH_RATE = 250;
+	const uint8_t PDU_COMMAND_DELAY = 250;
 };
 
 } // namespace tasks

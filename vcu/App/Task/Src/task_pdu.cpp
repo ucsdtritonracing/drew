@@ -5,11 +5,12 @@
 
 namespace tasks {
 
-PDUTask::PDUTask() {}
+PDUTask::PDUTask() {
+}
 
 void PDUTask::loop() {
 	vehicle::pdu.sendCommand();
-	osDelay(PDU_REFRESH_RATE);
+	osDelay(PDU_COMMAND_DELAY);
 }
 
 } // namespace tasks
