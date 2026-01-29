@@ -5,7 +5,7 @@
 
 namespace torque {
 
-static constexpr uint16_t MAX_TORQUE_LIMIT = 2; // N.m
+static constexpr uint16_t MAX_TORQUE_LIMIT = 3; // N.m
 
 /*
  * @brief Compute the driver torque request as a scalar from 0 to 1

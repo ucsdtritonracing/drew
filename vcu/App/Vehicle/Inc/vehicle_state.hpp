@@ -29,6 +29,8 @@ public:
 		bool rearValid;
 	};
 
+	bool readyToDriveButtonPressed;
+
 	VehicleState();
 
 	const WheelSpeeds getWheelSpeeds() const;
@@ -61,7 +63,6 @@ private:
 
 
     // Polled signals
-	bool readyToDriveButtonPressed;
 	bool shutdownCircuitClosed;
 
 

@@ -33,6 +33,7 @@
 #include "task_control_loop.hpp"
 #include "example_task.hpp"
 #include "task_apps1.hpp"
+#include "task_polling.hpp"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -77,10 +78,11 @@ const osMessageQueueAttr_t CANBus2RxQueue_attributes = {
   .name = "CANBus2RxQueue"
 };
 /* USER CODE BEGIN PV */
-tasks::CANBusTask CANBus1Task;
-tasks::ControlLoopTask ControlLoopTask;
-tasks::ExampleTask ExampleTask;
-tasks::APPS1Task APPS1Task;
+static tasks::CANBusTask CANBus1Task;
+static tasks::ControlLoopTask ControlLoopTask;
+static tasks::ExampleTask ExampleTask;
+static tasks::APPS1Task APPS1Task;
+static tasks::PollingTask PollingTask;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -119,8 +121,7 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-
-	HAL_Init();
+  HAL_Init();
 
   /* USER CODE BEGIN Init */
 
@@ -148,7 +149,7 @@ int main(void)
   osKernelInitialize();
 
   vehicle::CANBus1.init(&hfdcan1);
-  vehicle::CANBus2.init(&hfdcan2);
+//  vehicle::CANBus2.init(&hfdcan2);
 
   vehicle::inverter.init();
   vehicle::pdu.init();
@@ -165,7 +166,7 @@ int main(void)
   /* USER CODE END 2 */
 
   /* Init scheduler */
-
+  osKernelInitialize();
 
   /* USER CODE BEGIN RTOS_MUTEX */
   /* add mutexes, ... */
@@ -200,6 +201,7 @@ int main(void)
 
   ExampleTask.start("Example Task");
   APPS1Task.start("APPS1 Task");
+  PollingTask.start("Polling Task");
 
 
   /* USER CODE END RTOS_THREADS */
@@ -448,7 +450,7 @@ static void MX_ADC3_Init(void)
   */
   sConfig.Channel = ADC_CHANNEL_12;
   sConfig.Rank = ADC_REGULAR_RANK_1;
-  sConfig.SamplingTime = ADC_SAMPLETIME_2CYCLES_5;
+  sConfig.SamplingTime = ADC_SAMPLETIME_6CYCLES_5;
   sConfig.SingleDiff = ADC_SINGLE_ENDED;
   sConfig.OffsetNumber = ADC_OFFSET_NONE;
   sConfig.Offset = 0;
