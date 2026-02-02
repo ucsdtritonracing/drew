@@ -1064,8 +1064,8 @@ int main(void)
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
 
-  vehicle::CANBus1.init(&hfdcan1);
-  vehicle::CANBus2.init(&hfdcan2);
+  vehicle::CANBus1.init(hfdcan1);
+  vehicle::CANBus2.init(hfdcan2);
 
   vehicle::inverter.init();
   vehicle::pdu.init();
@@ -1103,10 +1103,10 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
-  CANBus1Task.init(&vehicle::CANBus1, CANBus1RxQueueHandle);
+  CANBus1Task.init(vehicle::CANBus1, CANBus1RxQueueHandle);
   CANBus1Task.start("CAN Bus 1 Task");
 
-  CANBus2Task.init(&vehicle::CANBus2, CANBus2RxQueueHandle);
+  CANBus2Task.init(vehicle::CANBus2, CANBus2RxQueueHandle);
   CANBus2Task.start("CAN Bus 2 Task");
 
 

@@ -6,8 +6,8 @@
 
 namespace tasks {
 
-void CANBusTask::init(drivers::can::CANBus* CANBus, osMessageQueueId_t queue) {
-	this->CANBus = CANBus;
+void CANBusTask::init(drivers::can::CANBus& CANBus, osMessageQueueId_t queue) {
+	this->CANBus = &CANBus;
 	this->queue = queue;
 }
 
