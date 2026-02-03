@@ -7,13 +7,8 @@
 
 namespace drivers::imu {
 
-
-
-IMU::IMU() {
-}
-
-void IMU::init(UART_HandleTypeDef *huart) {
-	if (HAL_UART_Receive_DMA(huart, imuBuf, drivers::imu::PACKET_SIZE) != HAL_OK) {
+void IMU::init(UART_HandleTypeDef& huart) {
+	if (HAL_UART_Receive_DMA(&huart, imuBuf, drivers::imu::PACKET_SIZE) != HAL_OK) {
 		Error_Handler();
 	}
 }

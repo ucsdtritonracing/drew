@@ -148,7 +148,7 @@ int main(void)
   vehicle::inverter.init();
   vehicle::pdu.init();
   vehicle::sas.init();
-  vehicle::imu.init(&huart5);
+  vehicle::imu.init(huart5);
 
   /* USER CODE END 2 */
 

@@ -25,8 +25,7 @@ struct State {
 
 class IMU {
 public:
-	IMU();
-	void init(UART_HandleTypeDef *huart);
+	void init(UART_HandleTypeDef& huart);
 	/*
 	 * Poll the IMU for updated data
 	 *
