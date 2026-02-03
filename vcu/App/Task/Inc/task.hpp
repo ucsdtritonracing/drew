@@ -23,8 +23,6 @@ namespace tasks {
 template<typename Derived, osPriority_t Priority = osPriorityNormal, uint32_t StackSize = 128>
 class Task {
 public:
-	Task() = default;
-
 	void start(const char* name) {
 		if (taskHandle) {
 			return;
