@@ -185,15 +185,15 @@ private:
 	static constexpr uint8_t NO_SCALE = 							1; // angular velocity, internal
 
 	static constexpr uint32_t COMMAND_MESSAGE_ID = 					0x0C0;
-	static constexpr uint8_t DIRECTION_FORWARD = 					0; // Reverse
+	static constexpr uint8_t DIRECTION_FORWARD = 					1; // Forward
 	static constexpr uint8_t INVERTER_DISCHARGE = 					0; // Discharge disabled
 	static constexpr uint8_t SPEED_MODE_ENABLE = 					0; // Do not override Torque Mode
 	// Set motor to max speed of 4100 RPM
-	static constexpr uint8_t SPEED_COMMAND_BYTE_2 = 				0b00010100;
-	static constexpr uint8_t SPEED_COMMAND_BYTE_3 = 				0b00010000;
+	static constexpr uint8_t SPEED_COMMAND_BYTE_2 = 				0;
+	static constexpr uint8_t SPEED_COMMAND_BYTE_3 = 				0;
 	// Set motor torque limit to 210 N.m --> 210 * 10 = 2100 (scaled)
-	static constexpr uint8_t COMMANDED_TORQUE_LIMIT_BYTE_6 = 		0b00110100;
-	static constexpr uint8_t COMMANDED_TORQUE_LIMIT_BYTE_7 = 		0b00001000;
+	static constexpr uint8_t COMMANDED_TORQUE_LIMIT_BYTE_6 =		0b00110100;
+	static constexpr uint8_t COMMANDED_TORQUE_LIMIT_BYTE_7 =		0b00001000;
 	static constexpr uint8_t MAX_TORQUE_ALLOWED = 					210;
 
 	static constexpr uint32_t CAN_ID_TEMP_1 = 						0x0A0;

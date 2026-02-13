@@ -56,7 +56,7 @@ protected:
 
 private:
 	StaticTask_t tcb;
-	StackType_t stack[StackSize / sizeof(StackType_t)];
+	StackType_t stack[StackSize];
 
 	static void taskEntry(void* arg) {
 		Derived* self = static_cast<Derived*>(arg);
