@@ -17,6 +17,7 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+#include "vehicle_state.hpp"
 #include "main.h"
 #include "cmsis_os.h"
 
@@ -73,7 +74,8 @@ const osMessageQueueAttr_t CANBus2RxQueue_attributes = {
   .name = "CANBus2RxQueue"
 };
 /* USER CODE BEGIN PV */
-
+static tasks::CANBusTask CANBus1Task;
+static tasks::CANBusTask CANBus2Task;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -140,13 +142,13 @@ int main(void)
   MX_UART5_Init();
   /* USER CODE BEGIN 2 */
 
-  vehicle::CANBus1.init(&hfdcan1);
-  vehicle::CANBus2.init(&hfdcan2);
+  vehicle::CANBus1.init(hfdcan1);
+  vehicle::CANBus2.init(hfdcan2);
 
   vehicle::inverter.init();
   vehicle::pdu.init();
   vehicle::sas.init();
-  vehicle::imu.init(&huart5);
+  vehicle::imu.init(huart5);
 
   /* USER CODE END 2 */
 
@@ -180,10 +182,10 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
-  static tasks::CANBusTask CANBus1Task(vehicle::CANBus1, CANBus1RxQueueHandle);
+  CANBus1Task.init(vehicle::CANBus1, CANBus1RxQueueHandle);
   CANBus1Task.start("CAN Bus 1 Task");
 
-  static tasks::CANBusTask CANBus2Task(vehicle::CANBus2, CANBus2RxQueueHandle);
+  CANBus2Task.init(vehicle::CANBus2, CANBus2RxQueueHandle);
   CANBus2Task.start("CAN Bus 2 Task");
 
 

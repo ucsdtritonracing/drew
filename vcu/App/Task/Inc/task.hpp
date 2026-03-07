@@ -1,6 +1,8 @@
 #pragma once
 #include "cmsis_os.h"
+#include "freertos.h"
 #include <type_traits>
+
 
 namespace tasks {
 
@@ -21,21 +23,20 @@ namespace tasks {
 template<typename Derived, osPriority_t Priority = osPriorityNormal, uint32_t StackSize = 128>
 class Task {
 public:
-	Task() = default;
-
-	Task(Task&&) 					= delete;
-	Task(const Task&)				= delete;
-	Task& operator=(const Task&) 	= delete;
-	Task& operator=(Task&&) 		= delete;
-
 	void start(const char* name) {
 		if (taskHandle) {
 			return;
 		}
-		osThreadAttr_t attr = {};
-		attr.name = name;
-		attr.stack_size = StackSize;
-		attr.priority = Priority;
+
+		const osThreadAttr_t attr = {
+		  .name = name,
+		  .attr_bits = osThreadDetached,
+		  .cb_mem = &tcb,
+		  .cb_size = sizeof(StaticTask_t),
+		  .stack_mem = stack,
+		  .stack_size = sizeof(stack),
+		  .priority = osPriorityNormal,
+		};
 		taskHandle = osThreadNew(taskEntry, this, &attr);
 	}
 
@@ -47,6 +48,9 @@ protected:
 	osThreadId_t taskHandle = nullptr;
 
 private:
+	StaticTask_t tcb;
+	StackType_t stack[StackSize];
+
 	static void taskEntry(void* arg) {
 		Derived* self = static_cast<Derived*>(arg);
 
