@@ -1,14 +1,19 @@
 #include "vehicle_state.hpp"
+#include "cmsis_os2.h"
 
 
 namespace vehicle {
 
 VehicleState::VehicleState() {
-	wheelSpeeds 				= {0, 0, 0, 0};
-	acceleratorPedalPositions 	= {0, 0};
-	brakePressures 				= {0, 0};
+	osMutexAttr_t mutexAttr;
 
-	steeringAngleDegrees 		= 0;
+	mutexAttr = {
+	    "PedalsMutex",
+		osMutexRobust,
+	    &pedalsMutexBuffer,
+	    sizeof(pedalsMutexBuffer)
+	};
+	pedalsMutex = osMutexNew(&mutexAttr);
 
 	readyToDriveButtonPressed 	= false;
 	shutdownCircuitClosed 		= false;
@@ -16,20 +21,17 @@ VehicleState::VehicleState() {
 	readyToDrive 				= false;
 }
 
-const VehicleState::WheelSpeeds VehicleState::getWheelSpeeds() const {
+
+const Pedals VehicleState::getPedals() const {
+	return pedals;
+}
+
+const WheelSpeeds VehicleState::getWheelSpeeds() const {
 	return wheelSpeeds;
 }
 
-const VehicleState::AcceleratorPedalPositions VehicleState::getAcceleratorPedalPositions() const {
-	return acceleratorPedalPositions;
-}
-
-const VehicleState::BrakePressures VehicleState::getBrakePressures() const {
-	return brakePressures;
-}
-
-float VehicleState::getSteeringAngleDegrees() const {
-	return steeringAngleDegrees;
+const Steering VehicleState::getSteering() const {
+	return steering;
 }
 
 bool VehicleState::getReadyToDriveButtonPressed() const {
@@ -60,18 +62,12 @@ void VehicleState::setWheelSpeedRR(float wheelSpeed) {
 	wheelSpeeds.rearRight = std::isfinite(wheelSpeed) ? wheelSpeed : 0;
 }
 
-void VehicleState::setAcceleratorPedalPositions(float app1, float app2) {
-	acceleratorPedalPositions.app1 = app1;
-	acceleratorPedalPositions.app2 = app2;
+void VehicleState::setPedals(Pedals pedals) {
+	this->pedals = std::move(pedals);
 }
 
-void VehicleState::setBrakePressures(float front, float rear) {
-	brakePressures.front = front;
-	brakePressures.rear = rear;
-}
-
-void VehicleState::setSteeringAngleDegrees(float degrees) {
-	steeringAngleDegrees = std::isfinite(degrees) ? degrees : 0;
+void VehicleState::setSteeringAngleDegrees(Steering steering) {
+	this->steering = std::move(steering);
 }
 
 void VehicleState::setReadyToDriveButtonPressed(bool status) {

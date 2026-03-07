@@ -19,20 +19,19 @@ const uint32_t FAULT_DEBOUNCE_DELAY_MS = 100;						// T.4.2.5 & T.4.3.3
 
 struct TimedFault {
 	bool faultActive = false;
-	uint32_t faultTime = 0;
+	uint32_t faultStartTick = 0;
 
 	void update(bool faulting, uint32_t currentTick) {
 		if (!faulting) {
 			faultActive = false;
-			faultTime = 0;
 		} else if (!faultActive) {
 			faultActive = true;
-			faultTime = currentTick;
+			faultStartTick = currentTick;
 		}
 	}
 
 	bool torqueInhibited(uint32_t currentTick) const {
-		return faultActive && ((currentTick - faultTime) >= FAULT_DEBOUNCE_DELAY_MS);
+		return faultActive && ((currentTick - faultStartTick) >= FAULT_DEBOUNCE_DELAY_MS);
 	}
 };
 

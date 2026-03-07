@@ -15,31 +15,20 @@ void ControlLoopTask::setup() {
 
 void ControlLoopTask::loop() {
 	if (vehicle::vehicleState.getReadyToDrive()) {
-		const vehicle::VehicleState::AcceleratorPedalPositions acceleratorPedalPositions = vehicle::vehicleState.getAcceleratorPedalPositions();
-		const vehicle::VehicleState::BrakePressures brakePressures = vehicle::vehicleState.getBrakePressures();
-
+		const vehicle::Pedals pedals = vehicle::vehicleState.getPedals();
 		const float torqueCapability = vehicle::inverter.getTorqueCapability();
 
-		const float app1 = acceleratorPedalPositions.app1;
-		const float app2 = acceleratorPedalPositions.app2;
-		const float bsef = brakePressures.front;
-		const float bser = brakePressures.rear;
-		const float appCommand = acceleratorPedalPositions.app1;	// value being used for calculations
+		const float appCommand = pedals.app1;	// value being used for calculations
 
-		const bool app1Valid = acceleratorPedalPositions.app1Valid;
-		const bool app2Valid = acceleratorPedalPositions.app2Valid;
-		const bool bsefValid = brakePressures.frontValid;
-		const bool bserValid = brakePressures.rearValid;
-
-		const bool appsPlausible = torque::isAPPSPlausible(app1, app2);
-		const bool appsBrakePedalPlausible = torque::isAPPSBrakePedalPlausible(appsBrakePedalPlausibilityFaulted, appCommand, bsef, bser);
+		const bool appsPlausible = torque::isAPPSPlausible(pedals.app1, pedals.app2);
+		const bool appsBrakePedalPlausible = torque::isAPPSBrakePedalPlausible(appsBrakePedalPlausibilityFaulted, appCommand, pedals.bsef, pedals.bser);
 
 		const uint32_t currentTick = HAL_GetTick();
 
-		app1Fault.update(!app1Valid, currentTick);
-		app2Fault.update(!app2Valid, currentTick);
-		bsefFault.update(!bsefValid, currentTick);
-		bserFault.update(!bserValid, currentTick);
+		app1Fault.update(!pedals.app1Valid, currentTick);
+		app2Fault.update(!pedals.app2Valid, currentTick);
+		bsefFault.update(!pedals.bsefValid, currentTick);
+		bserFault.update(!pedals.bserValid, currentTick);
 		appsPlausibilityFault.update(!appsPlausible, currentTick);
 		appsBrakePedalPlausibilityFaulted = appsBrakePedalPlausible;
 
