@@ -13,7 +13,7 @@ public:
 	 *
 	 * @param hadc ADC handle
 	 */
-	void init(ADC_HandleTypeDef *hadc);
+	void init(ADC_HandleTypeDef& hadc);
 
 	/*
 	 * @brief Process and update from the first half of the buffer

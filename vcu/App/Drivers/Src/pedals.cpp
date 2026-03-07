@@ -7,9 +7,9 @@
 
 namespace drivers::pedals {
 
-void Pedals::init(ADC_HandleTypeDef *hadc) {
-	this->hadc = hadc;
-	HAL_ADC_Start_DMA(hadc, reinterpret_cast<uint32_t*>(buffer), BUFFER_SIZE * ADC_CHANNELS); 	// HAL expects uint32_t buffers, but DMA writes uint16_t
+void Pedals::init(ADC_HandleTypeDef& hadc) {
+	this->hadc = &hadc;
+	HAL_ADC_Start_DMA(&hadc, reinterpret_cast<uint32_t*>(buffer), BUFFER_SIZE * ADC_CHANNELS); 	// HAL expects uint32_t buffers, but DMA writes uint16_t
 }
 
 vehicle::Pedals Pedals::processBuffer(size_t start, size_t length) {
