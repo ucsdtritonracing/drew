@@ -30,6 +30,7 @@
 // Tasks
 #include "task_can_bus.hpp"
 #include "task_control_loop.hpp"
+#include "task_pedals.hpp"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -79,6 +80,7 @@ const osMessageQueueAttr_t CANBus2RxQueue_attributes = {
 static tasks::CANBusTask CANBus1Task;
 static tasks::CANBusTask CANBus2Task;
 static tasks::ControlLoopTask ControlLoopTask;
+static tasks::PedalsTask PedalsTask;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -905,6 +907,18 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
 		if (HAL_FDCAN_ActivateNotification(hfdcan, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0) != HAL_OK) {
 			Error_Handler();
 		}
+	}
+}
+
+void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc) {
+	if (hadc == vehicle::pedals.getHADC()) {
+		osThreadFlagsSet(PedalsTask.getHandle(), tasks::PedalsTask::PEDAL_BUFFER_HALF_COMPLETE_FLAG);
+	}
+}
+
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc) {
+	if (hadc == vehicle::pedals.getHADC()) {
+		osThreadFlagsSet(PedalsTask.getHandle(), tasks::PedalsTask::PEDAL_BUFFER_FULL_COMPLETE_FLAG);
 	}
 }
 
