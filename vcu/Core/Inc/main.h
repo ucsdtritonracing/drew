@@ -71,16 +71,22 @@ void Error_Handler(void);
 #define RCC_OSC_IN_GPIO_Port GPIOF
 #define RCC_OSC_OUT_Pin GPIO_PIN_1
 #define RCC_OSC_OUT_GPIO_Port GPIOF
-#define Shutdown_IN_Pin GPIO_PIN_0
-#define Shutdown_IN_GPIO_Port GPIOC
-#define BSE_IN_Pin GPIO_PIN_0
-#define BSE_IN_GPIO_Port GPIOA
+#define APP1_IN_Pin GPIO_PIN_0
+#define APP1_IN_GPIO_Port GPIOC
+#define APP2_IN_Pin GPIO_PIN_1
+#define APP2_IN_GPIO_Port GPIOC
+#define BSER_IN_Pin GPIO_PIN_0
+#define BSER_IN_GPIO_Port GPIOA
+#define BSEF_IN_Pin GPIO_PIN_1
+#define BSEF_IN_GPIO_Port GPIOA
 #define APPS2_IN_Pin GPIO_PIN_4
 #define APPS2_IN_GPIO_Port GPIOA
 #define LD2_Pin GPIO_PIN_5
 #define LD2_GPIO_Port GPIOA
 #define APPS1_IN_Pin GPIO_PIN_0
 #define APPS1_IN_GPIO_Port GPIOB
+#define RRWSS_Pin GPIO_PIN_1
+#define RRWSS_GPIO_Port GPIOB
 #define RLWSS_Pin GPIO_PIN_2
 #define RLWSS_GPIO_Port GPIOB
 #define FLWSS_Pin GPIO_PIN_14
@@ -97,6 +103,10 @@ void Error_Handler(void);
 #define T_SWCLK_GPIO_Port GPIOA
 #define R2D_Button_Pin GPIO_PIN_10
 #define R2D_Button_GPIO_Port GPIOC
+#define IMD_Fault_Pin GPIO_PIN_11
+#define IMD_Fault_GPIO_Port GPIOC
+#define BMS_Fault_Pin GPIO_PIN_2
+#define BMS_Fault_GPIO_Port GPIOD
 #define T_SWO_Pin GPIO_PIN_3
 #define T_SWO_GPIO_Port GPIOB
 

@@ -23,6 +23,8 @@
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */
+extern DMA_HandleTypeDef hdma_adc1;
+
 extern DMA_HandleTypeDef hdma_uart5_rx;
 
 /* Private typedef -----------------------------------------------------------*/
@@ -117,14 +119,41 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* hadc)
       __HAL_RCC_ADC12_CLK_ENABLE();
     }
 
+    __HAL_RCC_GPIOC_CLK_ENABLE();
     __HAL_RCC_GPIOA_CLK_ENABLE();
     /**ADC1 GPIO Configuration
+    PC0     ------> ADC1_IN6
+    PC1     ------> ADC1_IN7
     PA0     ------> ADC1_IN1
+    PA1     ------> ADC1_IN2
     */
-    GPIO_InitStruct.Pin = BSE_IN_Pin;
+    GPIO_InitStruct.Pin = APP1_IN_Pin|APP2_IN_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
-    HAL_GPIO_Init(BSE_IN_GPIO_Port, &GPIO_InitStruct);
+    HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = BSER_IN_Pin|BSEF_IN_Pin;
+    GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+    /* ADC1 DMA Init */
+    /* ADC1 Init */
+    hdma_adc1.Instance = DMA1_Channel1;
+    hdma_adc1.Init.Request = DMA_REQUEST_ADC1;
+    hdma_adc1.Init.Direction = DMA_PERIPH_TO_MEMORY;
+    hdma_adc1.Init.PeriphInc = DMA_PINC_DISABLE;
+    hdma_adc1.Init.MemInc = DMA_MINC_ENABLE;
+    hdma_adc1.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
+    hdma_adc1.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;
+    hdma_adc1.Init.Mode = DMA_CIRCULAR;
+    hdma_adc1.Init.Priority = DMA_PRIORITY_LOW;
+    if (HAL_DMA_Init(&hdma_adc1) != HAL_OK)
+    {
+      Error_Handler();
+    }
+
+    __HAL_LINKDMA(hadc,DMA_Handle,hdma_adc1);
 
     /* USER CODE BEGIN ADC1_MspInit 1 */
 
@@ -218,10 +247,17 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* hadc)
     }
 
     /**ADC1 GPIO Configuration
+    PC0     ------> ADC1_IN6
+    PC1     ------> ADC1_IN7
     PA0     ------> ADC1_IN1
+    PA1     ------> ADC1_IN2
     */
-    HAL_GPIO_DeInit(BSE_IN_GPIO_Port, BSE_IN_Pin);
+    HAL_GPIO_DeInit(GPIOC, APP1_IN_Pin|APP2_IN_Pin);
 
+    HAL_GPIO_DeInit(GPIOA, BSER_IN_Pin|BSEF_IN_Pin);
+
+    /* ADC1 DMA DeInit */
+    HAL_DMA_DeInit(hadc->DMA_Handle);
     /* USER CODE BEGIN ADC1_MspDeInit 1 */
 
     /* USER CODE END ADC1_MspDeInit 1 */
@@ -439,12 +475,12 @@ void HAL_TIM_IC_MspInit(TIM_HandleTypeDef* htim_ic)
     /**TIM3 GPIO Configuration
     PB1     ------> TIM3_CH4
     */
-    GPIO_InitStruct.Pin = GPIO_PIN_1;
+    GPIO_InitStruct.Pin = RRWSS_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
     GPIO_InitStruct.Alternate = GPIO_AF2_TIM3;
-    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+    HAL_GPIO_Init(RRWSS_GPIO_Port, &GPIO_InitStruct);
 
     /* TIM3 interrupt Init */
     HAL_NVIC_SetPriority(TIM3_IRQn, 5, 0);
@@ -528,7 +564,7 @@ void HAL_TIM_IC_MspDeInit(TIM_HandleTypeDef* htim_ic)
     /**TIM3 GPIO Configuration
     PB1     ------> TIM3_CH4
     */
-    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_1);
+    HAL_GPIO_DeInit(RRWSS_GPIO_Port, RRWSS_Pin);
 
     /* TIM3 interrupt DeInit */
     HAL_NVIC_DisableIRQ(TIM3_IRQn);
@@ -607,35 +643,26 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart)
     __HAL_RCC_UART5_CLK_ENABLE();
 
     __HAL_RCC_GPIOC_CLK_ENABLE();
-    __HAL_RCC_GPIOD_CLK_ENABLE();
     /**UART5 GPIO Configuration
     PC12     ------> UART5_TX
-    PD2     ------> UART5_RX
     */
     GPIO_InitStruct.Pin = GPIO_PIN_12;
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_OD;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
     GPIO_InitStruct.Alternate = GPIO_AF5_UART5;
     HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-    GPIO_InitStruct.Pin = GPIO_PIN_2;
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-    GPIO_InitStruct.Alternate = GPIO_AF5_UART5;
-    HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
-
     /* UART5 DMA Init */
     /* UART5_RX Init */
-    hdma_uart5_rx.Instance = DMA1_Channel1;
+    hdma_uart5_rx.Instance = DMA1_Channel2;
     hdma_uart5_rx.Init.Request = DMA_REQUEST_UART5_RX;
     hdma_uart5_rx.Init.Direction = DMA_PERIPH_TO_MEMORY;
     hdma_uart5_rx.Init.PeriphInc = DMA_PINC_DISABLE;
     hdma_uart5_rx.Init.MemInc = DMA_MINC_ENABLE;
     hdma_uart5_rx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
     hdma_uart5_rx.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
-    hdma_uart5_rx.Init.Mode = DMA_NORMAL;
+    hdma_uart5_rx.Init.Mode = DMA_CIRCULAR;
     hdma_uart5_rx.Init.Priority = DMA_PRIORITY_LOW;
     if (HAL_DMA_Init(&hdma_uart5_rx) != HAL_OK)
     {
@@ -670,11 +697,8 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* huart)
 
     /**UART5 GPIO Configuration
     PC12     ------> UART5_TX
-    PD2     ------> UART5_RX
     */
     HAL_GPIO_DeInit(GPIOC, GPIO_PIN_12);
-
-    HAL_GPIO_DeInit(GPIOD, GPIO_PIN_2);
 
     /* UART5 DMA DeInit */
     HAL_DMA_DeInit(huart->hdmarx);
