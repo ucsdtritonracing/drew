@@ -1,20 +1,11 @@
 #include "vehicle_state.hpp"
 #include "cmsis_os2.h"
+#include "atomic"
 
 
 namespace vehicle {
 
 VehicleState::VehicleState() {
-	osMutexAttr_t mutexAttr;
-
-	mutexAttr = {
-	    "PedalsMutex",
-		osMutexRobust,
-	    &pedalsMutexBuffer,
-	    sizeof(pedalsMutexBuffer)
-	};
-	pedalsMutex = osMutexNew(&mutexAttr);
-
 	readyToDriveButtonPressed 	= false;
 	shutdownCircuitClosed 		= false;
 
@@ -23,7 +14,7 @@ VehicleState::VehicleState() {
 
 
 const Pedals VehicleState::getPedals() const {
-	return pedals;
+	return pedals.get();
 }
 
 const WheelSpeeds VehicleState::getWheelSpeeds() const {
@@ -31,19 +22,19 @@ const WheelSpeeds VehicleState::getWheelSpeeds() const {
 }
 
 const Steering VehicleState::getSteering() const {
-	return steering;
+	return steering.get();
 }
 
 bool VehicleState::getReadyToDriveButtonPressed() const {
-	return readyToDriveButtonPressed;
+	return readyToDriveButtonPressed.load(std::memory_order_relaxed);
 }
 
 bool VehicleState::getShutdownCircuitClosed() const {
-	return shutdownCircuitClosed;
+	return shutdownCircuitClosed.load(std::memory_order_relaxed);
 }
 
 bool VehicleState::getReadyToDrive() const {
-	return readyToDrive;
+	return readyToDrive.load(std::memory_order_relaxed);
 }
 
 void VehicleState::setWheelSpeedFL(float wheelSpeed) {
@@ -63,23 +54,39 @@ void VehicleState::setWheelSpeedRR(float wheelSpeed) {
 }
 
 void VehicleState::setPedals(Pedals pedals) {
-	this->pedals = std::move(pedals);
+	if (pedals.app1 < 0 || pedals.app1 > 1 || !std::isfinite(pedals.app1)) {
+		return;
+	}
+
+	if (pedals.app2 < 0 || pedals.app2 > 1 || !std::isfinite(pedals.app2)) {
+		return;
+	}
+
+	if (pedals.bsef < 0 || pedals.bsef > 1 || !std::isfinite(pedals.bsef)) {
+		return;
+	}
+
+	if (pedals.bser < 0 || pedals.bser > 1 || !std::isfinite(pedals.bser)) {
+		return;
+	}
+
+	this->pedals.update(std::move(pedals));
 }
 
 void VehicleState::setSteeringAngleDegrees(Steering steering) {
-	this->steering = std::move(steering);
+	this->steering.update(std::move(steering));
 }
 
 void VehicleState::setReadyToDriveButtonPressed(bool status) {
-	readyToDriveButtonPressed = status;
+	readyToDriveButtonPressed.store(status, std::memory_order_relaxed);
 }
 
 void VehicleState::setShutdownCircuitClosed(bool status) {
-	shutdownCircuitClosed = status;
+	shutdownCircuitClosed.store(status, std::memory_order_relaxed);
 }
 
 void VehicleState::setReadyToDrive(bool status) {
-	readyToDrive = status;
+	readyToDrive.store(status, std::memory_order_relaxed);
 }
 
 VehicleState vehicleState{};

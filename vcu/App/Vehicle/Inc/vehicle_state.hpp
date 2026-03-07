@@ -2,9 +2,9 @@
 
 #include "stdint.h"
 #include "cmath"
+#include "atomic"
 #include "vehicle_state_types.hpp"
-#include "cmsis_os2.h"
-#include "freertos.h"
+#include "snapshot.hpp"
 
 
 namespace vehicle {
@@ -33,20 +33,16 @@ public:
 
 private:
 	// High sample rate sensors
-	Pedals pedals;
+	Snapshot<Pedals> pedals;
 	WheelSpeeds wheelSpeeds;
-    Steering steering;
+    Snapshot<Steering> steering;
 
     // Polled signals
-	bool readyToDriveButtonPressed;
-	bool shutdownCircuitClosed;
+	std::atomic<bool> readyToDriveButtonPressed;
+	std::atomic<bool> shutdownCircuitClosed;
 
 	// Abstract state
-    bool readyToDrive;
-
-    // Synchronization
-	osMutexId_t pedalsMutex;
-	StaticSemaphore_t pedalsMutexBuffer;
+    std::atomic<bool> readyToDrive;
 };
 
 extern VehicleState vehicleState;
