@@ -10,9 +10,10 @@ namespace vehicle {
 
 drivers::can::CANBus CANBus1{};
 drivers::can::CANBus CANBus2{};
-drivers::pdu::PDU pdu(CANBus1);
-drivers::sas::SteeringAngleSensor sas(CANBus1);
 drivers::inverter::Inverter inverter(CANBus1);
+drivers::sas::SteeringAngleSensor sas(CANBus1);
+drivers::pedals::Pedals pedals{};
+drivers::pdu::PDU pdu(CANBus1);
 drivers::imu::IMU imu;
 
 } // namespace vehicle
