@@ -191,6 +191,8 @@ int main(void)
   CANBus2Task.init(vehicle::CANBus2, CANBus2RxQueueHandle);
   CANBus2Task.start("CAN Bus 2 Task");
 
+  PedalsTask.start("Pedals Task");
+
   ControlLoopTask.start("Control Loop Task");
 
   /* USER CODE END RTOS_THREADS */
