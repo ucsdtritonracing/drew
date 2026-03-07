@@ -5,29 +5,59 @@
 
 namespace torque {
 
-static constexpr uint16_t MAX_TORQUE_LIMIT = 90; // N.m
+constexpr uint16_t MAX_TORQUE_LIMIT_NM = 90;
+
+// T.4.2 Accelerator Pedal Position Sensor - APPS
+constexpr float APPS_DEVIATION_MIN_ACTIVATION_THRESHOLD = 0.1;		// T.4.2.3
+constexpr float APPS_DEVIATION_MAX_THRESHOLD = 0.1;					// T.4.2.4
+
+// EV.4.7 APPS / Brake Pedal Plausibility Check (ABPPC)
+constexpr float ABPPC_APP_FAULT_THRESHOLD = 0.25;					// EV.4.7.1
+constexpr float ABPPC_APP_RESET_THRESHOLD = 0.05;					// EV.4.7.2
+
+const uint32_t FAULT_DEBOUNCE_DELAY_MS = 100;						// T.4.2.5 & T.4.3.3
+
+struct TimedFault {
+	bool faultActive = false;
+	uint32_t faultTime = 0;
+
+	void update(bool faulting, uint32_t currentTick) {
+		if (!faulting) {
+			faultActive = false;
+			faultTime = 0;
+		} else if (!faultActive) {
+			faultActive = true;
+			faultTime = currentTick;
+		}
+	}
+
+	bool torqueInhibited(uint32_t currentTick) const {
+		return faultActive && ((currentTick - faultTime) >= FAULT_DEBOUNCE_DELAY_MS);
+	}
+};
 
 /*
  * @brief Compute the driver torque request as a scalar from 0 to 1
  *
- * @param apps Accelerator pedal positions
- * @param motorRPM Motor speed in RPM
+ * @param app Accelerator pedal position
  */
-float computeDriverTorqueRequest(vehicle::VehicleState::AcceleratorPedalPositions apps);
+float computeDriverTorqueRequest(float app);
 
 /*
  * @brief Compute whether accelerator pedal positions are plausible
  *
- * @param apps Accelerator pedal positions
+ * @param app1 APPS1 pedal position
+ * @param app2 APPS2 pedal position
  */
-bool isAPPSPlausible(vehicle::VehicleState::AcceleratorPedalPositions apps);
+bool isAPPSPlausible(float app1, float app2);
 
 /*
- * @brief Compute whether accelerator pedal position + BSE signals are plausible
+ * @brief Compute whether accelerator pedal position and BSE signals are plausible
  *
- * @param apps Accelerator pedal positions
- * @param bse Brake Pressure readings
+ * @param faultActive Current fault state
+ * @param bsef Front BSE pressure
+ * @param bser Rear BSE pressure
  */
-bool isAPPSBrakePedalPlausible(vehicle::VehicleState::AcceleratorPedalPositions apps, vehicle::VehicleState::BrakePressures);
+bool isAPPSBrakePedalPlausible(bool faultActive, float app, float bsef, float bser);
 
 } // namespace torque

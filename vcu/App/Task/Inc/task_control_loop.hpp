@@ -1,48 +1,25 @@
 #pragma once
 #include "task.hpp"
+#include "torque.hpp"
 #include "stm32g4xx_hal.h"
 
 namespace tasks {
 
-static const uint32_t TORQUE_INHIBIT_DELAY = 100;
-
-struct TimedFault {
-	bool faultActive = false;
-	uint32_t faultTime = 0;
-	void update(bool faultStatus) {
-		if(faultStatus) {
-			if(!faultActive) {
-				faultActive = true;
-				faultTime = HAL_GetTick();
-			}
-		} else {
-			faultActive = false;
-			faultTime = 0;
-		}
-	}
-	bool torqueInhibited() const {
-		return faultActive && ((HAL_GetTick() - faultTime) >= TORQUE_INHIBIT_DELAY);
-	}
-};
-
 class ControlLoopTask : public Task<ControlLoopTask> {
 public:
+	void setup();
 	void loop();
 
 private:
-	static const uint32_t CONTROL_LOOP_PERIOD_MS = 				3;
-	static constexpr float APPS_PEDAL_TRAVEL_RESET_THRESHOLD = 	0.05;
+	static const uint32_t CONTROL_LOOP_PERIOD_MS = 3;
 
-	TimedFault app1Fault;
-	TimedFault app2Fault;
-	TimedFault frontBSEFault;
-	TimedFault rearBSEFault;
-	TimedFault appsPlausibilityFault;
+	torque::TimedFault app1Fault;
+	torque::TimedFault app2Fault;
+	torque::TimedFault bsefFault;
+	torque::TimedFault bserFault;
+	torque::TimedFault appsPlausibilityFault;
 
-	bool appsBrakePedalPlausibilityFaulted = 					false;
-	bool requestZeroTorque;
-
-	void updateAPPSBrakePedalPlausibility();
+	bool appsBrakePedalPlausibilityFaulted;
 };
 
 } // namespace tasks

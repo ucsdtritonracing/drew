@@ -1,22 +1,29 @@
 #include "torque.hpp"
 #include "vehicle_state.hpp"
+#include "vehicle_configuration.hpp"
 #include <cmath>
 
 namespace torque {
 
-float computeDriverTorqueRequest(vehicle::VehicleState::AcceleratorPedalPositions apps) {
-	return 1.0f / (1.0f + std::exp(-11.0f * (apps.app1 - 0.5f)));
+float computeDriverTorqueRequest(float app) {
+	return 1.0f / (1.0f + std::exp(-11.0f * (app - 0.5f)));
 }
 
-bool isAPPSPlausible(vehicle::VehicleState::AcceleratorPedalPositions apps) {
-	if ((apps.app1 < 0.1) || (apps.app2 < 0.1)) {
+bool isAPPSPlausible(float app1, float app2) {
+	if ((app1 < APPS_DEVIATION_MIN_ACTIVATION_THRESHOLD) || (app2 < APPS_DEVIATION_MIN_ACTIVATION_THRESHOLD)) {
 		return true;
 	}
-	return std::abs(apps.app1 - apps.app2) <= 0.1;
+	return std::abs(app1 - app2) <= APPS_DEVIATION_MAX_THRESHOLD;
 }
 
-bool isAPPSBrakePedalPlausible(vehicle::VehicleState::AcceleratorPedalPositions apps, vehicle::VehicleState::BrakePressures brake) {
-	return (apps.app1 <= 0.25) || (brake.front <= 0.25);
+bool isAPPSBrakePedalPlausible(bool faultActive, float app, float bsef, float bser) {
+	if (!faultActive) {
+		return (app <= ABPPC_APP_FAULT_THRESHOLD) ||
+			   (bsef <= vehicle::vehicleConfiguration.bsefBrakeEngagedThreshold) ||
+			   (bser <= vehicle::vehicleConfiguration.bserBrakeEngagedThreshold);
+	} else {
+		return (app <= ABPPC_APP_RESET_THRESHOLD);
+	}
 }
 
 } // namespace torque
