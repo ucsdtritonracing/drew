@@ -15,19 +15,27 @@ class VehicleConfiguration {
 	static constexpr float INITIAL_APPS2_LO_THRESHOLD_VOLTAGE 	= 0.2f;
 	static constexpr float INITIAL_APPS2_HI_THRESHOLD_VOLTAGE 	= 2.7f;
 
+	static constexpr float INITIAL_BSEF_LO_THRESHOLD_VOLTAGE 	= 0.5f;
+	static constexpr float INITIAL_BSEF_HI_THRESHOLD_VOLTAGE 	= 4.5f;
+	static constexpr float INITIAL_BSER_LO_THRESHOLD_VOLTAGE 	= 0.5f;
+	static constexpr float INITIAL_BSER_HI_THRESHOLD_VOLTAGE 	= 4.5f;
+
 	static constexpr float INITIAL_BSEF_BRAKE_ENGAGED_THRESHOLD = 0.25;
 	static constexpr float INITIAL_BSER_BRAKE_ENGAGED_THRESHOLD = 0.25;
 
 public:
-	float apps1LoThresholdVolts;
-	float apps1HiThresholdVolts;
-	float apps2LoThresholdVolts;
-	float apps2HiThresholdVolts;
+	float apps1LoThresholdVoltage = INITIAL_APPS1_LO_THRESHOLD_VOLTAGE;
+	float apps1HiThresholdVoltage = INITIAL_APPS1_HI_THRESHOLD_VOLTAGE;
+	float apps2LoThresholdVoltage = INITIAL_APPS2_LO_THRESHOLD_VOLTAGE;
+	float apps2HiThresholdVoltage = INITIAL_APPS2_HI_THRESHOLD_VOLTAGE;
 
-	float bsefBrakeEngagedThreshold;
-	float bserBrakeEngagedThreshold;
+	float bsefLoThresholdVoltage = INITIAL_BSEF_LO_THRESHOLD_VOLTAGE;
+	float bsefHiThresholdVoltage = INITIAL_BSEF_HI_THRESHOLD_VOLTAGE;
+	float bserLoThresholdVoltage = INITIAL_BSER_LO_THRESHOLD_VOLTAGE;
+	float bserHiThresholdVoltage = INITIAL_BSER_HI_THRESHOLD_VOLTAGE;
 
-	VehicleConfiguration();
+	float bsefBrakeEngagedThreshold = INITIAL_BSEF_BRAKE_ENGAGED_THRESHOLD;
+	float bserBrakeEngagedThreshold = INITIAL_BSER_BRAKE_ENGAGED_THRESHOLD;
 };
 
 extern VehicleConfiguration vehicleConfiguration;
