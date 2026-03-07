@@ -79,12 +79,8 @@ void Error_Handler(void);
 #define BSER_IN_GPIO_Port GPIOA
 #define BSEF_IN_Pin GPIO_PIN_1
 #define BSEF_IN_GPIO_Port GPIOA
-#define APPS2_IN_Pin GPIO_PIN_4
-#define APPS2_IN_GPIO_Port GPIOA
 #define LD2_Pin GPIO_PIN_5
 #define LD2_GPIO_Port GPIOA
-#define APPS1_IN_Pin GPIO_PIN_0
-#define APPS1_IN_GPIO_Port GPIOB
 #define RRWSS_Pin GPIO_PIN_1
 #define RRWSS_GPIO_Port GPIOB
 #define RLWSS_Pin GPIO_PIN_2
