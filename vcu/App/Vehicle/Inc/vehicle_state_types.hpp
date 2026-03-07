@@ -1,3 +1,5 @@
+#pragma once
+
 namespace vehicle {
 
 struct Pedals {
