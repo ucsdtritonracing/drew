@@ -13,15 +13,15 @@ void Pedals::init(ADC_HandleTypeDef& hadc) {
 }
 
 vehicle::Pedals Pedals::processBuffer(size_t start, size_t length) {
-	const float app1Lo = vehicle::vehicleConfiguration.apps1LoThresholdVoltage;
-	const float app1Hi = vehicle::vehicleConfiguration.apps1HiThresholdVoltage;
-	const float app2Lo = vehicle::vehicleConfiguration.apps2LoThresholdVoltage;
-	const float app2Hi = vehicle::vehicleConfiguration.apps2HiThresholdVoltage;
+	const float app1Lo = vehicle::vehicleConfiguration.apps1LoThresholdVoltage * ADC_MAX_VALUE / ADC_MAX_VOLTAGE;
+	const float app1Hi = vehicle::vehicleConfiguration.apps1HiThresholdVoltage * ADC_MAX_VALUE / ADC_MAX_VOLTAGE;
+	const float app2Lo = vehicle::vehicleConfiguration.apps2LoThresholdVoltage * ADC_MAX_VALUE / ADC_MAX_VOLTAGE;
+	const float app2Hi = vehicle::vehicleConfiguration.apps2HiThresholdVoltage * ADC_MAX_VALUE / ADC_MAX_VOLTAGE;
 
-	const float bsefLo = vehicle::vehicleConfiguration.bsefLoThresholdVoltage;
-	const float bsefHi = vehicle::vehicleConfiguration.bsefHiThresholdVoltage;
-	const float bserLo = vehicle::vehicleConfiguration.bserLoThresholdVoltage;
-	const float bserHi = vehicle::vehicleConfiguration.bserHiThresholdVoltage;
+	const float bsefLo = vehicle::vehicleConfiguration.bsefLoThresholdVoltage * ADC_MAX_VALUE / ADC_MAX_VOLTAGE;
+	const float bsefHi = vehicle::vehicleConfiguration.bsefHiThresholdVoltage * ADC_MAX_VALUE / ADC_MAX_VOLTAGE;
+	const float bserLo = vehicle::vehicleConfiguration.bserLoThresholdVoltage * ADC_MAX_VALUE / ADC_MAX_VOLTAGE;
+	const float bserHi = vehicle::vehicleConfiguration.bserHiThresholdVoltage * ADC_MAX_VALUE / ADC_MAX_VOLTAGE;
 
 	float app1Sum = 0;
 	float app2Sum = 0;
