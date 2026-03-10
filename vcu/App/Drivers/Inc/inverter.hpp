@@ -71,7 +71,7 @@ public:
 	 * @param torque request
 	 * @param inverter enabled or disabled
 	 */
-	void sendCommandMessage(uint16_t torqueRequestNm, bool inverterEnable);
+	void sendCommandMessage(float torqueRequestNm, bool inverterEnable);
 
 	/*
 	 * @brief Process Temperature 1 message
