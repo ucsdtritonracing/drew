@@ -10,7 +10,7 @@ float computeDriverTorqueRequest(float app) {
 }
 
 bool isAPPSPlausible(float app1, float app2) {
-	if ((app1 < APPS_DEVIATION_MIN_ACTIVATION_THRESHOLD) || (app2 < APPS_DEVIATION_MIN_ACTIVATION_THRESHOLD)) {
+	if ((app1 < APPS_DEVIATION_MIN_ACTIVATION_THRESHOLD) && (app2 < APPS_DEVIATION_MIN_ACTIVATION_THRESHOLD)) {
 		return true;
 	}
 	return std::abs(app1 - app2) <= APPS_DEVIATION_MAX_THRESHOLD;
@@ -19,8 +19,8 @@ bool isAPPSPlausible(float app1, float app2) {
 bool isAPPSBrakePedalPlausible(bool faultActive, float app, float bsef, float bser) {
 	if (!faultActive) {
 		return (app <= ABPPC_APP_FAULT_THRESHOLD) ||
-			   (bsef <= vehicle::vehicleConfiguration.bsefBrakeEngagedThreshold) ||
-			   (bser <= vehicle::vehicleConfiguration.bserBrakeEngagedThreshold);
+			   ((bsef <= vehicle::vehicleConfiguration.bsefBrakeEngagedThreshold) &&
+			   (bser <= vehicle::vehicleConfiguration.bserBrakeEngagedThreshold));
 	} else {
 		return (app <= ABPPC_APP_RESET_THRESHOLD);
 	}
