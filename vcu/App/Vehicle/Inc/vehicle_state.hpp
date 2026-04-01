@@ -19,7 +19,7 @@ public:
 
 	bool getReadyToDriveButtonPressed() const;
 	bool getShutdownCircuitClosed() const;
-    bool getReadyToDrive() const;
+    vehicle::Mode getMode() const;
 
     void setPedals(Pedals pedals);
 	void setSteeringAngleDegrees(Steering steering);
@@ -29,7 +29,7 @@ public:
     void setWheelSpeedRR(float wheelSpeed);
 	void setReadyToDriveButtonPressed(bool status);
 	void setShutdownCircuitClosed(bool status);
-	void setReadyToDrive(bool status);
+	void setMode(vehicle::Mode newMode);
 
 private:
 	// High sample rate sensors
@@ -42,7 +42,7 @@ private:
 	std::atomic<bool> shutdownCircuitClosed;
 
 	// Abstract state
-    std::atomic<bool> readyToDrive;
+    std::atomic<vehicle::Mode> mode;
 };
 
 extern VehicleState vehicleState;

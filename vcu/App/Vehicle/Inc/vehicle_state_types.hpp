@@ -25,4 +25,9 @@ struct Steering {
 	float angleDegrees = 0;
 };
 
+enum Mode {
+	IDLE,
+	READY_TO_DRIVE
+};
+
 } // namespace vehicle

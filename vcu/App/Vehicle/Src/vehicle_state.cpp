@@ -1,4 +1,5 @@
 #include "vehicle_state.hpp"
+#include "vehicle_state_types.hpp"
 #include "cmsis_os2.h"
 #include "atomic"
 
@@ -9,7 +10,7 @@ VehicleState::VehicleState() {
 	readyToDriveButtonPressed 	= false;
 	shutdownCircuitClosed 		= false;
 
-	readyToDrive 				= false;
+	mode						= IDLE;
 }
 
 
@@ -33,8 +34,8 @@ bool VehicleState::getShutdownCircuitClosed() const {
 	return shutdownCircuitClosed.load(std::memory_order_relaxed);
 }
 
-bool VehicleState::getReadyToDrive() const {
-	return readyToDrive.load(std::memory_order_relaxed);
+vehicle::Mode VehicleState::getMode() const {
+	return mode.load(std::memory_order_relaxed);
 }
 
 void VehicleState::setWheelSpeedFL(float wheelSpeed) {
@@ -85,8 +86,8 @@ void VehicleState::setShutdownCircuitClosed(bool status) {
 	shutdownCircuitClosed.store(status, std::memory_order_relaxed);
 }
 
-void VehicleState::setReadyToDrive(bool status) {
-	readyToDrive.store(status, std::memory_order_relaxed);
+void VehicleState::setMode(vehicle::Mode newMode) {
+	mode.store(newMode, std::memory_order_relaxed);
 }
 
 VehicleState vehicleState{};
