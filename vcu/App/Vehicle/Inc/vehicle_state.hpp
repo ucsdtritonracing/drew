@@ -2,7 +2,9 @@
 
 #include "stdint.h"
 #include "cmath"
+#include "atomic"
 #include "vehicle_state_types.hpp"
+#include "snapshot.hpp"
 
 
 namespace vehicle {
@@ -21,28 +23,25 @@ public:
 
     void setPedals(Pedals pedals);
 	void setSteeringAngleDegrees(Steering steering);
-    void setWheelSpeedFL(float wheelSpeed);
-    void setWheelSpeedFR(float wheelSpeed);
-    void setWheelSpeedRL(float wheelSpeed);
-    void setWheelSpeedRR(float wheelSpeed);
+    void setWheelSpeeds(WheelSpeeds wheelSpeeds);
 	void setReadyToDriveButtonPressed(bool status);
 	void setShutdownCircuitClosed(bool status);
 	void setMode(Mode newMode);
 
 private:
 	// High sample rate sensors
-	Pedals pedals;
-	WheelSpeeds wheelSpeeds;
-	Steering steering;
+	Snapshot<Pedals> pedals;
+	Snapshot<WheelSpeeds> wheelSpeeds;
+	Snapshot<Steering> steering;
 
 
     // Polled signals
-	bool readyToDriveButtonPressed;
-	bool shutdownCircuitClosed;
+	std::atomic<bool> readyToDriveButtonPressed;
+	std::atomic<bool> shutdownCircuitClosed;
 
 
-	// State
-    Mode mode;
+	// Abstract State
+    std::atomic<Mode> mode;
 
 };
 

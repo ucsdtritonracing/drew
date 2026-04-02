@@ -1,6 +1,8 @@
 #include "vehicle_state.hpp"
 #include "vehicle_state_types.hpp"
 #include "cmsis_os2.h"
+#include "atomic"
+
 
 namespace vehicle {
 
@@ -11,44 +13,49 @@ VehicleState::VehicleState() {
 }
 
 const Pedals VehicleState::getPedals() const {
-	return pedals;
+	return pedals.get();
 }
 
 const WheelSpeeds VehicleState::getWheelSpeeds() const {
-	return wheelSpeeds;
+	return wheelSpeeds.get();
 }
 
 const Steering VehicleState::getSteering() const {
-	return steering;
+	return steering.get();
 }
 
 bool VehicleState::getReadyToDriveButtonPressed() const {
-	return readyToDriveButtonPressed;
+	return readyToDriveButtonPressed.load(std::memory_order_relaxed);
 }
 
 bool VehicleState::getShutdownCircuitClosed() const {
-	return shutdownCircuitClosed;
+	return shutdownCircuitClosed.load(std::memory_order_relaxed);
 }
 
 Mode VehicleState::getMode() const {
-	return mode;
+	return mode.load(std::memory_order_relaxed);
 }
 
-void VehicleState::setWheelSpeedFL(float wheelSpeed) {
-	wheelSpeeds.frontLeft = std::isfinite(wheelSpeed) ? wheelSpeed : 0;
+void VehicleState::setWheelSpeeds(WheelSpeeds wheelSpeeds) {
+	if (!std::isfinite(wheelSpeeds.frontLeft)) {
+		return;
+	}
+
+	if (!std::isfinite(wheelSpeeds.frontRight)) {
+		return;
+	}
+
+	if (!std::isfinite(wheelSpeeds.rearLeft)) {
+		return;
+	}
+
+	if (!std::isfinite(wheelSpeeds.rearRight)) {
+		return;
+	}
+
+	this->wheelSpeeds.update(wheelSpeeds);
 }
 
-void VehicleState::setWheelSpeedFR(float wheelSpeed) {
-	wheelSpeeds.frontRight = std::isfinite(wheelSpeed) ? wheelSpeed : 0;
-}
-
-void VehicleState::setWheelSpeedRL(float wheelSpeed) {
-	wheelSpeeds.rearLeft = std::isfinite(wheelSpeed) ? wheelSpeed : 0;
-}
-
-void VehicleState::setWheelSpeedRR(float wheelSpeed) {
-	wheelSpeeds.rearRight = std::isfinite(wheelSpeed) ? wheelSpeed : 0;
-}
 
 void VehicleState::setPedals(Pedals pedals) {
 	if (pedals.app1 < 0 || pedals.app1 > 1 || !std::isfinite(pedals.app1)) {
@@ -67,23 +74,23 @@ void VehicleState::setPedals(Pedals pedals) {
 		return;
 	}
 
-	this->pedals = std::move(pedals);
+	this->pedals.update(std::move(pedals));
 }
 
 void VehicleState::setSteeringAngleDegrees(Steering steering) {
-	this->steering = std::move(steering);
+	this->steering.update(std::move(steering));
 }
 
 void VehicleState::setReadyToDriveButtonPressed(bool status) {
-	readyToDriveButtonPressed = status;
+	readyToDriveButtonPressed.store(status, std::memory_order_relaxed);
 }
 
 void VehicleState::setShutdownCircuitClosed(bool status) {
-	shutdownCircuitClosed = status;
+	shutdownCircuitClosed.store(status, std::memory_order_relaxed);
 }
 
 void VehicleState::setMode(Mode newMode) {
-	mode = newMode;
+	mode.store(newMode, std::memory_order_relaxed);
 }
 
 VehicleState vehicleState{};
