@@ -5,9 +5,12 @@
 #include <algorithm>
 #include <cstring>
 
-namespace drivers::PDU {
-PDU::PDU(drivers::CAN::CANBus &canBus) :
-		drivers::CAN::CANPeripheral<PDU, State>(canBus) {
+namespace drivers::pdu {
+
+PDU::PDU(drivers::can::CANBus &canBus) :
+		drivers::can::CANPeripheral<PDU, State>(canBus) {}
+
+void PDU::init() {
 	bindHandler<&PDU::processMessage1>(CAN_ID_RX_1);
 	bindHandler<&PDU::processMessage2>(CAN_ID_RX_2);
 }
@@ -40,7 +43,7 @@ void PDU::setPWMDutyCycle(uint8_t channel, uint8_t dutyCyclePercent) {
 	}
 }
 
-void PDU::processMessage(int channelStart, const CAN::Message &message) {
+void PDU::processMessage(int channelStart, const can::Message &message) {
 	if (message.numBytes != 8) {
 		return; // incorrect number of bytes received, bad message
 	}
@@ -68,10 +71,10 @@ void PDU::processMessage(int channelStart, const CAN::Message &message) {
 	}
 }
 
-void PDU::processMessage1(const CAN::Message &message) {
+void PDU::processMessage1(const can::Message &message) {
 	processMessage(RX_1_CHANNEL_BEGIN, message);
 }
-void PDU::processMessage2(const CAN::Message &message) {
+void PDU::processMessage2(const can::Message &message) {
 	processMessage(RX_2_CHANNEL_BEGIN, message);
 }
 
@@ -83,4 +86,4 @@ void PDU::stopAllChannels() {
 	canBus.transmit(CAN_ID_SET_PWM, txData, FDCAN_DLC_BYTES_8); // current command won't shut off outputs by itself if PWM commands are present
 }
 
-}
+} // namespace drivers::pdu

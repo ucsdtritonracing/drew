@@ -6,11 +6,11 @@
 
 namespace tasks {
 
-CANBusTask::CANBusTask(const drivers::CAN::CANBus& CANBus, osMessageQueueId_t queue)
+CANBusTask::CANBusTask(const drivers::can::CANBus& CANBus, osMessageQueueId_t queue)
 		: CANBus(CANBus), queue(queue) {}
 
 void CANBusTask::loop() {
-	drivers::CAN::Message message;
+	drivers::can::Message message;
 	uint8_t messagePriority;
 	if (osMessageQueueGet(queue, &message, &messagePriority, osWaitForever) == osOK) {
 		CANBus.processMessage(&message);
