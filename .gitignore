@@ -62,3 +62,7 @@ dkms.conf
 # STM32CubeIDE build paths
 *Debug
 *Release
+
+# Scripts
+*.log
+__pycache__/
