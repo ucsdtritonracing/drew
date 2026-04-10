@@ -97,6 +97,8 @@ void Error_Handler(void);
 #define T_SWDIO_GPIO_Port GPIOA
 #define T_SWCLK_Pin GPIO_PIN_14
 #define T_SWCLK_GPIO_Port GPIOA
+#define SDC_IN_Pin GPIO_PIN_15
+#define SDC_IN_GPIO_Port GPIOA
 #define R2D_Button_Pin GPIO_PIN_10
 #define R2D_Button_GPIO_Port GPIOC
 #define IMD_Fault_Pin GPIO_PIN_11
