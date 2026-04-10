@@ -30,6 +30,7 @@
 #include "task_can_bus.hpp"
 #include "task_control_loop.hpp"
 #include "task_pedals.hpp"
+#include "task_polling.hpp"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -75,6 +76,7 @@ static tasks::CANBusTask CANBus1Task;
 static tasks::CANBusTask CANBus2Task;
 static tasks::ControlLoopTask ControlLoopTask;
 static tasks::PedalsTask PedalsTask;
+static tasks::PollingTask PollingTask;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -184,6 +186,8 @@ int main(void)
   ControlLoopTask.start("Control Loop Task");
 
   PedalsTask.start("Pedals Task");
+
+  PollingTask.start("Polling Task");
 
   /* USER CODE END RTOS_THREADS */
 
