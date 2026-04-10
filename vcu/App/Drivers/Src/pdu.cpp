@@ -28,7 +28,6 @@ void PDU::setCurrentLimit(uint8_t channel, float amps) {
 				std::round(state.requestedCurrentLimit[i] * PDU_BIT_TO_POWER_SCALE)
 				);
 		}
-		canBus.transmit(CAN_ID_SET_CURRENT, txData, FDCAN_DLC_BYTES_8);
 	}
 }
 void PDU::setPWMDutyCycle(uint8_t channel, uint8_t dutyCyclePercent) {
@@ -39,7 +38,19 @@ void PDU::setPWMDutyCycle(uint8_t channel, uint8_t dutyCyclePercent) {
 				std::round(state.requestedPWMDutyPercent[i] * PDU_BIT_TO_POWER_SCALE)
 				);
 		}
+	}
+}
+
+void PDU::sendCommand(CommandMode mode) {
+	switch (mode) {
+	case CurrentLimit:
+		memcpy(txData, state.requestedCurrentLimit, drivers::can::MAX_CLASSICAL_CAN_DATA_LENGTH);
+		canBus.transmit(CAN_ID_SET_CURRENT, txData, FDCAN_DLC_BYTES_8);
+		break;
+	case PWM:
+		memcpy(txData, state.requestedCurrentLimit, drivers::can::MAX_CLASSICAL_CAN_DATA_LENGTH);
 		canBus.transmit(CAN_ID_SET_PWM, txData, FDCAN_DLC_BYTES_8);
+		break;
 	}
 }
 
