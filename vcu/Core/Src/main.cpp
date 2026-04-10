@@ -408,6 +408,10 @@ static void MX_FDCAN1_Init(void)
 	if (HAL_FDCAN_ActivateNotification(&hfdcan1, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0) != HAL_OK) {
 		Error_Handler();
 	}
+	// Enable bus-off failure callback
+	if (HAL_FDCAN_ActivateNotification(&hfdcan1, FDCAN_IT_BUS_OFF, 0) != HAL_OK) {
+		Error_Handler();
+	}
   /* USER CODE END FDCAN1_Init 2 */
 
 }
@@ -455,6 +459,10 @@ static void MX_FDCAN2_Init(void)
 	}
 	// Enable callback for new messages
 	if (HAL_FDCAN_ActivateNotification(&hfdcan2, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0) != HAL_OK) {
+		Error_Handler();
+	}
+	// Enable bus-off failure callback
+	if (HAL_FDCAN_ActivateNotification(&hfdcan2, FDCAN_IT_BUS_OFF, 0) != HAL_OK) {
 		Error_Handler();
 	}
   /* USER CODE END FDCAN2_Init 2 */
