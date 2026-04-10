@@ -139,6 +139,7 @@ int main(void)
   vehicle::inverter.init();
   vehicle::pdu.init();
   vehicle::sas.init();
+  vehicle::pedals.init(hadc1);
 
   /* USER CODE END 2 */
 
