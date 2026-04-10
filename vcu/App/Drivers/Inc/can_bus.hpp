@@ -32,7 +32,7 @@ public:
      *
      * @param fdcan FDCAN peripheral to attach the CAN Bus to.
      */
-    void init(FDCAN_HandleTypeDef *fdcan);
+    void init(FDCAN_HandleTypeDef& fdcan);
 
     /*
      * @brief Add a CAN message handler.
