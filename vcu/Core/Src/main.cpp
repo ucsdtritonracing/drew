@@ -31,6 +31,7 @@
 #include "task_control_loop.hpp"
 #include "task_pedals.hpp"
 #include "task_polling.hpp"
+#include "task_can_recovery.hpp"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -77,6 +78,7 @@ static tasks::CANBusTask CANBus2Task;
 static tasks::ControlLoopTask ControlLoopTask;
 static tasks::PedalsTask PedalsTask;
 static tasks::PollingTask PollingTask;
+static tasks::CANRecoveryTask CANRecoveryTask;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -188,6 +190,8 @@ int main(void)
   PedalsTask.start("Pedals Task");
 
   PollingTask.start("Polling Task");
+
+  CANRecoveryTask.start("CAN Recovery Task");
 
   /* USER CODE END RTOS_THREADS */
 
