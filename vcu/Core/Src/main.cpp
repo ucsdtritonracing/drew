@@ -17,7 +17,6 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-#include "vehicle_state.hpp"
 #include "main.h"
 #include "cmsis_os.h"
 
@@ -137,6 +136,7 @@ int main(void)
   vehicle::CANBus1.init(&hfdcan1);
   vehicle::CANBus2.init(&hfdcan2);
 
+  vehicle::inverter.init();
   vehicle::pdu.init();
   vehicle::sas.init();
 
@@ -159,10 +159,10 @@ int main(void)
 
   /* Create the queue(s) */
   /* creation of CANBus1RxQueue */
-  CANBus1RxQueueHandle = osMessageQueueNew (8, sizeof(drivers::can::Message), &CANBus1RxQueue_attributes);
+  CANBus1RxQueueHandle = osMessageQueueNew (64, sizeof(uint16_t), &CANBus1RxQueue_attributes);
 
   /* creation of CANBus2RxQueue */
-  CANBus2RxQueueHandle = osMessageQueueNew (8, sizeof(drivers::can::Message), &CANBus2RxQueue_attributes);
+  CANBus2RxQueueHandle = osMessageQueueNew (64, sizeof(uint16_t), &CANBus2RxQueue_attributes);
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
