@@ -28,6 +28,7 @@
 
 // Tasks
 #include "task_can_bus.hpp"
+#include "task_control_loop.hpp"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -72,6 +73,7 @@ const osMessageQueueAttr_t CANBus2RxQueue_attributes = {
 /* USER CODE BEGIN PV */
 static tasks::CANBusTask CANBus1Task;
 static tasks::CANBusTask CANBus2Task;
+static tasks::ControlLoopTask ControlLoopTask;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -179,6 +181,7 @@ int main(void)
   CANBus2Task.init(vehicle::CANBus2, CANBus2RxQueueHandle);
   CANBus2Task.start("CAN Bus 2 Task");
 
+  ControlLoopTask.start("Control Loop Task");
 
   /* USER CODE END RTOS_THREADS */
 
