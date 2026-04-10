@@ -13,6 +13,10 @@ struct State {
 	uint8_t requestedPWMDutyPercent[drivers::can::MAX_CLASSICAL_CAN_DATA_LENGTH] = {};
 };
 
+enum CommandMode {
+	CurrentLimit, PWM
+};
+
 class PDU: public drivers::can::CANPeripheral<PDU, State> {
 public:
 	PDU(drivers::can::CANBus &canBus);
@@ -39,6 +43,13 @@ public:
 	void setPWMDutyCycle(uint8_t channel, uint8_t dutyCyclePercent);
 
 	/*
+	 * @brief Send Current/PWM command to the PDU, based on current state
+	 *
+	 * @param mode, CurrentLimit or PWM
+	 */
+	void sendCommand(CommandMode mode);
+
+	/*
 	 * @brief Process an incoming message with message ID of TxMessage1
 	 *
 	 * @param message
@@ -52,30 +63,28 @@ public:
 	void processMessage2(const can::Message &message);
 	/*
 	 * @brief Shut off all output from PDU
-	 *
-	 * @param message
 	 */
 	void stopAllChannels();
 
 private:
-	// the helper function to make code shorter
+	// shared message processing functionality
 	void processMessage(int channelStart, const can::Message &message);
 
 	uint8_t txData[drivers::can::MAX_CLASSICAL_CAN_DATA_LENGTH] = {};
-	static constexpr uint8_t CHANNEL_MASK = 0b01100110;
+	static constexpr uint8_t CHANNEL_LIMIT_10A_MASK		= 0b01100110;
 
-	static constexpr uint8_t LOW_CURRENT_LIMIT = 		10;
-	static constexpr uint8_t HIGH_CURRENT_LIMIT = 		20;
-	static constexpr uint32_t PDU_BIT_TO_POWER_SCALE = 	2.5; // need 2.5 bits per unit increase in duty/current
-	static constexpr uint8_t PDU_MAX_PWM = 				100;
-	static constexpr uint32_t CAN_ID_SET_PWM = 			0x000A0630;
-	static constexpr uint32_t CAN_ID_SET_CURRENT = 		0x000A0620;
-	static constexpr uint32_t CAN_ID_RX_1 = 			0x000A0610;
-	static constexpr uint32_t CAN_ID_RX_2 = 			0x000A0611;
-	static constexpr uint8_t ERROR_MASK = 				0b11100000;
-	static constexpr uint16_t CURRENT_MASK = 			0b0000001111111111;
-	static constexpr int RX_1_CHANNEL_BEGIN = 			0;
-	static constexpr int RX_2_CHANNEL_BEGIN = 			4;
+	static constexpr uint8_t LOW_CURRENT_LIMIT			= 10;
+	static constexpr uint8_t HIGH_CURRENT_LIMIT			= 20;
+	static constexpr uint32_t PDU_BIT_TO_POWER_SCALE 	= 2.5; // need 2.5 bits per unit increase in duty/current
+	static constexpr uint8_t PDU_MAX_PWM				= 100;
+	static constexpr uint32_t CAN_ID_SET_PWM			= 0x000A0630;
+	static constexpr uint32_t CAN_ID_SET_CURRENT		= 0x000A0620;
+	static constexpr uint32_t CAN_ID_RX_1				= 0x000A0610;
+	static constexpr uint32_t CAN_ID_RX_2				= 0x000A0611;
+	static constexpr uint8_t ERROR_MASK					= 0b11100000;
+	static constexpr uint16_t CURRENT_MASK				= 0b0000001111111111;
+	static constexpr int RX_1_CHANNEL_BEGIN				= 0;
+	static constexpr int RX_2_CHANNEL_BEGIN				= 4;
 };
 
 } // namespace drivers::pdu
