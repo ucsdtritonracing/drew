@@ -11,7 +11,7 @@ public:
 	void loop();
 
 private:
-	const uint8_t PDU_COMMAND_INTERVAL = 250;
+	const uint8_t PDU_COMMAND_INTERVAL = 100;
 };
 
 } // namespace tasks
