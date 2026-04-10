@@ -5,8 +5,6 @@
 
 namespace tasks {
 
-PDUTask::PDUTask() {}
-
 void PDUTask::loop() {
 	vehicle::pdu.sendCommand(drivers::pdu::CommandMode::CurrentLimit);
 	osDelay(PDU_COMMAND_INTERVAL);

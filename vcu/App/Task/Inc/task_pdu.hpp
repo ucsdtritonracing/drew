@@ -7,7 +7,6 @@ namespace tasks {
 
 class PDUTask: public Task<PDUTask, osPriorityHigh, 256> {
 public:
-	PDUTask();
 	void loop();
 
 private:
