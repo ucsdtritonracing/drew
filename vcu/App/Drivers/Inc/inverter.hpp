@@ -188,7 +188,7 @@ private:
 	static constexpr uint8_t DIRECTION_FORWARD = 					1; // Forward
 	static constexpr uint8_t INVERTER_DISCHARGE = 					0; // Discharge disabled
 	static constexpr uint8_t SPEED_MODE_ENABLE = 					0; // Do not override Torque Mode
-	// Set motor to max speed of 4100 RPM
+	// Set motor to max speed of 0 (using torque instead)
 	static constexpr uint8_t SPEED_COMMAND_BYTE_2 = 				0;
 	static constexpr uint8_t SPEED_COMMAND_BYTE_3 = 				0;
 	// Set motor torque limit to 210 N.m --> 210 * 10 = 2100 (scaled)
