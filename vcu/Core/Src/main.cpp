@@ -191,6 +191,7 @@ int main(void)
 
   PollingTask.start("Polling Task");
 
+  CANRecoveryTask.init(hfdcan1, hfdcan2);
   CANRecoveryTask.start("CAN Recovery Task");
 
   /* USER CODE END RTOS_THREADS */
@@ -739,6 +740,21 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
 			Error_Handler();
 		}
 	}
+}
+
+void HAL_FDCAN_ErrorStatusCallback(FDCAN_HandleTypeDef *hfdcan, uint32_t ErrorStatusITs)
+{
+    FDCAN_ProtocolStatusTypeDef protocol_status;
+    HAL_FDCAN_GetProtocolStatus(hfdcan, &protocol_status);
+
+    if (protocol_status.BusOff != 0)
+    {
+        if (hfdcan->Instance == FDCAN1) {
+        	osThreadFlagsSet(CANRecoveryTask.getHandle(), tasks::CANRecoveryTask::CANBUS1_BUS_OFF_FLAG);
+        } else if (hfdcan->Instance == FDCAN2) {
+        	osThreadFlagsSet(CANRecoveryTask.getHandle(), tasks::CANRecoveryTask::CANBUS2_BUS_OFF_FLAG);
+        }
+    }
 }
 
 void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc) {
