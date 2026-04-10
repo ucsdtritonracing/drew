@@ -32,6 +32,7 @@
 #include "task_pedals.hpp"
 #include "task_polling.hpp"
 #include "task_can_recovery.hpp"
+#include "task_pdu.hpp"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -79,6 +80,7 @@ static tasks::ControlLoopTask ControlLoopTask;
 static tasks::PedalsTask PedalsTask;
 static tasks::PollingTask PollingTask;
 static tasks::CANRecoveryTask CANRecoveryTask;
+static tasks::PDUTask PDUTask;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -193,6 +195,8 @@ int main(void)
 
   CANRecoveryTask.init(hfdcan1, hfdcan2);
   CANRecoveryTask.start("CAN Recovery Task");
+
+  PDUTask.start("PDU Task");
 
   /* USER CODE END RTOS_THREADS */
 
