@@ -31,6 +31,7 @@
 #include "task_control_loop.hpp"
 #include "task_pedals.hpp"
 #include "task_polling.hpp"
+#include "task_can_recovery.hpp"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -77,6 +78,7 @@ static tasks::CANBusTask CANBus2Task;
 static tasks::ControlLoopTask ControlLoopTask;
 static tasks::PedalsTask PedalsTask;
 static tasks::PollingTask PollingTask;
+static tasks::CANRecoveryTask CANRecoveryTask;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -188,6 +190,9 @@ int main(void)
   PedalsTask.start("Pedals Task");
 
   PollingTask.start("Polling Task");
+
+  CANRecoveryTask.init(hfdcan1, hfdcan2);
+  CANRecoveryTask.start("CAN Recovery Task");
 
   /* USER CODE END RTOS_THREADS */
 
@@ -408,6 +413,10 @@ static void MX_FDCAN1_Init(void)
 	if (HAL_FDCAN_ActivateNotification(&hfdcan1, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0) != HAL_OK) {
 		Error_Handler();
 	}
+	// Enable bus-off failure callback
+	if (HAL_FDCAN_ActivateNotification(&hfdcan1, FDCAN_IT_BUS_OFF, 0) != HAL_OK) {
+		Error_Handler();
+	}
   /* USER CODE END FDCAN1_Init 2 */
 
 }
@@ -431,7 +440,7 @@ static void MX_FDCAN2_Init(void)
   hfdcan2.Init.ClockDivider = FDCAN_CLOCK_DIV1;
   hfdcan2.Init.FrameFormat = FDCAN_FRAME_CLASSIC;
   hfdcan2.Init.Mode = FDCAN_MODE_NORMAL;
-  hfdcan2.Init.AutoRetransmission = DISABLE;
+  hfdcan2.Init.AutoRetransmission = ENABLE;
   hfdcan2.Init.TransmitPause = DISABLE;
   hfdcan2.Init.ProtocolException = DISABLE;
   hfdcan2.Init.NominalPrescaler = 1;
@@ -455,6 +464,10 @@ static void MX_FDCAN2_Init(void)
 	}
 	// Enable callback for new messages
 	if (HAL_FDCAN_ActivateNotification(&hfdcan2, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0) != HAL_OK) {
+		Error_Handler();
+	}
+	// Enable bus-off failure callback
+	if (HAL_FDCAN_ActivateNotification(&hfdcan2, FDCAN_IT_BUS_OFF, 0) != HAL_OK) {
 		Error_Handler();
 	}
   /* USER CODE END FDCAN2_Init 2 */
@@ -727,6 +740,21 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
 			Error_Handler();
 		}
 	}
+}
+
+void HAL_FDCAN_ErrorStatusCallback(FDCAN_HandleTypeDef *hfdcan, uint32_t ErrorStatusITs)
+{
+    FDCAN_ProtocolStatusTypeDef protocol_status;
+    HAL_FDCAN_GetProtocolStatus(hfdcan, &protocol_status);
+
+    if (protocol_status.BusOff != 0)
+    {
+        if (hfdcan->Instance == FDCAN1) {
+        	osThreadFlagsSet(CANRecoveryTask.getHandle(), tasks::CANRecoveryTask::CANBUS1_BUS_OFF_FLAG);
+        } else if (hfdcan->Instance == FDCAN2) {
+        	osThreadFlagsSet(CANRecoveryTask.getHandle(), tasks::CANRecoveryTask::CANBUS2_BUS_OFF_FLAG);
+        }
+    }
 }
 
 void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc) {
