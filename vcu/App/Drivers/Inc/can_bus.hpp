@@ -1,37 +1,27 @@
 #pragma once
+
 #include "stm32g4xx_hal.h"
+#include "can_utils.hpp"
+
 
 namespace drivers::can {
 
-constexpr size_t MAX_CLASSICAL_CAN_DATA_LENGTH = 8;
-constexpr uint32_t MAX_CAN_STD_ID = 0x7FF;
-constexpr uint32_t MAX_CAN_EXTD_ID = 0x1FFFFFFF;
-
-struct Message;
-struct HandlerEntry;
+class CANBus {
 using CANHandler = void (*)(void*, const Message&);
-
-struct Message {
-	FDCAN_RxHeaderTypeDef rxHeader;
-	uint8_t numBytes;
-	uint8_t data[MAX_CLASSICAL_CAN_DATA_LENGTH];
-};
 
 struct HandlerEntry {
 	void* instance;
 	uint32_t id;
 	CANHandler callback;
 };
-
-class CANBus {
 public:
-    CANBus();
+	CANBus();
 
-    /*
-     * @brief Initialize the CAN Bus.
-     *
-     * @param fdcan FDCAN peripheral to attach the CAN Bus to.
-     */
+	/*
+	 * @brief Initialize the CAN Bus.
+	 *
+	 * @param fdcan FDCAN peripheral to attach the CAN Bus to.
+	 */
     void init(FDCAN_HandleTypeDef& fdcan);
 
     /*

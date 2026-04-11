@@ -1,7 +1,21 @@
 #pragma once
-#include "stdint.h"
+
+#include <stdint.h>
+#include <cstddef>
+#include "stm32g4xx_hal.h"
+
 
 namespace drivers::can {
+
+constexpr size_t MAX_CLASSICAL_CAN_DATA_LENGTH = 8;
+constexpr uint32_t MAX_CAN_STD_ID = 0x7FF;
+constexpr uint32_t MAX_CAN_EXTD_ID = 0x1FFFFFFF;
+
+struct Message {
+	FDCAN_RxHeaderTypeDef rxHeader;
+	uint8_t numBytes;
+	uint8_t data[MAX_CLASSICAL_CAN_DATA_LENGTH];
+};
 
 /**
  * @brief Convert from FDCAN Data Length Code to data length in bytes
