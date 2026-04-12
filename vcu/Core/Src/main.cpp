@@ -19,20 +19,18 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
-
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "drivers.hpp"
-#include "task.hpp"
-#include "can_bus.hpp"
+#include "drivers/can/can_bus.hpp"
+#include "generics/task.hpp"
+#include "vehicle/drivers.hpp"
 
-// Tasks
-#include "task_can_bus.hpp"
-#include "task_control_loop.hpp"
-#include "task_pedals.hpp"
-#include "task_polling.hpp"
-#include "task_can_recovery.hpp"
-#include "task_pdu.hpp"
+#include "tasks/can_bus.hpp"
+#include "tasks/can_recovery.hpp"
+#include "tasks/control_loop.hpp"
+#include "tasks/pdu.hpp"
+#include "tasks/pedals.hpp"
+#include "tasks/polling.hpp"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
