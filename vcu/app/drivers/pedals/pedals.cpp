@@ -1,9 +1,8 @@
-#include "../../drivers/pedals/pedals.hpp"
-
+#include "drivers/pedals/pedals.hpp"
+#include "vehicle/vehicle_configuration.hpp"
+#include "vehicle/types/vehicle_state_types.hpp"
 #include "main.h"
 #include "stm32g4xx_hal_adc.h"
-#include "../../vehicle/Inc/vehicle_configuration.hpp"
-#include "../../vehicle/Inc/vehicle_state_types.hpp"
 
 
 namespace drivers::pedals {

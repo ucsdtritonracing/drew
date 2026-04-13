@@ -1,11 +1,10 @@
-#include "../../driver/can/can_bus.hpp"
-#include "../../drivers/sas/steering_angle_sensor.hpp"
+#include "drivers/sas/steering_angle_sensor.hpp"
+#include "drivers/can/can_bus.hpp"
+#include "drivers/can/can_peripheral.hpp"
 
-#include "../../drivers/can/can_bus.hpp"
-#include "../../drivers/can/can_bus.hpp"
-#include "../../drivers/can/can_peripheral.hpp"
 
 namespace drivers::sas {
+
 
 SteeringAngleSensor::SteeringAngleSensor(drivers::can::CANBus& canBus)
 		: drivers::can::CANPeripheral<SteeringAngleSensor, State>(canBus) {}

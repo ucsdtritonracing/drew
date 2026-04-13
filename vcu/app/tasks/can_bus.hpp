@@ -2,6 +2,7 @@
 
 #include "generics/task.hpp"
 #include "drivers/can/can_bus.hpp"
+#include "cmsis_os.h"
 
 
 namespace tasks {

@@ -1,11 +1,9 @@
-#include "../../drivers/pdu/pdu.hpp"
-
+#include "drivers/pdu/pdu.hpp"
+#include "drivers/can/can_bus.hpp"
+#include "drivers/can/can_peripheral.hpp"
 #include <cmath>
 #include <algorithm>
 #include <cstring>
-
-#include "../../drivers/can/can_bus.hpp"
-#include "../../drivers/can/can_peripheral.hpp"
 
 namespace drivers::pdu {
 

@@ -1,8 +1,9 @@
 #pragma once
+
+#include "drivers/can/can_bus.hpp"
+#include "drivers/can/can_peripheral.hpp"
 #include "stm32g4xx_hal.h"
 
-#include "../../drivers/can/can_bus.hpp"
-#include "../../drivers/can/can_peripheral.hpp"
 
 namespace drivers::sas {
 

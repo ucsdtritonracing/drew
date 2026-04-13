@@ -1,6 +1,6 @@
 #pragma once
-#include "../../drivers/can/can_bus.hpp"
-#include "../../drivers/can/can_peripheral.hpp"
+#include "drivers/can/can_bus.hpp"
+#include "drivers/can/can_peripheral.hpp"
 
 namespace drivers::pdu {
 constexpr size_t NUM_CHANNELS = 8;
