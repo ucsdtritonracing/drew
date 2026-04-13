@@ -18,9 +18,9 @@ struct State {
 	} mode;
 };
 
-class SteeringAngleSensor : public drivers::can::CANPeripheral<SteeringAngleSensor, State> {
+class SAS : public drivers::can::CANPeripheral<SAS, State> {
 public:
-    SteeringAngleSensor(drivers::can::CANBus& canBus);
+    SAS(drivers::can::CANBus& canBus);
 
     /*
      * @brief Initialize the SAS driver.
