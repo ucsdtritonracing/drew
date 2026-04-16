@@ -1,7 +1,12 @@
 #pragma once
 
 #include "generics/snapshot.hpp"
-#include "vehicle/types/vehicle_state_types.hpp"
+#include "vehicle/types/pedals_types.hpp"
+#include "vehicle/types/wheels_types.hpp"
+#include "vehicle/types/steering_types.hpp"
+#include "vehicle/types/mode_types.hpp"
+#include "vehicle/types/pdu_types.hpp"
+#include "vehicle/types/inverter_types.hpp"
 #include <stdint.h>
 #include <cmath>
 #include <atomic>
@@ -13,26 +18,64 @@ class VehicleState {
 public:
 	VehicleState();
 
-	const Pedals getPedals() const;
-	const WheelSpeeds getWheelSpeeds() const;
-	const Steering getSteering() const;
-
-	bool getReadyToDriveButtonPressed() const;
-	bool getShutdownCircuitClosed() const;
-    Mode getMode() const;
-
-    void setPedals(Pedals pedals);
-	void setSteeringAngleDegrees(Steering steering);
-    void setWheelSpeeds(WheelSpeeds wheelSpeeds);
+	// abstract state
+	Mode getMode() const;
 	void setReadyToDriveButtonPressed(bool status);
 	void setShutdownCircuitClosed(bool status);
 	void setMode(Mode newMode);
 
+	// polled
+	bool getReadyToDriveButtonPressed() const;
+	bool getShutdownCircuitClosed() const;
+
+	// pedals
+	pedals::State getPedals() const;
+	void setPedals(pedals::State state);
+
+	// pdu
+	pdu::State getPDUState() const;
+	void setPDUState(pdu::State state);
+
+	// wheel speed sensors
+	wheels::State getWheelSpeeds() const;
+	void setWheelSpeeds(wheels::State state);
+
+	// steering
+	steering::State getSteering() const;
+	void setSteering(steering::State state);
+
+	// inverter
+	float getInverterTorqueCapability() const;
+	void setInverterTemperature1(inverter::Temperature1& state);
+	void setInverterTemperature2(inverter::Temperature2& state);
+	void setInverterTemperature3(inverter::Temperature3& state);
+	void setInverterMotorPosition(inverter::MotorPosition& state);
+	void setInverterTorqueInformation(inverter::TorqueInformation& state);
+	void setInverterTorqueCapability(inverter::TorqueCapability& state);
+	void setInverterInternalStates(inverter::InternalStates& state);
+	void setInverterFaultFlags(inverter::FaultFlags& state);
+
+
 private:
 	// High sample rate sensors
-	Snapshot<Pedals> pedals;
-	Snapshot<WheelSpeeds> wheelSpeeds;
-	Snapshot<Steering> steering;
+	Snapshot<pedals::State> pedals;
+	Snapshot<wheels::State> wheelSpeeds;
+
+	// CAN: SAS
+	Snapshot<steering::State> steering;
+
+	// CAN: PDU
+	Snapshot<pdu::State> pdu;
+
+	// CAN: Inverter
+	Snapshot<inverter::Temperature1>		inverterTemperature1;
+	Snapshot<inverter::Temperature2>		inverterTemperature2;
+	Snapshot<inverter::Temperature3>		inverterTemperature3;
+	Snapshot<inverter::MotorPosition>		inverterMotorPosition;
+	Snapshot<inverter::TorqueInformation>	inverterTorqueInformation;
+	Snapshot<inverter::TorqueCapability>	inverterTorqueCapability;
+	Snapshot<inverter::InternalStates>		inverterInternalStates;
+	Snapshot<inverter::FaultFlags>			inverterFaultFlags;
 
 
     // Polled signals
