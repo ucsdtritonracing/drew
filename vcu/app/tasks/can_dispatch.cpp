@@ -1,4 +1,4 @@
-#include "tasks/can_bus.hpp"
+#include "tasks/can_dispatch.hpp"
 #include "generics/task.hpp"
 #include "main.h"
 #include "cmsis_os.h"
@@ -7,12 +7,12 @@
 
 namespace tasks {
 
-void CANBusTask::init(drivers::can::CANBus& CANBus, osMessageQueueId_t queue) {
+void CANDispatchTask::init(drivers::can::CANBus& CANBus, osMessageQueueId_t queue) {
 	this->CANBus = &CANBus;
 	this->queue = queue;
 }
 
-void CANBusTask::loop() {
+void CANDispatchTask::loop() {
 	drivers::can::Message message;
 	uint8_t messagePriority;
 	if (osMessageQueueGet(queue, &message, &messagePriority, osWaitForever) == osOK) {

@@ -7,7 +7,7 @@
 
 namespace tasks {
 
-class CANBusTask: public Task<CANBusTask, osPriorityHigh, 512> {
+class CANDispatchTask: public Task<CANDispatchTask, osPriorityHigh, 512> {
 public:
 	void init(drivers::can::CANBus& CANBus, osMessageQueueId_t queue);
 	void loop();

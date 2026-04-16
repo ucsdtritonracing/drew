@@ -25,7 +25,7 @@
 #include "generics/task.hpp"
 #include "vehicle/drivers.hpp"
 
-#include "tasks/can_bus.hpp"
+#include "tasks/can_dispatch.hpp"
 #include "tasks/can_recovery.hpp"
 #include "tasks/control_loop.hpp"
 #include "tasks/pdu.hpp"
@@ -72,8 +72,8 @@ const osMessageQueueAttr_t CANBus2RxQueue_attributes = {
   .name = "CANBus2RxQueue"
 };
 /* USER CODE BEGIN PV */
-static tasks::CANBusTask CANBus1Task;
-static tasks::CANBusTask CANBus2Task;
+static tasks::CANDispatchTask CANBus1DispatchTask;
+static tasks::CANDispatchTask CANBus2DispatchTask;
 static tasks::ControlLoopTask ControlLoopTask;
 static tasks::PedalsTask PedalsTask;
 static tasks::PollingTask PollingTask;
@@ -179,11 +179,11 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
-  CANBus1Task.init(vehicle::CANBus1, CANBus1RxQueueHandle);
-  CANBus1Task.start("CAN Bus 1 Task");
+  CANBus1DispatchTask.init(vehicle::CANBus1, CANBus1RxQueueHandle);
+  CANBus1DispatchTask.start("CAN Bus 1 Dispatch Task");
 
-  CANBus2Task.init(vehicle::CANBus2, CANBus2RxQueueHandle);
-  CANBus2Task.start("CAN Bus 2 Task");
+  CANBus2DispatchTask.init(vehicle::CANBus2, CANBus2RxQueueHandle);
+  CANBus2DispatchTask.start("CAN Bus 2 Dispatch Task");
 
   ControlLoopTask.start("Control Loop Task");
 
