@@ -2,23 +2,14 @@
 
 #include "drivers/can/can_bus.hpp"
 #include "drivers/can/can_peripheral.hpp"
+#include "vehicle/types/steering_types.hpp"
+#include "generics/snapshot.hpp"
 #include "stm32g4xx_hal.h"
 
 
 namespace drivers::sas {
 
-struct State {
-	uint16_t steeringAngle;
-	uint8_t speed;
-	enum Mode {
-		CALIBRATED_VALID,
-		UNCALIBRATED_VALID,
-		FAILURE,
-		INVALID
-	} mode;
-};
-
-class SAS : public drivers::can::CANPeripheral<SAS, State> {
+class SAS : public drivers::can::CANPeripheral<SAS> {
 public:
     SAS(drivers::can::CANBus& canBus);
 
@@ -45,7 +36,7 @@ public:
     void processCANMessage(const can::Message& message);
 
 private:
-    constexpr State::Mode parseMode(const uint8_t& modeByte);
+    constexpr vehicle::steering::Mode parseMode(const uint8_t& modeByte);
 
     static constexpr uint32_t	CAN_ID_STATUS			= 0x2B0;	// "CAN ID 01 0x2B0 LWS_Standard"
     static constexpr size_t 	ANGLE_LOW_BYTE			= 0;
