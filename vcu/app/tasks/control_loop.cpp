@@ -4,7 +4,11 @@
 #include "vehicle/torque.hpp"
 #include "vehicle/vehicle_configuration.hpp"
 #include "vehicle/vehicle_state.hpp"
-#include "vehicle/types/vehicle_state_types.hpp"
+#include "vehicle/types/pedals_types.hpp"
+#include "vehicle/types/wheels_types.hpp"
+#include "vehicle/types/steering_types.hpp"
+#include "vehicle/types/mode_types.hpp"
+#include "vehicle/types/pdu_types.hpp"
 #include "cmsis_os.h"
 #include <cmath>
 #include <algorithm>
@@ -18,7 +22,7 @@ void ControlLoopTask::setup() {
 
 void ControlLoopTask::loop() {
 	const vehicle::Mode mode = vehicle::vehicleState.getMode();
-	const vehicle::Pedals pedals = vehicle::vehicleState.getPedals();
+	const vehicle::pedals::State pedals = vehicle::vehicleState.getPedals();
 	const bool readyToDriveButtonPressed = vehicle::vehicleState.getReadyToDriveButtonPressed();
 	const bool shutdownCircuitClosed = vehicle::vehicleState.getShutdownCircuitClosed();
 
@@ -33,15 +37,15 @@ void ControlLoopTask::loop() {
 			}
 
 			// Commands
-			vehicle::inverter.sendCommandMessage(0, false);
+			vehicle::inverterDriver.sendCommandMessage(0, false);
 		}
 		break;
 	case vehicle::Mode::READY_TO_DRIVE: {
 			if (!shutdownCircuitClosed) {
 				vehicle::vehicleState.setMode(vehicle::Mode::IDLE);
-				vehicle::inverter.sendCommandMessage(0, false);
+				vehicle::inverterDriver.sendCommandMessage(0, false);
 			} else {
-				const float torqueCapability = vehicle::inverter.getTorqueCapability();
+				const float torqueCapability = vehicle::vehicleState.getInverterTorqueCapability();
 
 				const float appCommand = pedals.app1;	// value being used for calculations
 
@@ -79,7 +83,7 @@ void ControlLoopTask::loop() {
 				const uint16_t torqueRequest = static_cast<uint16_t>(std::lroundf(std::min(driverTorqueRequestNm, torqueCapability)));
 
 				// Commands
-				vehicle::inverter.sendCommandMessage(torqueRequest, true);
+				vehicle::inverterDriver.sendCommandMessage(torqueRequest, true);
 			}
 		}
 		break;
