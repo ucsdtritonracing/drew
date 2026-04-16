@@ -138,14 +138,14 @@ int main(void)
   MX_TIM15_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
-
   vehicle::CANBus1.init(hfdcan1);
   vehicle::CANBus2.init(hfdcan2);
 
-  vehicle::inverter.init();
-  vehicle::pdu.init();
-  vehicle::sas.init();
-  vehicle::pedals.init(hadc1);
+  vehicle::inverterDriver.init();
+  vehicle::pedalsDriver.init(hadc1);
+  vehicle::pduDriver.init();
+  vehicle::sasDriver.init();
+
 
   /* USER CODE END 2 */
 
@@ -760,13 +760,13 @@ void HAL_FDCAN_ErrorStatusCallback(FDCAN_HandleTypeDef *hfdcan, uint32_t ErrorSt
 }
 
 void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc) {
-	if (hadc == vehicle::pedals.getHADC()) {
+	if (hadc == vehicle::pedalsDriver.getHADC()) {
 		osThreadFlagsSet(PedalsTask.getHandle(), tasks::PedalsTask::PEDAL_BUFFER_HALF_COMPLETE_FLAG);
 	}
 }
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc) {
-	if (hadc == vehicle::pedals.getHADC()) {
+	if (hadc == vehicle::pedalsDriver.getHADC()) {
 		osThreadFlagsSet(PedalsTask.getHandle(), tasks::PedalsTask::PEDAL_BUFFER_FULL_COMPLETE_FLAG);
 	}
 }
