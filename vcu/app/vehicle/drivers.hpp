@@ -11,9 +11,9 @@ namespace vehicle {
 
 extern drivers::can::CANBus CANBus1;
 extern drivers::can::CANBus CANBus2;
-extern drivers::pdu::PDU pdu;
-extern drivers::sas::SAS sas;
-extern drivers::inverter::Inverter inverter;
-extern drivers::pedals::Pedals pedals;
+extern drivers::pdu::PDU pduDriver;
+extern drivers::sas::SAS sasDriver;
+extern drivers::inverter::Inverter inverterDriver;
+extern drivers::pedals::Pedals pedalsDriver;
 
 } // namespace vehicle
