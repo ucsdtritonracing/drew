@@ -1,23 +1,18 @@
 #pragma once
+
 #include "drivers/can/can_bus.hpp"
 #include "drivers/can/can_peripheral.hpp"
+#include "vehicle/types/pdu_types.hpp"
+#include "generics/snapshot.hpp"
+
 
 namespace drivers::pdu {
-constexpr size_t NUM_CHANNELS = 8;
-struct State {
-	uint16_t measuredCurrent[NUM_CHANNELS];
-	enum ErrorStatus {
-		OK, OPEN_CIRCUIT, CURRENT_LIMIT_EXCEEDED, SHORT_CIRCUIT, UNKNOWN
-	} errorStatuses[NUM_CHANNELS];
-	uint8_t requestedCurrentLimit[drivers::can::MAX_CLASSICAL_CAN_DATA_LENGTH] = {};
-	uint8_t requestedPWMDutyPercent[drivers::can::MAX_CLASSICAL_CAN_DATA_LENGTH] = {};
-};
 
 enum CommandMode {
 	CurrentLimit, PWM
 };
 
-class PDU: public drivers::can::CANPeripheral<PDU, State> {
+class PDU: public drivers::can::CANPeripheral<PDU> {
 public:
 	PDU(drivers::can::CANBus &canBus);
 
@@ -71,8 +66,10 @@ private:
 	void processMessage(int channelStart, const can::Message &message);
 
 	uint8_t txData[drivers::can::MAX_CLASSICAL_CAN_DATA_LENGTH] = {};
-	static constexpr uint8_t CHANNEL_LIMIT_10A_MASK		= 0b01100110;
+	uint8_t requestedCurrentLimit[drivers::can::MAX_CLASSICAL_CAN_DATA_LENGTH] = {};
+	uint8_t requestedPWMDutyPercent[drivers::can::MAX_CLASSICAL_CAN_DATA_LENGTH] = {};
 
+	static constexpr uint8_t CHANNEL_LIMIT_10A_MASK		= 0b01100110;
 	static constexpr uint8_t LOW_CURRENT_LIMIT			= 10;
 	static constexpr uint8_t HIGH_CURRENT_LIMIT			= 20;
 	static constexpr uint32_t PDU_BIT_TO_POWER_SCALE 	= 2.5; // need 2.5 bits per unit increase in duty/current
