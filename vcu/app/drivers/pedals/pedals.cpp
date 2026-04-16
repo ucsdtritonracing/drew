@@ -1,6 +1,6 @@
 #include "drivers/pedals/pedals.hpp"
+#include "vehicle/vehicle_state.hpp"
 #include "vehicle/vehicle_configuration.hpp"
-#include "vehicle/types/vehicle_state_types.hpp"
 #include "main.h"
 #include "stm32g4xx_hal_adc.h"
 
@@ -12,7 +12,7 @@ void Pedals::init(ADC_HandleTypeDef& hadc) {
 	HAL_ADC_Start_DMA(&hadc, reinterpret_cast<uint32_t*>(buffer), BUFFER_SIZE * ADC_CHANNELS); 	// HAL expects uint32_t buffers, but DMA writes uint16_t
 }
 
-vehicle::Pedals Pedals::processBuffer(size_t start, size_t length) {
+void Pedals::processBuffer(size_t start, size_t length) {
 	const float app1Lo = vehicle::vehicleConfiguration.apps1LoThresholdVoltage * ADC_MAX_VALUE / ADC_MAX_VOLTAGE;
 	const float app1Hi = vehicle::vehicleConfiguration.apps1HiThresholdVoltage * ADC_MAX_VALUE / ADC_MAX_VOLTAGE;
 	const float app2Lo = vehicle::vehicleConfiguration.apps2LoThresholdVoltage * ADC_MAX_VALUE / ADC_MAX_VOLTAGE;
@@ -53,7 +53,7 @@ vehicle::Pedals Pedals::processBuffer(size_t start, size_t length) {
 		}
 	}
 
-	const vehicle::Pedals out = {
+	const vehicle::pedals::State state = {
 		.app1 = (numAPP1Valid == 0) ? 0 : (app1Sum / numAPP1Valid - app1Lo) / (app1Hi - app1Lo),
 		.app2 = (numAPP2Valid == 0) ? 0 : (app2Sum / numAPP2Valid - app2Lo) / (app2Hi - app2Lo),
 		.bsef = (numBSEFValid == 0) ? 0 : (bsefSum / numBSEFValid - bsefLo) / (bsefHi - bsefLo),
@@ -64,15 +64,15 @@ vehicle::Pedals Pedals::processBuffer(size_t start, size_t length) {
 		.bserValid = (numBSERValid > 0)
 	};
 
-	return out;
+	vehicle::vehicleState.setPedals(state);
 }
 
-vehicle::Pedals Pedals::processHalfBuffer() {
-	return processBuffer(0, BUFFER_SIZE / 2);
+void Pedals::processHalfBuffer() {
+	processBuffer(0, BUFFER_SIZE / 2);
 }
 
-vehicle::Pedals Pedals::processFullBuffer() {
-	return processBuffer(BUFFER_SIZE / 2, BUFFER_SIZE / 2);
+void Pedals::processFullBuffer() {
+	processBuffer(BUFFER_SIZE / 2, BUFFER_SIZE / 2);
 }
 
 const ADC_HandleTypeDef* Pedals::getHADC() {

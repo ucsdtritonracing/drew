@@ -1,7 +1,8 @@
 #pragma once
 
-#include "main.h"
-#include "vehicle/vehicle_state.hpp"
+#include "vehicle/types/pedals_types.hpp"
+#include "generics/snapshot.hpp"
+#include "stm32g4xx_hal.h"
 
 
 namespace drivers::pedals {
@@ -11,19 +12,19 @@ public:
 	/*
 	 * @brief Initialize the Pedals driver
 	 *
-	 * @param hadc ADC handle
+	 * @param hadc The ADC handle for this driver
 	 */
 	void init(ADC_HandleTypeDef& hadc);
 
 	/*
 	 * @brief Process and update from the first half of the buffer
 	 */
-	vehicle::Pedals processHalfBuffer();
+	void processHalfBuffer();
 
 	/*
 	 * @brief Process and update from the second half of the buffer
 	 */
-	vehicle::Pedals processFullBuffer();
+	void processFullBuffer();
 
 	/*
 	 * @brief Get a pointer to the ADC DMA buffer
@@ -52,7 +53,7 @@ private:
 	 * @param start Start index of the buffer to process from
 	 * @param length Number of values to process from the buffer
 	 */
-	vehicle::Pedals processBuffer(size_t start, size_t length);
+	void processBuffer(size_t start, size_t length);
 
 	ADC_HandleTypeDef *hadc;
 	ADCReading buffer[BUFFER_SIZE];
