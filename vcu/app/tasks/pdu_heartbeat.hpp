@@ -5,7 +5,7 @@
 
 namespace tasks {
 
-class PDUTask: public Task<PDUTask, osPriorityHigh, 256> {
+class PDUHeartbeatTask: public Task<PDUHeartbeatTask, osPriorityHigh, 256> {
 public:
 	void loop();
 

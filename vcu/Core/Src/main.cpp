@@ -28,7 +28,7 @@
 #include "tasks/can_dispatch.hpp"
 #include "tasks/can_recovery.hpp"
 #include "tasks/control_loop.hpp"
-#include "tasks/pdu.hpp"
+#include "tasks/pdu_heartbeat.hpp"
 #include "tasks/pedals.hpp"
 #include "tasks/polling.hpp"
 /* USER CODE END Includes */
@@ -78,7 +78,7 @@ static tasks::ControlLoopTask ControlLoopTask;
 static tasks::PedalsTask PedalsTask;
 static tasks::PollingTask PollingTask;
 static tasks::CANRecoveryTask CANRecoveryTask;
-static tasks::PDUTask PDUTask;
+static tasks::PDUHeartbeatTask PDUHeartbeatTask;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -194,7 +194,7 @@ int main(void)
   CANRecoveryTask.init(hfdcan1, hfdcan2);
   CANRecoveryTask.start("CAN Recovery Task");
 
-  PDUTask.start("PDU Task");
+  PDUHeartbeatTask.start("PDU Heartbeat Task");
 
   /* USER CODE END RTOS_THREADS */
 
