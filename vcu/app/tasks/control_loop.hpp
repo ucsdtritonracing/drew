@@ -6,7 +6,7 @@
 
 namespace tasks {
 
-class ControlLoopTask : public Task<ControlLoopTask> {
+class ControlLoopTask : public Task<ControlLoopTask, osPriorityHigh, 128> {
 public:
 	void setup();
 	void loop();
