@@ -12,7 +12,7 @@ constexpr uint32_t MAX_CAN_STD_ID = 0x7FF;
 constexpr uint32_t MAX_CAN_EXTD_ID = 0x1FFFFFFF;
 
 struct Message {
-	FDCAN_RxHeaderTypeDef rxHeader;
+	uint32_t id;
 	uint8_t numBytes;
 	uint8_t data[MAX_CLASSICAL_CAN_DATA_LENGTH];
 };
