@@ -29,6 +29,7 @@ void CANBus::transmit(uint32_t id, const uint8_t *data, uint32_t dlc) const {
 
 void CANBus::addMessageHandler(void *instance, uint32_t id, CANHandler callback) {
 	if (numHandlers >= MAX_HANDLERS) {
+		Error_Handler();
 		return;
 	}
 
@@ -45,7 +46,7 @@ void CANBus::addMessageHandler(void *instance, uint32_t id, CANHandler callback)
 void CANBus::processMessage(Message *message) const {
 	for (size_t i = 0; i < numHandlers; i++) {
 		HandlerEntry handler = handlers[i];
-		if (handler.id == message->rxHeader.Identifier) {
+		if (handler.id == message->id) {
 			handler.callback(handler.instance, *message);
 		}
 	}
