@@ -21,7 +21,7 @@ void Wheels::init(WheelInput flwss, WheelInput frwss, WheelInput rlwss, WheelInp
 	HAL_TIM_IC_Start_IT(rrwss.htim, rrwss.channel);
 }
 
-void filter(WheelData& data, size_t teeth, float metersPerRevolution, uint32_t now) {
+void Wheels::filter(WheelData& data, size_t teeth, float metersPerRevolution, uint32_t now) {
 	if (now - data.lastUpdateTime > Wheels::TIMEOUT_MS) {
 		data.filteredSpeed = 0;
 		data.filterInitialized = false;
@@ -46,10 +46,10 @@ void filter(WheelData& data, size_t teeth, float metersPerRevolution, uint32_t n
 
 void Wheels::updateSpeeds() {
 	uint32_t now = HAL_GetTick();
-	filter(data[WheelId::FL], vehicle::VehicleConfiguration::FRONT_TRIGGER_WHEEL_TEETH, vehicle::VehicleConfiguration::FRONT_WHEEL_METERS_PER_REVOLUTION, now);
-	filter(data[WheelId::FR], vehicle::VehicleConfiguration::FRONT_TRIGGER_WHEEL_TEETH, vehicle::VehicleConfiguration::FRONT_WHEEL_METERS_PER_REVOLUTION, now);
-	filter(data[WheelId::RL], vehicle::VehicleConfiguration::REAR_TRIGGER_WHEEL_TEETH, vehicle::VehicleConfiguration::REAR_WHEEL_METERS_PER_REVOLUTION, now);
-	filter(data[WheelId::RR], vehicle::VehicleConfiguration::REAR_TRIGGER_WHEEL_TEETH, vehicle::VehicleConfiguration::REAR_WHEEL_METERS_PER_REVOLUTION, now);
+	filter(data[WheelId::FL], vehicle::vehicleConfiguration.frontTriggerWheelTeeth, vehicle::vehicleConfiguration.frontWheelMetersPerRevolution, now);
+	filter(data[WheelId::FR], vehicle::vehicleConfiguration.frontTriggerWheelTeeth, vehicle::vehicleConfiguration.frontWheelMetersPerRevolution, now);
+	filter(data[WheelId::RL], vehicle::vehicleConfiguration.rearTriggerWheelTeeth, vehicle::vehicleConfiguration.rearWheelMetersPerRevolution, now);
+	filter(data[WheelId::RR], vehicle::vehicleConfiguration.rearTriggerWheelTeeth, vehicle::vehicleConfiguration.rearWheelMetersPerRevolution, now);
 
 	vehicle::vehicleState.setWheelSpeeds(vehicle::wheels::State{
 		data[WheelId::FL].filteredSpeed,

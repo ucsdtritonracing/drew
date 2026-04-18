@@ -46,6 +46,12 @@ public:
 
 	float bsefBrakeEngagedThreshold = DEFAULT_BSEF_BRAKE_ENGAGED_THRESHOLD;
 	float bserBrakeEngagedThreshold = DEFAULT_BSER_BRAKE_ENGAGED_THRESHOLD;
+
+	uint8_t frontTriggerWheelTeeth = FRONT_TRIGGER_WHEEL_TEETH;
+	uint8_t rearTriggerWheelTeeth = REAR_TRIGGER_WHEEL_TEETH;
+
+	float frontWheelMetersPerRevolution = FRONT_WHEEL_METERS_PER_REVOLUTION;
+	float rearWheelMetersPerRevolution = REAR_WHEEL_METERS_PER_REVOLUTION;
 };
 
 extern VehicleConfiguration vehicleConfiguration;

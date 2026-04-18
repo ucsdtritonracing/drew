@@ -47,6 +47,7 @@ private:
 	static constexpr size_t NUM_WHEELS = 4;
 	static constexpr size_t TIMEOUT_MS = 500;
 	static constexpr float ALPHA = 0.2f;
+	void filter(WheelData& data, size_t teeth, float metersPerRevolution, uint32_t now);
 
 	WheelData data[NUM_WHEELS];
 	WheelInput wheels[NUM_WHEELS];
