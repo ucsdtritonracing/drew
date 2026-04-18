@@ -13,6 +13,12 @@ class VehicleConfiguration {
 	static constexpr uint8_t PDU_TSB_FANS_CHANNEL		= 5;
 	static constexpr uint8_t PDU_PUMPS_CHANNEL			= 6;
 
+	static constexpr uint8_t FRONT_TRIGGER_WHEEL_TEETH	= 15;
+	static constexpr uint8_t REAR_TRIGGER_WHEEL_TEETH	= 24;
+	static constexpr float FRONT_WHEEL_METERS_PER_REVOLUTION	= 1.0f;
+	static constexpr float REAR_WHEEL_METERS_PER_REVOLUTION		= 1.0f;
+
+
 	// Default values
 	static constexpr float DEFAULT_APPS1_LO_THRESHOLD_VOLTAGE 		= 0.6f;
 	static constexpr float DEFAULT_APPS1_HI_THRESHOLD_VOLTAGE 		= 3.1f;

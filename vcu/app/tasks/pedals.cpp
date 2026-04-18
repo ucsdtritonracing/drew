@@ -1,9 +1,6 @@
 #include "tasks/pedals.hpp"
-#include "cmsis_os.h"
-#include "generics/task.hpp"
 #include "vehicle/drivers.hpp"
-#include <cmath>
-#include <algorithm>
+#include "cmsis_os.h"
 
 
 namespace tasks {

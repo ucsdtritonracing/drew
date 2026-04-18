@@ -19,11 +19,13 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "drivers/can/can_bus.hpp"
 #include "generics/task.hpp"
 #include "vehicle/drivers.hpp"
+#include "vehicle/vehicle_configuration.hpp"
 
 #include "tasks/can_dispatch.hpp"
 #include "tasks/can_recovery.hpp"
@@ -31,6 +33,7 @@
 #include "tasks/pdu_heartbeat.hpp"
 #include "tasks/pedals.hpp"
 #include "tasks/polling.hpp"
+#include "tasks/wheels.hpp"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -59,7 +62,6 @@ FDCAN_HandleTypeDef hfdcan2;
 
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim5;
-TIM_HandleTypeDef htim15;
 
 /* Definitions for CANBus1RxQueue */
 osMessageQueueId_t CANBus1RxQueueHandle;
@@ -79,6 +81,7 @@ static tasks::PedalsTask PedalsTask;
 static tasks::PollingTask PollingTask;
 static tasks::CANRecoveryTask CANRecoveryTask;
 static tasks::PDUHeartbeatTask PDUHeartbeatTask;
+static tasks::WheelsTask WheelsTask;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -89,7 +92,6 @@ static void MX_FDCAN1_Init(void);
 static void MX_ADC1_Init(void);
 static void MX_FDCAN2_Init(void);
 static void MX_TIM5_Init(void);
-static void MX_TIM15_Init(void);
 static void MX_TIM3_Init(void);
 
 /* USER CODE BEGIN PFP */
@@ -135,7 +137,6 @@ int main(void)
   MX_ADC1_Init();
   MX_FDCAN2_Init();
   MX_TIM5_Init();
-  MX_TIM15_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
   vehicle::CANBus1.init(hfdcan1);
@@ -145,6 +146,13 @@ int main(void)
   vehicle::pedalsDriver.init(hadc1);
   vehicle::pduDriver.init();
   vehicle::sasDriver.init();
+  vehicle::wheelsDriver.init(
+	  drivers::wheels::WheelInput{&htim5, 1},
+	  drivers::wheels::WheelInput{&htim5, 2},
+	  drivers::wheels::WheelInput{&htim3, 1},
+	  drivers::wheels::WheelInput{&htim3, 2},
+	  HAL_RCC_GetPCLK1Freq()
+  );
 
 
   /* USER CODE END 2 */
@@ -166,10 +174,10 @@ int main(void)
 
   /* Create the queue(s) */
   /* creation of CANBus1RxQueue */
-  CANBus1RxQueueHandle = osMessageQueueNew (64, sizeof(drivers::can::Message), &CANBus1RxQueue_attributes);
+  CANBus1RxQueueHandle = osMessageQueueNew (64, sizeof(uint16_t), &CANBus1RxQueue_attributes);
 
   /* creation of CANBus2RxQueue */
-  CANBus2RxQueueHandle = osMessageQueueNew (64, sizeof(drivers::can::Message), &CANBus2RxQueue_attributes);
+  CANBus2RxQueueHandle = osMessageQueueNew (64, sizeof(uint16_t), &CANBus2RxQueue_attributes);
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
@@ -195,6 +203,8 @@ int main(void)
   CANRecoveryTask.start("CAN Recovery Task");
 
   PDUHeartbeatTask.start("PDU Heartbeat Task");
+
+  WheelsTask.start("Wheels Task");
 
   /* USER CODE END RTOS_THREADS */
 
@@ -495,7 +505,7 @@ static void MX_TIM3_Init(void)
 
   /* USER CODE END TIM3_Init 1 */
   htim3.Instance = TIM3;
-  htim3.Init.Prescaler = 0;
+  htim3.Init.Prescaler = 119;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim3.Init.Period = 65535;
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -513,8 +523,12 @@ static void MX_TIM3_Init(void)
   sConfigIC.ICPolarity = TIM_INPUTCHANNELPOLARITY_RISING;
   sConfigIC.ICSelection = TIM_ICSELECTION_DIRECTTI;
   sConfigIC.ICPrescaler = TIM_ICPSC_DIV1;
-  sConfigIC.ICFilter = 0;
-  if (HAL_TIM_IC_ConfigChannel(&htim3, &sConfigIC, TIM_CHANNEL_4) != HAL_OK)
+  sConfigIC.ICFilter = 6;
+  if (HAL_TIM_IC_ConfigChannel(&htim3, &sConfigIC, TIM_CHANNEL_1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_TIM_IC_ConfigChannel(&htim3, &sConfigIC, TIM_CHANNEL_2) != HAL_OK)
   {
     Error_Handler();
   }
@@ -543,7 +557,7 @@ static void MX_TIM5_Init(void)
 
   /* USER CODE END TIM5_Init 1 */
   htim5.Instance = TIM5;
-  htim5.Init.Prescaler = 0;
+  htim5.Init.Prescaler = 119;
   htim5.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim5.Init.Period = 4294967295;
   htim5.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -561,67 +575,18 @@ static void MX_TIM5_Init(void)
   sConfigIC.ICPolarity = TIM_INPUTCHANNELPOLARITY_RISING;
   sConfigIC.ICSelection = TIM_ICSELECTION_DIRECTTI;
   sConfigIC.ICPrescaler = TIM_ICPSC_DIV1;
-  sConfigIC.ICFilter = 0;
+  sConfigIC.ICFilter = 6;
   if (HAL_TIM_IC_ConfigChannel(&htim5, &sConfigIC, TIM_CHANNEL_1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_TIM_IC_ConfigChannel(&htim5, &sConfigIC, TIM_CHANNEL_2) != HAL_OK)
   {
     Error_Handler();
   }
   /* USER CODE BEGIN TIM5_Init 2 */
 
   /* USER CODE END TIM5_Init 2 */
-
-}
-
-/**
-  * @brief TIM15 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_TIM15_Init(void)
-{
-
-  /* USER CODE BEGIN TIM15_Init 0 */
-
-  /* USER CODE END TIM15_Init 0 */
-
-  TIM_MasterConfigTypeDef sMasterConfig = {0};
-  TIM_IC_InitTypeDef sConfigIC = {0};
-
-  /* USER CODE BEGIN TIM15_Init 1 */
-
-  /* USER CODE END TIM15_Init 1 */
-  htim15.Instance = TIM15;
-  htim15.Init.Prescaler = 0;
-  htim15.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim15.Init.Period = 65535;
-  htim15.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim15.Init.RepetitionCounter = 0;
-  htim15.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-  if (HAL_TIM_IC_Init(&htim15) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
-  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-  if (HAL_TIMEx_MasterConfigSynchronization(&htim15, &sMasterConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sConfigIC.ICPolarity = TIM_INPUTCHANNELPOLARITY_RISING;
-  sConfigIC.ICSelection = TIM_ICSELECTION_DIRECTTI;
-  sConfigIC.ICPrescaler = TIM_ICPSC_DIV1;
-  sConfigIC.ICFilter = 0;
-  if (HAL_TIM_IC_ConfigChannel(&htim15, &sConfigIC, TIM_CHANNEL_1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  if (HAL_TIM_IC_ConfigChannel(&htim15, &sConfigIC, TIM_CHANNEL_2) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN TIM15_Init 2 */
-
-  /* USER CODE END TIM15_Init 2 */
 
 }
 
@@ -676,7 +641,7 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin : LD2_Pin */
   GPIO_InitStruct.Pin = LD2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
 
@@ -770,6 +735,29 @@ void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc) {
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc) {
 	if (hadc == vehicle::pedalsDriver.getHADC()) {
 		osThreadFlagsSet(PedalsTask.getHandle(), tasks::PedalsTask::PEDAL_BUFFER_FULL_COMPLETE_FLAG);
+	}
+}
+
+void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim) {
+	uint32_t now = HAL_GetTick();
+
+	static drivers::wheels::WheelInput fl = vehicle::wheelsDriver.getWheel(drivers::wheels::WheelId::FL);
+	static drivers::wheels::WheelInput fr = vehicle::wheelsDriver.getWheel(drivers::wheels::WheelId::FR);
+	static drivers::wheels::WheelInput rl = vehicle::wheelsDriver.getWheel(drivers::wheels::WheelId::RL);
+	static drivers::wheels::WheelInput rr = vehicle::wheelsDriver.getWheel(drivers::wheels::WheelId::RR);
+
+	if (htim == fl.htim && htim->Channel == fl.channel) {
+		uint32_t capture = HAL_TIM_ReadCapturedValue(htim, htim->Channel);
+		vehicle::wheelsDriver.onCapture(drivers::wheels::WheelId::FL, now, capture);
+	} else if (htim == fr.htim && htim->Channel == fr.channel) {
+		uint32_t capture = HAL_TIM_ReadCapturedValue(htim, htim->Channel);
+		vehicle::wheelsDriver.onCapture(drivers::wheels::WheelId::FR, now, capture);
+	} else if (htim == rl.htim && htim->Channel == rl.channel) {
+		uint32_t capture = HAL_TIM_ReadCapturedValue(htim, htim->Channel);
+		vehicle::wheelsDriver.onCapture(drivers::wheels::WheelId::RL, now, capture);
+	} else if (htim == rr.htim && htim->Channel == rr.channel) {
+		uint32_t capture = HAL_TIM_ReadCapturedValue(htim, htim->Channel);
+		vehicle::wheelsDriver.onCapture(drivers::wheels::WheelId::RR, now, capture);
 	}
 }
 /* USER CODE END 4 */
