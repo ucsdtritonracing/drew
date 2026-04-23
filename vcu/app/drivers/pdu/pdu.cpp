@@ -53,7 +53,7 @@ void PDU::sendCommand(CommandMode mode) {
 		canBus.transmit(CAN_ID_SET_CURRENT, txData, FDCAN_DLC_BYTES_8);
 		break;
 	case PWM:
-		memcpy(txData, requestedCurrentLimit, drivers::can::MAX_CLASSICAL_CAN_DATA_LENGTH);
+		memcpy(txData, requestedPWMDutyPercent, drivers::can::MAX_CLASSICAL_CAN_DATA_LENGTH);
 		canBus.transmit(CAN_ID_SET_PWM, txData, FDCAN_DLC_BYTES_8);
 		break;
 	}
