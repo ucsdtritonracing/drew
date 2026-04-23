@@ -36,7 +36,7 @@ public:
 		  .cb_size = sizeof(StaticTask_t),
 		  .stack_mem = stack,
 		  .stack_size = sizeof(stack),
-		  .priority = osPriorityNormal,
+		  .priority = Priority,
 		};
 		taskHandle = osThreadNew(taskEntry, this, &attr);
 	}
