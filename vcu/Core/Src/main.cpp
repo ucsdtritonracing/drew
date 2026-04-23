@@ -19,20 +19,18 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
-
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "drivers.hpp"
-#include "task.hpp"
-#include "can_bus.hpp"
+#include "drivers/can/can_bus.hpp"
+#include "generics/task.hpp"
+#include "vehicle/drivers.hpp"
 
-// Tasks
-#include "task_can_bus.hpp"
-#include "task_control_loop.hpp"
-#include "task_pedals.hpp"
-#include "task_polling.hpp"
-#include "task_can_recovery.hpp"
-#include "task_pdu.hpp"
+#include "tasks/can_dispatch.hpp"
+#include "tasks/can_recovery.hpp"
+#include "tasks/control_loop.hpp"
+#include "tasks/pdu_heartbeat.hpp"
+#include "tasks/pedals.hpp"
+#include "tasks/polling.hpp"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -74,13 +72,13 @@ const osMessageQueueAttr_t CANBus2RxQueue_attributes = {
   .name = "CANBus2RxQueue"
 };
 /* USER CODE BEGIN PV */
-static tasks::CANBusTask CANBus1Task;
-static tasks::CANBusTask CANBus2Task;
+static tasks::CANDispatchTask CANBus1DispatchTask;
+static tasks::CANDispatchTask CANBus2DispatchTask;
 static tasks::ControlLoopTask ControlLoopTask;
 static tasks::PedalsTask PedalsTask;
 static tasks::PollingTask PollingTask;
 static tasks::CANRecoveryTask CANRecoveryTask;
-static tasks::PDUTask PDUTask;
+static tasks::PDUHeartbeatTask PDUHeartbeatTask;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -140,14 +138,14 @@ int main(void)
   MX_TIM15_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
-
   vehicle::CANBus1.init(hfdcan1);
   vehicle::CANBus2.init(hfdcan2);
 
-  vehicle::inverter.init();
-  vehicle::pdu.init();
-  vehicle::sas.init();
-  vehicle::pedals.init(hadc1);
+  vehicle::inverterDriver.init();
+  vehicle::pedalsDriver.init(hadc1);
+  vehicle::pduDriver.init();
+  vehicle::sasDriver.init();
+
 
   /* USER CODE END 2 */
 
@@ -168,10 +166,10 @@ int main(void)
 
   /* Create the queue(s) */
   /* creation of CANBus1RxQueue */
-  CANBus1RxQueueHandle = osMessageQueueNew (64, sizeof(uint16_t), &CANBus1RxQueue_attributes);
+  CANBus1RxQueueHandle = osMessageQueueNew (64, sizeof(drivers::can::Message), &CANBus1RxQueue_attributes);
 
   /* creation of CANBus2RxQueue */
-  CANBus2RxQueueHandle = osMessageQueueNew (64, sizeof(uint16_t), &CANBus2RxQueue_attributes);
+  CANBus2RxQueueHandle = osMessageQueueNew (64, sizeof(drivers::can::Message), &CANBus2RxQueue_attributes);
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
@@ -181,11 +179,11 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
-  CANBus1Task.init(vehicle::CANBus1, CANBus1RxQueueHandle);
-  CANBus1Task.start("CAN Bus 1 Task");
+  CANBus1DispatchTask.init(vehicle::CANBus1, CANBus1RxQueueHandle);
+  CANBus1DispatchTask.start("CAN Bus 1 Dispatch Task");
 
-  CANBus2Task.init(vehicle::CANBus2, CANBus2RxQueueHandle);
-  CANBus2Task.start("CAN Bus 2 Task");
+  CANBus2DispatchTask.init(vehicle::CANBus2, CANBus2RxQueueHandle);
+  CANBus2DispatchTask.start("CAN Bus 2 Dispatch Task");
 
   ControlLoopTask.start("Control Loop Task");
 
@@ -196,7 +194,7 @@ int main(void)
   CANRecoveryTask.init(hfdcan1, hfdcan2);
   CANRecoveryTask.start("CAN Recovery Task");
 
-  PDUTask.start("PDU Task");
+  PDUHeartbeatTask.start("PDU Heartbeat Task");
 
   /* USER CODE END RTOS_THREADS */
 
@@ -727,10 +725,12 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
 	if ((RxFifo0ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) != RESET) {
 		// Get new message
 		static drivers::can::Message message;
-	    if (HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &message.rxHeader, message.data) != HAL_OK) {
+		FDCAN_RxHeaderTypeDef rxHeader;
+	    if (HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &rxHeader, message.data) != HAL_OK) {
 	    	Error_Handler();
 	    }
-	    message.numBytes = message.rxHeader.DataLength;
+	    message.id = rxHeader.Identifier;
+	    message.numBytes = rxHeader.DataLength;
 
 	    // Send CAN message to correct CANBus
 		if (hfdcan->Instance == FDCAN1) {
@@ -762,13 +762,13 @@ void HAL_FDCAN_ErrorStatusCallback(FDCAN_HandleTypeDef *hfdcan, uint32_t ErrorSt
 }
 
 void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc) {
-	if (hadc == vehicle::pedals.getHADC()) {
+	if (hadc == vehicle::pedalsDriver.getHADC()) {
 		osThreadFlagsSet(PedalsTask.getHandle(), tasks::PedalsTask::PEDAL_BUFFER_HALF_COMPLETE_FLAG);
 	}
 }
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc) {
-	if (hadc == vehicle::pedals.getHADC()) {
+	if (hadc == vehicle::pedalsDriver.getHADC()) {
 		osThreadFlagsSet(PedalsTask.getHandle(), tasks::PedalsTask::PEDAL_BUFFER_FULL_COMPLETE_FLAG);
 	}
 }
