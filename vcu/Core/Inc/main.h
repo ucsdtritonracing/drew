@@ -30,7 +30,6 @@ extern "C" {
 #include "stm32g4xx_hal.h"
 
 #include "stm32g4xx_nucleo.h"
-#include <stdio.h>
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -79,12 +78,12 @@ void Error_Handler(void);
 #define BSER_IN_GPIO_Port GPIOA
 #define BSEF_IN_Pin GPIO_PIN_1
 #define BSEF_IN_GPIO_Port GPIOA
-#define RRWSS_Pin GPIO_PIN_4
+#define RLWSS_Pin GPIO_PIN_2
+#define RLWSS_GPIO_Port GPIOA
+#define RRWSS_Pin GPIO_PIN_3
 #define RRWSS_GPIO_Port GPIOA
 #define LD2_Pin GPIO_PIN_5
 #define LD2_GPIO_Port GPIOA
-#define RLWSS_Pin GPIO_PIN_6
-#define RLWSS_GPIO_Port GPIOA
 #define FLWSS_Pin GPIO_PIN_2
 #define FLWSS_GPIO_Port GPIOB
 #define IMD_Indicator_Pin GPIO_PIN_6

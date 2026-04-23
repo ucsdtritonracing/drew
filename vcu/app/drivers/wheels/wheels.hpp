@@ -35,9 +35,9 @@ public:
 	 * @param frwss Front Right Wheel Speed Sensor input timer and channel
 	 * @param rlwss Rear Left Wheel Speed Sensor input timer and channel
 	 * @param rrwss Rear Right Wheel Speed Sensor input timer and channel
-	 * @param pclk PCLK1 clock frequency in Hz
+	 * @param tickFrequency Frequency of the timer counter
 	 */
-	void init(WheelInput flwss, WheelInput frwss, WheelInput rlwss, WheelInput rrwss, uint32_t pclk);
+	void init(WheelInput flwss, WheelInput frwss, WheelInput rlwss, WheelInput rrwss, uint32_t tickFrequency);
 
 	void updateSpeeds();
 	void onCapture(WheelId id, uint32_t currentTick, uint32_t capture);
@@ -52,7 +52,7 @@ private:
 	WheelData data[NUM_WHEELS];
 	WheelInput wheels[NUM_WHEELS];
 
-	uint32_t pclk;
+	uint32_t tickFrequency;
 };
 
 } // namespace drivers::pedals

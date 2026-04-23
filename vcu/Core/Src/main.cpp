@@ -53,14 +53,12 @@
 
 /* Private variables ---------------------------------------------------------*/
 
-COM_InitTypeDef BspCOMInit;
 ADC_HandleTypeDef hadc1;
 DMA_HandleTypeDef hdma_adc1;
 
 FDCAN_HandleTypeDef hfdcan1;
 FDCAN_HandleTypeDef hfdcan2;
 
-TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim5;
 
 /* Definitions for CANBus1RxQueue */
@@ -92,7 +90,6 @@ static void MX_FDCAN1_Init(void);
 static void MX_ADC1_Init(void);
 static void MX_FDCAN2_Init(void);
 static void MX_TIM5_Init(void);
-static void MX_TIM3_Init(void);
 
 /* USER CODE BEGIN PFP */
 
@@ -137,7 +134,6 @@ int main(void)
   MX_ADC1_Init();
   MX_FDCAN2_Init();
   MX_TIM5_Init();
-  MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
   vehicle::CANBus1.init(hfdcan1);
   vehicle::CANBus2.init(hfdcan2);
@@ -146,14 +142,15 @@ int main(void)
   vehicle::pedalsDriver.init(hadc1);
   vehicle::pduDriver.init();
   vehicle::sasDriver.init();
-  vehicle::wheelsDriver.init(
-	  drivers::wheels::WheelInput{&htim5, 1},
-	  drivers::wheels::WheelInput{&htim5, 2},
-	  drivers::wheels::WheelInput{&htim3, 1},
-	  drivers::wheels::WheelInput{&htim3, 2},
-	  HAL_RCC_GetPCLK1Freq()
-  );
 
+
+  vehicle::wheelsDriver.init(
+	  drivers::wheels::WheelInput{&htim5, TIM_CHANNEL_1},
+	  drivers::wheels::WheelInput{&htim5, TIM_CHANNEL_2},
+	  drivers::wheels::WheelInput{&htim5, TIM_CHANNEL_3},
+	  drivers::wheels::WheelInput{&htim5, TIM_CHANNEL_4},
+	  (float)HAL_RCC_GetPCLK1Freq() / (float)(htim5.Instance->PSC + 1)
+  );
 
   /* USER CODE END 2 */
 
@@ -211,17 +208,6 @@ int main(void)
   /* USER CODE BEGIN RTOS_EVENTS */
   /* add events, ... */
   /* USER CODE END RTOS_EVENTS */
-
-  /* Initialize COM1 port (115200, 8 bits (7-bit data + 1 stop bit), no parity */
-  BspCOMInit.BaudRate   = 115200;
-  BspCOMInit.WordLength = COM_WORDLENGTH_8B;
-  BspCOMInit.StopBits   = COM_STOPBITS_1;
-  BspCOMInit.Parity     = COM_PARITY_NONE;
-  BspCOMInit.HwFlowCtl  = COM_HWCONTROL_NONE;
-  if (BSP_COM_Init(COM1, &BspCOMInit) != BSP_ERROR_NONE)
-  {
-    Error_Handler();
-  }
 
   /* Start scheduler */
   osKernelStart();
@@ -487,58 +473,6 @@ static void MX_FDCAN2_Init(void)
 }
 
 /**
-  * @brief TIM3 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_TIM3_Init(void)
-{
-
-  /* USER CODE BEGIN TIM3_Init 0 */
-
-  /* USER CODE END TIM3_Init 0 */
-
-  TIM_MasterConfigTypeDef sMasterConfig = {0};
-  TIM_IC_InitTypeDef sConfigIC = {0};
-
-  /* USER CODE BEGIN TIM3_Init 1 */
-
-  /* USER CODE END TIM3_Init 1 */
-  htim3.Instance = TIM3;
-  htim3.Init.Prescaler = 119;
-  htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim3.Init.Period = 65535;
-  htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-  if (HAL_TIM_IC_Init(&htim3) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
-  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-  if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sConfigIC.ICPolarity = TIM_INPUTCHANNELPOLARITY_RISING;
-  sConfigIC.ICSelection = TIM_ICSELECTION_DIRECTTI;
-  sConfigIC.ICPrescaler = TIM_ICPSC_DIV1;
-  sConfigIC.ICFilter = 6;
-  if (HAL_TIM_IC_ConfigChannel(&htim3, &sConfigIC, TIM_CHANNEL_1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  if (HAL_TIM_IC_ConfigChannel(&htim3, &sConfigIC, TIM_CHANNEL_2) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN TIM3_Init 2 */
-
-  /* USER CODE END TIM3_Init 2 */
-
-}
-
-/**
   * @brief TIM5 Initialization Function
   * @param None
   * @retval None
@@ -572,15 +506,25 @@ static void MX_TIM5_Init(void)
   {
     Error_Handler();
   }
-  sConfigIC.ICPolarity = TIM_INPUTCHANNELPOLARITY_RISING;
+  sConfigIC.ICPolarity = TIM_INPUTCHANNELPOLARITY_FALLING;
   sConfigIC.ICSelection = TIM_ICSELECTION_DIRECTTI;
   sConfigIC.ICPrescaler = TIM_ICPSC_DIV1;
-  sConfigIC.ICFilter = 6;
+  sConfigIC.ICFilter = 15;
   if (HAL_TIM_IC_ConfigChannel(&htim5, &sConfigIC, TIM_CHANNEL_1) != HAL_OK)
   {
     Error_Handler();
   }
   if (HAL_TIM_IC_ConfigChannel(&htim5, &sConfigIC, TIM_CHANNEL_2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sConfigIC.ICPolarity = TIM_INPUTCHANNELPOLARITY_RISING;
+  sConfigIC.ICFilter = 0;
+  if (HAL_TIM_IC_ConfigChannel(&htim5, &sConfigIC, TIM_CHANNEL_3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_TIM_IC_ConfigChannel(&htim5, &sConfigIC, TIM_CHANNEL_4) != HAL_OK)
   {
     Error_Handler();
   }
@@ -738,6 +682,16 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc) {
 	}
 }
 
+static inline uint32_t getTIMActiveChannel(uint32_t channel) {
+    switch (channel) {
+        case TIM_CHANNEL_1: return HAL_TIM_ACTIVE_CHANNEL_1;
+        case TIM_CHANNEL_2: return HAL_TIM_ACTIVE_CHANNEL_2;
+        case TIM_CHANNEL_3: return HAL_TIM_ACTIVE_CHANNEL_3;
+        case TIM_CHANNEL_4: return HAL_TIM_ACTIVE_CHANNEL_4;
+        default: return HAL_TIM_ACTIVE_CHANNEL_CLEARED;
+    }
+}
+
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim) {
 	uint32_t now = HAL_GetTick();
 
@@ -746,17 +700,17 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim) {
 	static drivers::wheels::WheelInput rl = vehicle::wheelsDriver.getWheel(drivers::wheels::WheelId::RL);
 	static drivers::wheels::WheelInput rr = vehicle::wheelsDriver.getWheel(drivers::wheels::WheelId::RR);
 
-	if (htim == fl.htim && htim->Channel == fl.channel) {
-		uint32_t capture = HAL_TIM_ReadCapturedValue(htim, htim->Channel);
+	if (htim == fl.htim && htim->Channel == getTIMActiveChannel(fl.channel)) {
+		uint32_t capture = HAL_TIM_ReadCapturedValue(htim, fl.channel);
 		vehicle::wheelsDriver.onCapture(drivers::wheels::WheelId::FL, now, capture);
-	} else if (htim == fr.htim && htim->Channel == fr.channel) {
-		uint32_t capture = HAL_TIM_ReadCapturedValue(htim, htim->Channel);
+	} else if (htim == fr.htim && htim->Channel == getTIMActiveChannel(fr.channel)) {
+		uint32_t capture = HAL_TIM_ReadCapturedValue(htim, fr.channel);
 		vehicle::wheelsDriver.onCapture(drivers::wheels::WheelId::FR, now, capture);
-	} else if (htim == rl.htim && htim->Channel == rl.channel) {
-		uint32_t capture = HAL_TIM_ReadCapturedValue(htim, htim->Channel);
+	} else if (htim == rl.htim && htim->Channel == getTIMActiveChannel(rl.channel)) {
+		uint32_t capture = HAL_TIM_ReadCapturedValue(htim, rl.channel);
 		vehicle::wheelsDriver.onCapture(drivers::wheels::WheelId::RL, now, capture);
-	} else if (htim == rr.htim && htim->Channel == rr.channel) {
-		uint32_t capture = HAL_TIM_ReadCapturedValue(htim, htim->Channel);
+	} else if (htim == rr.htim && htim->Channel == getTIMActiveChannel(rr.channel)) {
+		uint32_t capture = HAL_TIM_ReadCapturedValue(htim, rr.channel);
 		vehicle::wheelsDriver.onCapture(drivers::wheels::WheelId::RR, now, capture);
 	}
 }

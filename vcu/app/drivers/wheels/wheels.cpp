@@ -8,12 +8,12 @@
 
 namespace drivers::wheels {
 
-void Wheels::init(WheelInput flwss, WheelInput frwss, WheelInput rlwss, WheelInput rrwss, uint32_t pclk) {
+void Wheels::init(WheelInput flwss, WheelInput frwss, WheelInput rlwss, WheelInput rrwss, uint32_t tickFrequency) {
 	wheels[WheelId::FL] = std::move(flwss);
 	wheels[WheelId::FR] = std::move(frwss);
 	wheels[WheelId::RL] = std::move(rlwss);
 	wheels[WheelId::RR] = std::move(rrwss);
-	this->pclk = pclk;
+	this->tickFrequency = tickFrequency;
 
 	HAL_TIM_IC_Start_IT(flwss.htim, flwss.channel);
 	HAL_TIM_IC_Start_IT(frwss.htim, frwss.channel);
@@ -32,7 +32,7 @@ void Wheels::filter(WheelData& data, size_t teeth, float metersPerRevolution, ui
 		return;
 	}
 
-	float frequency = (float) Wheels::pclk / (float) data.latestPeriod;
+	float frequency = (float) Wheels::tickFrequency / (float) data.latestPeriod;
 	float revolutionsPerSecond = frequency / (float) teeth;
     float rawSpeed = revolutionsPerSecond * metersPerRevolution;
 
@@ -63,6 +63,11 @@ void Wheels::onCapture(WheelId id, uint32_t now, uint32_t capture) {
 	WheelData& d = data[id];
 	if (d.initialized) {
 		d.latestPeriod = capture - d.lastCapture;
+		if (capture >= d.lastCapture) {
+			d.latestPeriod = capture - d.lastCapture;
+		} else {
+			d.latestPeriod = wheels[id].htim->Init.Period - d.lastCapture + capture + 1;
+		}
 	}
 	d.lastCapture = capture;
 	d.lastUpdateTime = now;
