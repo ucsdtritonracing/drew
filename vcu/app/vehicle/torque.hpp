@@ -21,6 +21,11 @@ struct TimedFault {
 	bool faultActive = false;
 	uint32_t faultStartTick = 0;
 
+	void reset() {
+		faultActive = false;
+		faultStartTick = 0;
+	}
+
 	void update(bool faulting, uint32_t currentTick) {
 		if (!faulting) {
 			faultActive = false;
