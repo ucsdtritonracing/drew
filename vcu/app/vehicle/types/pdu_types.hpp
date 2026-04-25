@@ -16,4 +16,9 @@ struct State {
 	} errorStatuses[NUM_CHANNELS];
 };
 
+struct ChannelConfig {
+	uint8_t channel;
+	float currentLimitAmps;
+};
+
 } // namespace vehicle::pdu
