@@ -30,6 +30,20 @@ public:
 	void setCurrentLimit(uint8_t channel, float amps);
 
 	/*
+	 * @brief Enable a channel based on channel configuration
+	 *
+	 * @param config
+	 */
+	void enableChannel(vehicle::pdu::ChannelConfig config);
+
+	/*
+	 * @brief Disable a channel based on channel configuration
+	 *
+	 * @param config
+	 */
+	void disableChannel(vehicle::pdu::ChannelConfig config);
+
+	/*
 	 * @brief Set the PWM duty cycle for a given channel.
 	 *
 	 * @param channel
