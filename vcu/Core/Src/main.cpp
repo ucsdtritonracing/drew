@@ -175,6 +175,8 @@ int main(void)
 
   rtos::BroadcastTask.start("Broadcast Task");
 
+  rtos::BroadcastTask.start("Broadcast Task");
+
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_EVENTS */
