@@ -3,6 +3,8 @@
 #include "drivers/can/can_bus.hpp"
 #include "drivers/can/can_peripheral.hpp"
 #include "stm32g4xx_hal_fdcan.h"
+#include "vehicle/types/wheels_types.hpp"
+#include "vehicle/types/pedals_types.hpp"
 
 
 namespace drivers::broadcaster {
@@ -11,11 +13,10 @@ class Broadcaster: public drivers::can::CANPeripheral<Broadcaster> {
 public:
 	Broadcaster(drivers::can::CANBus &canBus);
 
-	void broadcastWheelsMessage();
-	void broadcastBrakesMessage();
-	void broadcastAPPMessage();
-	void broadcastIMUMessage();
-	void broadcastFlagsMessage();
+	void broadcastWheelsMessage(const vehicle::wheels::State& wheels);
+	void broadcastBrakesMessage(const vehicle::pedals::State& pedals);
+	void broadcastAPPMessage(const vehicle::pedals::State& pedals);
+	void broadcastFlagsMessage(bool r2dbPressed, bool sdcClosed, bool r2dEnabled);
 
 private:
 	uint8_t txData[drivers::can::MAX_CLASSICAL_CAN_DATA_LENGTH] = {};

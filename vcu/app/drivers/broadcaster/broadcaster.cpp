@@ -12,8 +12,7 @@ Broadcaster::Broadcaster(drivers::can::CANBus &canBus) :
 		drivers::can::CANPeripheral<Broadcaster>(canBus) {}
 
 
-void Broadcaster::broadcastWheelsMessage() {
-	vehicle::wheels::State wheels = vehicle::vehicleState.getWheelSpeeds();
+void Broadcaster::broadcastWheelsMessage(const vehicle::wheels::State& wheels) {
 	int16_t frontRight	= static_cast<int16_t>(wheels.frontRight * WHEELS_SCALE);
 	int16_t frontLeft	= static_cast<int16_t>(wheels.frontLeft * WHEELS_SCALE);
 	int16_t rearRight	= static_cast<int16_t>(wheels.rearRight * WHEELS_SCALE);
@@ -37,8 +36,7 @@ void Broadcaster::broadcastWheelsMessage() {
 }
 
 
-void Broadcaster::broadcastBrakesMessage() {
-	vehicle::pedals::State pedals = vehicle::vehicleState.getPedals();
+void Broadcaster::broadcastBrakesMessage(const vehicle::pedals::State& pedals) {
 	uint16_t bsef	= static_cast<uint16_t>(pedals.bsef * PEDALS_SCALE);
 	uint16_t bser	= static_cast<uint16_t>(pedals.bser * PEDALS_SCALE);
 
@@ -54,8 +52,7 @@ void Broadcaster::broadcastBrakesMessage() {
 }
 
 
-void Broadcaster::broadcastAPPMessage() {
-	vehicle::pedals::State pedals = vehicle::vehicleState.getPedals();
+void Broadcaster::broadcastAPPMessage(const vehicle::pedals::State& pedals) {
 	uint16_t app1	= static_cast<uint16_t>(pedals.app1 * PEDALS_SCALE);
 	uint16_t app2	= static_cast<uint16_t>(pedals.app2 * PEDALS_SCALE);
 
@@ -71,15 +68,11 @@ void Broadcaster::broadcastAPPMessage() {
 }
 
 
-void Broadcaster::broadcastFlagsMessage() {
-	bool readyToDriveButtonPressed = vehicle::vehicleState.getReadyToDriveButtonPressed();
-	bool shutdownCircuitClosed = vehicle::vehicleState.getShutdownCircuitClosed();
-	bool readyToDrive = vehicle::vehicleState.getMode() == vehicle::Mode::READY_TO_DRIVE;
-
+void Broadcaster::broadcastFlagsMessage(bool r2dbPressed, bool sdcClosed, bool r2dEnabled) {
 	txData[0] = static_cast<uint8_t>(
-			((readyToDriveButtonPressed & 1u) << FLAGS_R2DB_PRESSED_BIT) |
-			((shutdownCircuitClosed & 1u) << FLAGS_SDC_CLOSED_BIT) |
-			((readyToDrive & 1u) << FLAGS_R2D_ENABLED_BIT)
+			((r2dbPressed & 1u) << FLAGS_R2DB_PRESSED_BIT) |
+			((sdcClosed & 1u) << FLAGS_SDC_CLOSED_BIT) |
+			((r2dEnabled & 1u) << FLAGS_R2D_ENABLED_BIT)
 	);
 	canBus.transmit(CAN_ID_FLAGS_MESSAGE, txData, DLC_FLAGS_MESSAGE);
 }
