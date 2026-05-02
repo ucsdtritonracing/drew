@@ -173,6 +173,8 @@ int main(void)
 
   rtos::PDUHeartbeatTask.start("PDU Heartbeat Task");
 
+  rtos::BroadcastTask.start("Broadcast Task");
+
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_EVENTS */

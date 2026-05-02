@@ -4,7 +4,7 @@
 #include "cmsis_os.h"
 
 
-namespace tasks {
+namespace rtos::tasks {
 
 void BroadcastTask::loop() {
 	auto wheels = vehicle::vehicleState.getWheelSpeeds();
@@ -22,4 +22,4 @@ void BroadcastTask::loop() {
 	osDelay(DELAY);
 }
 
-} // namespace tasks
+} // namespace rtos::tasks
