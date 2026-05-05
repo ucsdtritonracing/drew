@@ -1,6 +1,7 @@
 #pragma once
 
 #include "generics/task.hpp"
+#include "generics/timers.hpp"
 
 
 namespace tasks {
@@ -11,6 +12,7 @@ public:
 
 private:
 	static const uint32_t DELAY = 100;
+	timers::PeriodicTimer loopTimer{DELAY};
 };
 
 } // namespace tasks
