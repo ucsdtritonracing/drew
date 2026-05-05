@@ -93,6 +93,8 @@ void Error_Handler(void);
 #define IMD_Indicator_GPIO_Port GPIOC
 #define BMS_Indicator_Pin GPIO_PIN_8
 #define BMS_Indicator_GPIO_Port GPIOC
+#define R2D_Sound_Pin GPIO_PIN_9
+#define R2D_Sound_GPIO_Port GPIOA
 #define T_SWDIO_Pin GPIO_PIN_13
 #define T_SWDIO_GPIO_Port GPIOA
 #define T_SWCLK_Pin GPIO_PIN_14
