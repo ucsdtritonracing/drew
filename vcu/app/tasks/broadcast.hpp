@@ -5,12 +5,12 @@
 
 namespace rtos::tasks {
 
-class BroadcastTask : public Task<BroadcastTask> {
+class BroadcastTask : public Task<BroadcastTask, osPriorityHigh, 128> {
 public:
 	void loop();
 
 private:
-	static const uint32_t DELAY = 100;
+	static const uint32_t DELAY = 50;
 };
 
 } // namespace rtos::tasks
