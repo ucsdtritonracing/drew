@@ -134,7 +134,7 @@ void ControlLoopTask::loop() {
 		break;
 	}
 
-	osDelay(CONTROL_LOOP_PERIOD_MS);
+	loopTimer.wait();
 }
 
 } // namespace tasks

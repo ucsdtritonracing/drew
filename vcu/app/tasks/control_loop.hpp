@@ -15,6 +15,7 @@ public:
 
 private:
 	static const uint32_t CONTROL_LOOP_PERIOD_MS = 3;
+	timers::PeriodicTimer loopTimer{CONTROL_LOOP_PERIOD_MS};
 
 	struct TransitionInputs {
 		bool brakePressed;
