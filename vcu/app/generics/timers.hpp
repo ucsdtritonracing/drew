@@ -8,11 +8,8 @@
 
 namespace timers {
 
-struct TimedPulse {
-	bool active = false;
-	uint32_t startTick = 0;
-	uint32_t duration = 0;
-
+class TimedPulse {
+public:
 	void trigger(uint32_t currentTick, uint32_t durationMs) {
 		active = true;
 		startTick = currentTick;
@@ -28,6 +25,11 @@ struct TimedPulse {
 	bool isActive() const {
 		return active;
 	}
+
+private:
+	bool active = false;
+	uint32_t startTick = 0;
+	uint32_t duration = 0;
 };
 
 
