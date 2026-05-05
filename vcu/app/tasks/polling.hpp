@@ -6,7 +6,7 @@
 
 namespace tasks {
 
-class PollingTask : public Task<PollingTask, osPriorityNormal, 256> {
+class PollingTask : public Task<PollingTask, osPriorityLow, 128> {
 public:
 	void loop();
 
