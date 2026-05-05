@@ -22,7 +22,7 @@ private:
 	uint8_t txData[drivers::can::MAX_CLASSICAL_CAN_DATA_LENGTH] = {};
 
 	static constexpr float WHEELS_SCALE					= 100.0f;
-	static constexpr float PEDALS_SCALE					= 100.0f;
+	static constexpr float PEDALS_SCALE					= 10.0f;
 
 	static constexpr size_t FLAGS_R2DB_PRESSED_BIT		= 0;
 	static constexpr size_t FLAGS_SDC_CLOSED_BIT		= 1;
