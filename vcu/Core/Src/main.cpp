@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "drivers/can/can_bus.hpp"
@@ -166,10 +167,10 @@ int main(void)
 
   /* Create the queue(s) */
   /* creation of CANBus1RxQueue */
-  CANBus1RxQueueHandle = osMessageQueueNew (64, sizeof(drivers::can::Message), &CANBus1RxQueue_attributes);
+  CANBus1RxQueueHandle = osMessageQueueNew (64, sizeof(uint16_t), &CANBus1RxQueue_attributes);
 
   /* creation of CANBus2RxQueue */
-  CANBus2RxQueueHandle = osMessageQueueNew (64, sizeof(drivers::can::Message), &CANBus2RxQueue_attributes);
+  CANBus2RxQueueHandle = osMessageQueueNew (64, sizeof(uint16_t), &CANBus2RxQueue_attributes);
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
@@ -662,7 +663,7 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, LD2_Pin|R2D_Sound_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOC, IMD_Indicator_Pin|BMS_Indicator_Pin, GPIO_PIN_RESET);
@@ -673,12 +674,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : LD2_Pin */
-  GPIO_InitStruct.Pin = LD2_Pin;
+  /*Configure GPIO pins : LD2_Pin R2D_Sound_Pin */
+  GPIO_InitStruct.Pin = LD2_Pin|R2D_Sound_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pins : IMD_Indicator_Pin BMS_Indicator_Pin */
   GPIO_InitStruct.Pin = IMD_Indicator_Pin|BMS_Indicator_Pin;

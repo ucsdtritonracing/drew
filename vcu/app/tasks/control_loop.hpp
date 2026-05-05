@@ -1,6 +1,7 @@
 #pragma once
 
 #include "generics/task.hpp"
+#include "generics/timers.hpp"
 #include "vehicle/torque.hpp"
 #include "vehicle/types/mode_types.hpp"
 
@@ -21,17 +22,17 @@ private:
 		bool shutdownCircuitClosed;
 	};
 
+	timers::TimedPulse r2dsTimer;
+
 	torque::TimedFault app1Fault;
 	torque::TimedFault app2Fault;
 	torque::TimedFault bsefFault;
 	torque::TimedFault bserFault;
 	torque::TimedFault appsPlausibilityFault;
-
 	bool appsBrakePedalPlausibilityFaulted;
 
 	const vehicle::Mode getNextMode(vehicle::Mode currentMode, TransitionInputs inputs) const;
-	void onEnter(vehicle::Mode mode);
-	void runMode(vehicle::Mode mode);
+	void onEnter(vehicle::Mode mode, uint32_t currentTick);
 };
 
 } // namespace tasks
