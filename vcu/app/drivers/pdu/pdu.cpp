@@ -46,6 +46,14 @@ void PDU::setPWMDutyCycle(uint8_t channel, uint8_t dutyCyclePercent) {
 	}
 }
 
+void PDU::enableChannel(vehicle::pdu::ChannelConfig config) {
+	setCurrentLimit(config.channel, config.currentLimitAmps);
+}
+
+void PDU::disableChannel(vehicle::pdu::ChannelConfig config) {
+	setCurrentLimit(config.channel, 0.0f);
+}
+
 void PDU::sendCommand(CommandMode mode) {
 	switch (mode) {
 	case CurrentLimit:
