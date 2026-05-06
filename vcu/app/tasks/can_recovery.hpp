@@ -6,7 +6,7 @@
 
 namespace tasks {
 
-class CANRecoveryTask: public Task<CANRecoveryTask, osPriorityHigh, 256> {
+class CANRecoveryTask: public Task<CANRecoveryTask, osPriorityLow, 128> {
 public:
 	void init(FDCAN_HandleTypeDef &hfdcan1, FDCAN_HandleTypeDef &hfdcan2);
 	void loop();
