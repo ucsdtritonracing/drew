@@ -9,7 +9,7 @@ namespace tasks {
 
 void PDUHeartbeatTask::loop() {
 	vehicle::pduDriver.sendCommand(drivers::pdu::CommandMode::CurrentLimit);
-	osDelay(PDU_COMMAND_INTERVAL);
+	loopTimer.wait();
 }
 
 } // namespace tasks

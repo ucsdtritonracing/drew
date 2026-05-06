@@ -16,7 +16,7 @@ void PollingTask::loop() {
 	read = HAL_GPIO_ReadPin(SDC_IN_GPIO_Port, SDC_IN_Pin);
 	vehicle::vehicleState.setShutdownCircuitClosed(read);
 
-	osDelay(DELAY);
+	loopTimer.wait();
 }
 
 } // namespace tasks

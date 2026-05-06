@@ -8,13 +8,14 @@
 
 namespace tasks {
 
-class ControlLoopTask : public Task<ControlLoopTask> {
+class ControlLoopTask : public Task<ControlLoopTask, osPriorityHigh, 128> {
 public:
 	void setup();
 	void loop();
 
 private:
 	static const uint32_t CONTROL_LOOP_PERIOD_MS = 3;
+	timers::PeriodicTimer loopTimer{CONTROL_LOOP_PERIOD_MS};
 
 	struct TransitionInputs {
 		bool brakePressed;
