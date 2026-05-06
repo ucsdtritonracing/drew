@@ -1,5 +1,7 @@
 #pragma once
 
+#include "vehicle/defaults.hpp"
+#include "vehicle/types/configuration_types.hpp"
 #include "vehicle/types/pdu_types.hpp"
 #include <stdint.h>
 
@@ -16,62 +18,14 @@ class VehicleConfiguration {
 	static constexpr pdu::ChannelConfig PDU_UNUSED_CHANNEL			{ 7, 0.0f  };
 	static constexpr pdu::ChannelConfig PDU_12V_LEFT_CHANNEL 		{ 8, 3.0f  };
 
-	// Default values
-	static constexpr float DEFAULT_APPS1_LO_THRESHOLD_VOLTAGE 		= 0.6f;
-	static constexpr float DEFAULT_APPS1_HI_THRESHOLD_VOLTAGE 		= 3.1f;
-	static constexpr float DEFAULT_APPS2_LO_THRESHOLD_VOLTAGE 		= 0.2f;
-	static constexpr float DEFAULT_APPS2_HI_THRESHOLD_VOLTAGE 		= 2.7f;
-
-	static constexpr float DEFAULT_BSEF_LO_THRESHOLD_VOLTAGE 		= 0.5f;
-	static constexpr float DEFAULT_BSEF_HI_THRESHOLD_VOLTAGE 		= 4.5f;
-	static constexpr float DEFAULT_BSER_LO_THRESHOLD_VOLTAGE 		= 0.5f;
-	static constexpr float DEFAULT_BSER_HI_THRESHOLD_VOLTAGE 		= 4.5f;
-
-	static constexpr float DEFAULT_BSEF_BRAKE_ENGAGED_THRESHOLD 	= 0.25;
-	static constexpr float DEFAULT_BSER_BRAKE_ENGAGED_THRESHOLD 	= 0.25;
-
-	static constexpr float MIN_THRESHOLD_VOLTAGE        = 0.0f;
-	static constexpr float MAX_THRESHOLD_VOLTAGE        = 5.0f;
-	static constexpr float MIN_BRAKE_ENGAGED_THRESHOLD  = 0.0f;
-	static constexpr float MAX_BRAKE_ENGAGED_THRESHOLD  = 1.0f;
-
 public:
-	float apps1LoThresholdVoltage = DEFAULT_APPS1_LO_THRESHOLD_VOLTAGE;
-	float apps1HiThresholdVoltage = DEFAULT_APPS1_HI_THRESHOLD_VOLTAGE;
-	float apps2LoThresholdVoltage = DEFAULT_APPS2_LO_THRESHOLD_VOLTAGE;
-	float apps2HiThresholdVoltage = DEFAULT_APPS2_HI_THRESHOLD_VOLTAGE;
+	AnalogCalibration app1Thresholds = defaults::APP1_THRESHOLDS;
+	AnalogCalibration app2Thresholds = defaults::APP2_THRESHOLDS;
+	AnalogCalibration bsefThresholds = defaults::BSEF_THRESHOLDS;
+	AnalogCalibration bserThresholds = defaults::BSER_THRESHOLDS;
 
-	float bsefLoThresholdVoltage = DEFAULT_BSEF_LO_THRESHOLD_VOLTAGE;
-	float bsefHiThresholdVoltage = DEFAULT_BSEF_HI_THRESHOLD_VOLTAGE;
-	float bserLoThresholdVoltage = DEFAULT_BSER_LO_THRESHOLD_VOLTAGE;
-	float bserHiThresholdVoltage = DEFAULT_BSER_HI_THRESHOLD_VOLTAGE;
-
-	float bsefBrakeEngagedThreshold = DEFAULT_BSEF_BRAKE_ENGAGED_THRESHOLD;
-	float bserBrakeEngagedThreshold = DEFAULT_BSER_BRAKE_ENGAGED_THRESHOLD;
-
-	 // Getters
-	 float getApps1LoThresholdVoltage() const;
-	 float getApps1HiThresholdVoltage() const;
-	 float getApps2LoThresholdVoltage() const;
-	 float getApps2HiThresholdVoltage() const;
-	 float getBsefLoThresholdVoltage() const;
-	 float getBsefHiThresholdVoltage() const;
-	 float getBserLoThresholdVoltage() const;
-	 float getBserHiThresholdVoltage() const;
-	 float getBsefBrakeEngagedThreshold() const;
-	 float getBserBrakeEngagedThreshold() const;
-
-	    // Setters with bounds checks
-	 void setApps1LoThresholdVoltage(float value);
-	 void setApps1HiThresholdVoltage(float value);
-	 void setApps2LoThresholdVoltage(float value);
-	 void setApps2HiThresholdVoltage(float value);
-	 void setBsefLoThresholdVoltage(float value);
-	 void setBsefHiThresholdVoltage(float value);
-	 void setBserLoThresholdVoltage(float value);
-	 void setBserHiThresholdVoltage(float value);
-	 void setBsefBrakeEngagedThreshold(float value);
-	 void setBserBrakeEngagedThreshold(float value);
+	float bsefBrakeEngagedThreshold = defaults::BSEF_BRAKE_ENGAGED_THRESHOLD;
+	float bserBrakeEngagedThreshold = defaults::BSER_BRAKE_ENGAGED_THRESHOLD;
 };
 
 extern VehicleConfiguration vehicleConfiguration;

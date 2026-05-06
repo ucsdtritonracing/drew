@@ -1,4 +1,5 @@
 #include "drivers/pedals/pedals.hpp"
+#include "drivers/pedals/adc.hpp"
 #include "vehicle/vehicle_state.hpp"
 #include "vehicle/vehicle_configuration.hpp"
 #include "main.h"
@@ -13,15 +14,10 @@ void Pedals::init(ADC_HandleTypeDef& hadc) {
 }
 
 void Pedals::processBuffer(size_t start, size_t length) {
-	const float app1Lo = vehicle::vehicleConfiguration.apps1LoThresholdVoltage * ADC_MAX_VALUE / ADC_MAX_VOLTAGE;
-	const float app1Hi = vehicle::vehicleConfiguration.apps1HiThresholdVoltage * ADC_MAX_VALUE / ADC_MAX_VOLTAGE;
-	const float app2Lo = vehicle::vehicleConfiguration.apps2LoThresholdVoltage * ADC_MAX_VALUE / ADC_MAX_VOLTAGE;
-	const float app2Hi = vehicle::vehicleConfiguration.apps2HiThresholdVoltage * ADC_MAX_VALUE / ADC_MAX_VOLTAGE;
-
-	const float bsefLo = vehicle::vehicleConfiguration.bsefLoThresholdVoltage * ADC_MAX_VALUE / ADC_MAX_VOLTAGE;
-	const float bsefHi = vehicle::vehicleConfiguration.bsefHiThresholdVoltage * ADC_MAX_VALUE / ADC_MAX_VOLTAGE;
-	const float bserLo = vehicle::vehicleConfiguration.bserLoThresholdVoltage * ADC_MAX_VALUE / ADC_MAX_VOLTAGE;
-	const float bserHi = vehicle::vehicleConfiguration.bserHiThresholdVoltage * ADC_MAX_VALUE / ADC_MAX_VOLTAGE;
+	const auto app1Thresholds = vehicle::vehicleConfiguration.app1Thresholds;
+	const auto app2Thresholds = vehicle::vehicleConfiguration.app2Thresholds;
+	const auto bsefThresholds = vehicle::vehicleConfiguration.bsefThresholds;
+	const auto bserThresholds = vehicle::vehicleConfiguration.bserThresholds;
 
 	float app1Sum = 0;
 	float app2Sum = 0;
@@ -35,29 +31,29 @@ void Pedals::processBuffer(size_t start, size_t length) {
 
 	for (size_t i = start; i < start + length; i++) {
 		ADCReading values = buffer[i];
-		if (values.app1 >= app1Lo && values.app1 <= app1Hi) {
+		if (app1Thresholds.faultThresholds.inRange(values.app1)) {
 			app1Sum += values.app1;
 			numAPP1Valid++;
 		}
-		if (values.app2 >= app2Lo && values.app2 <= app2Hi) {
+		if (app2Thresholds.faultThresholds.inRange(values.app2)) {
 			app2Sum += values.app2;
 			numAPP2Valid++;
 		}
-		if (values.bsef >= bsefLo && values.bsef <= bsefHi) {
+		if (bsefThresholds.faultThresholds.inRange(values.bsef)) {
 			bsefSum += values.bsef;
 			numBSEFValid++;
 		}
-		if (values.bser >= bserLo && values.bser <= bserHi) {
+		if (bserThresholds.faultThresholds.inRange(values.bser)) {
 			bserSum += values.bser;
 			numBSERValid++;
 		}
 	}
 
 	const vehicle::pedals::State state = {
-		.app1 = (numAPP1Valid == 0) ? 0 : (app1Sum / numAPP1Valid - app1Lo) / (app1Hi - app1Lo),
-		.app2 = (numAPP2Valid == 0) ? 0 : (app2Sum / numAPP2Valid - app2Lo) / (app2Hi - app2Lo),
-		.bsef = (numBSEFValid == 0) ? 0 : (bsefSum / numBSEFValid - bsefLo) / (bsefHi - bsefLo),
-		.bser = (numBSERValid == 0) ? 0 : (bserSum / numBSERValid - bserLo) / (bserHi - bserLo),
+		.app1 = (numAPP1Valid == 0) ? 0 : app1Thresholds.normalize(app1Sum / numAPP1Valid),
+		.app2 = (numAPP2Valid == 0) ? 0 : app2Thresholds.normalize(app2Sum / numAPP2Valid),
+		.bsef = (numBSEFValid == 0) ? 0 : bsefThresholds.normalize(bsefSum / numBSEFValid),
+		.bser = (numBSERValid == 0) ? 0 : bserThresholds.normalize(bserSum / numBSERValid),
 		.app1Valid = (numAPP1Valid > 0),
 		.app2Valid = (numAPP2Valid > 0),
 		.bsefValid = (numBSEFValid > 0),

@@ -58,8 +58,6 @@ private:
 	ADC_HandleTypeDef *hadc;
 	ADCReading buffer[BUFFER_SIZE];
 
-	static constexpr float ADC_MAX_VOLTAGE = 3.3f;
-	static constexpr size_t ADC_MAX_VALUE = 4096;
 	static constexpr size_t ADC_CHANNELS = 4;
 };
 
