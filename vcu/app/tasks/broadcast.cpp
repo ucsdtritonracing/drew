@@ -1,4 +1,5 @@
 #include "tasks/broadcast.hpp"
+#include "drivers/broadcaster/broadcaster_types.hpp"
 #include "vehicle/vehicle_state.hpp"
 #include "vehicle/drivers.hpp"
 #include "cmsis_os.h"
@@ -16,10 +17,19 @@ void BroadcastTask::loop() {
 	auto wheels = vehicle::vehicleState.getWheelSpeeds();
 	bool r2dbPressed = vehicle::vehicleState.getReadyToDriveButtonPressed();
 	bool sdcClosed = vehicle::vehicleState.getShutdownCircuitClosed();
-	bool r2dbEnabled = vehicle::vehicleState.getMode() == vehicle::Mode::READY_TO_DRIVE;
+	bool r2dEnabled = vehicle::vehicleState.getMode() == vehicle::Mode::READY_TO_DRIVE;
+	bool appFault = vehicle::vehicleState.getAPPFault();
+	bool abppcFault = vehicle::vehicleState.getABPPCFault();
 
 	vehicle::broadcasterDriver.broadcastWheelsMessage(wheels);
-	vehicle::broadcasterDriver.broadcastFlagsMessage(r2dbPressed, sdcClosed, r2dbEnabled);
+	vehicle::broadcasterDriver.broadcastFlagsMessage({
+		.r2dbPressed	= r2dbPressed,
+		.sdcClosed		= sdcClosed,
+		.r2dEnabled		= r2dEnabled,
+		.appFault		= appFault,
+		.abppcFault		= abppcFault
+	});
+
 	osDelay(DELAY / 2);
 }
 

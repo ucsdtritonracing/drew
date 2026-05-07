@@ -68,11 +68,13 @@ void Broadcaster::broadcastAPPMessage(const vehicle::pedals::State& pedals) {
 }
 
 
-void Broadcaster::broadcastFlagsMessage(bool r2dbPressed, bool sdcClosed, bool r2dEnabled) {
+void Broadcaster::broadcastFlagsMessage(Flags flags) {
 	txData[0] = static_cast<uint8_t>(
-			((r2dbPressed & 1u) << FLAGS_R2DB_PRESSED_BIT) |
-			((sdcClosed & 1u) << FLAGS_SDC_CLOSED_BIT) |
-			((r2dEnabled & 1u) << FLAGS_R2D_ENABLED_BIT)
+			((flags.r2dbPressed & 1u) << FLAGS_R2DB_PRESSED_BIT) |
+			((flags.sdcClosed & 1u) << FLAGS_SDC_CLOSED_BIT) |
+			((flags.r2dEnabled & 1u) << FLAGS_R2D_ENABLED_BIT) |
+			((flags.appFault & 1u) << FLAGS_APP_FAULT_BIT) |
+			((flags.abppcFault & 1u) << FLAGS_ABPPC_FAULT_BIT)
 	);
 	canBus.transmit(CAN_ID_FLAGS_MESSAGE, txData, DLC_FLAGS_MESSAGE);
 }
