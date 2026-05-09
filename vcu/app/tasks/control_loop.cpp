@@ -47,7 +47,7 @@ void ControlLoopTask::onEnter(vehicle::Mode mode, uint32_t currentTick) {
 	case vehicle::Mode::IDLE:
 		break;
 	case vehicle::Mode::READY_TO_DRIVE:
-		r2dsTimer.trigger(currentTick, torque::READY_TO_DRIVE_SOUND_DURATION_MS);
+		vehicle::soundDriver.play();
 		app1Fault.reset();
 		app2Fault.reset();
 		bsefFault.reset();
@@ -98,10 +98,6 @@ void ControlLoopTask::loop() {
 
 
 	/*		OUTPUTS		*/
-	// r2ds
-	GPIO_PinState r2dsPinState = r2dsTimer.isActive() ? GPIO_PIN_SET : GPIO_PIN_RESET;
-	HAL_GPIO_WritePin(R2D_Sound_GPIO_Port, R2D_Sound_Pin, r2dsPinState);
-
 	// torque
 	switch (nextMode) {
 	case vehicle::Mode::IDLE:
