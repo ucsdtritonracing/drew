@@ -17,9 +17,6 @@ constexpr float ABPPC_APP_RESET_THRESHOLD = 0.05;					// EV.4.7.2
 
 const uint32_t FAULT_DEBOUNCE_DELAY_MS = 100;						// T.4.2.5 & T.4.3.3
 
-// EV.9.7 Ready to Drive Sound
-const uint32_t READY_TO_DRIVE_SOUND_DURATION_MS = 2000;				// EV.9.7.2.a
-
 struct TimedFault {
 	bool faultActive = false;
 	uint32_t faultStartTick = 0;
