@@ -4,6 +4,7 @@
 #include "drivers/pdu/pdu.hpp"
 #include "drivers/pedals/pedals.hpp"
 #include "drivers/broadcaster/broadcaster.hpp"
+#include "drivers/sound/sound.hpp"
 
 
 namespace vehicle {
@@ -15,5 +16,6 @@ drivers::sas::SAS sasDriver(CANBus1);
 drivers::inverter::Inverter inverterDriver(CANBus1);
 drivers::pedals::Pedals pedalsDriver;
 drivers::broadcaster::Broadcaster broadcasterDriver(CANBus1);
+drivers::sound::Sound soundDriver;
 
 } // namespace vehicle
