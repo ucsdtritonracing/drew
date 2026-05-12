@@ -35,6 +35,7 @@
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
+typedef StaticQueue_t osStaticMessageQDef_t;
 /* USER CODE BEGIN PTD */
 
 /* USER CODE END PTD */
@@ -64,13 +65,25 @@ TIM_HandleTypeDef htim15;
 
 /* Definitions for CANBus1RxQueue */
 osMessageQueueId_t CANBus1RxQueueHandle;
+uint8_t CANBus1RxQueueBuffer[ 64 * sizeof( drivers::can::Message ) ];
+osStaticMessageQDef_t CANBus1RxQueueControlBlock;
 const osMessageQueueAttr_t CANBus1RxQueue_attributes = {
-  .name = "CANBus1RxQueue"
+  .name = "CANBus1RxQueue",
+  .cb_mem = &CANBus1RxQueueControlBlock,
+  .cb_size = sizeof(CANBus1RxQueueControlBlock),
+  .mq_mem = &CANBus1RxQueueBuffer,
+  .mq_size = sizeof(CANBus1RxQueueBuffer)
 };
 /* Definitions for CANBus2RxQueue */
 osMessageQueueId_t CANBus2RxQueueHandle;
+uint8_t CANBus2RxQueueBuffer[ 64 * sizeof( drivers::can::Message ) ];
+osStaticMessageQDef_t CANBus2RxQueueControlBlock;
 const osMessageQueueAttr_t CANBus2RxQueue_attributes = {
-  .name = "CANBus2RxQueue"
+  .name = "CANBus2RxQueue",
+  .cb_mem = &CANBus2RxQueueControlBlock,
+  .cb_size = sizeof(CANBus2RxQueueControlBlock),
+  .mq_mem = &CANBus2RxQueueBuffer,
+  .mq_size = sizeof(CANBus2RxQueueBuffer)
 };
 /* USER CODE BEGIN PV */
 static tasks::CANDispatchTask CANBus1DispatchTask;
@@ -167,10 +180,10 @@ int main(void)
 
   /* Create the queue(s) */
   /* creation of CANBus1RxQueue */
-  CANBus1RxQueueHandle = osMessageQueueNew (64, sizeof(uint16_t), &CANBus1RxQueue_attributes);
+  CANBus1RxQueueHandle = osMessageQueueNew (64, sizeof(drivers::can::Message), &CANBus1RxQueue_attributes);
 
   /* creation of CANBus2RxQueue */
-  CANBus2RxQueueHandle = osMessageQueueNew (64, sizeof(uint16_t), &CANBus2RxQueue_attributes);
+  CANBus2RxQueueHandle = osMessageQueueNew (64, sizeof(drivers::can::Message), &CANBus2RxQueue_attributes);
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
