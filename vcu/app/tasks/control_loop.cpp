@@ -42,7 +42,7 @@ const vehicle::Mode ControlLoopTask::getNextMode(vehicle::Mode currentMode, Tran
 	return nextMode;
 }
 
-void ControlLoopTask::onEnter(vehicle::Mode mode, uint32_t currentTick) {
+void ControlLoopTask::onEnter(vehicle::Mode mode) {
 	switch (mode) {
 	case vehicle::Mode::IDLE:
 		break;
@@ -81,13 +81,12 @@ void ControlLoopTask::loop() {
 		TransitionInputs{brakePressed, readyToDriveButtonPressed, shutdownCircuitClosed}
 	);
 	if (nextMode != mode) {
-		onEnter(nextMode, currentTick);
+		onEnter(nextMode);
 	}
 	vehicle::vehicleState.setMode(nextMode);
 
 
 	/*		UPDATES		*/
-	r2dsTimer.update(currentTick);
 	app1Fault.update(!pedals.app1Valid, currentTick);
 	app2Fault.update(!pedals.app2Valid, currentTick);
 	bsefFault.update(!pedals.bsefValid, currentTick);
