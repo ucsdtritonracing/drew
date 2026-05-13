@@ -27,6 +27,11 @@ class VehicleConfiguration {
 	static constexpr float DEFAULT_BSEF_BRAKE_ENGAGED_THRESHOLD 	= 0.25;
 	static constexpr float DEFAULT_BSER_BRAKE_ENGAGED_THRESHOLD 	= 0.25;
 
+	static constexpr float MIN_THRESHOLD_VOLTAGE        = 0.0f;
+	static constexpr float MAX_THRESHOLD_VOLTAGE        = 5.0f;
+	static constexpr float MIN_BRAKE_ENGAGED_THRESHOLD  = 0.0f;
+	static constexpr float MAX_BRAKE_ENGAGED_THRESHOLD  = 1.0f;
+
 public:
 	float apps1LoThresholdVoltage = DEFAULT_APPS1_LO_THRESHOLD_VOLTAGE;
 	float apps1HiThresholdVoltage = DEFAULT_APPS1_HI_THRESHOLD_VOLTAGE;
@@ -40,6 +45,30 @@ public:
 
 	float bsefBrakeEngagedThreshold = DEFAULT_BSEF_BRAKE_ENGAGED_THRESHOLD;
 	float bserBrakeEngagedThreshold = DEFAULT_BSER_BRAKE_ENGAGED_THRESHOLD;
+
+	 // Getters
+	 float getApps1LoThresholdVoltage() const;
+	 float getApps1HiThresholdVoltage() const;
+	 float getApps2LoThresholdVoltage() const;
+	 float getApps2HiThresholdVoltage() const;
+	 float getBsefLoThresholdVoltage() const;
+	 float getBsefHiThresholdVoltage() const;
+	 float getBserLoThresholdVoltage() const;
+	 float getBserHiThresholdVoltage() const;
+	 float getBsefBrakeEngagedThreshold() const;
+	 float getBserBrakeEngagedThreshold() const;
+
+	    // Setters with bounds checks
+	 void setApps1LoThresholdVoltage(float value);
+	 void setApps1HiThresholdVoltage(float value);
+	 void setApps2LoThresholdVoltage(float value);
+	 void setApps2HiThresholdVoltage(float value);
+	 void setBsefLoThresholdVoltage(float value);
+	 void setBsefHiThresholdVoltage(float value);
+	 void setBserLoThresholdVoltage(float value);
+	 void setBserHiThresholdVoltage(float value);
+	 void setBsefBrakeEngagedThreshold(float value);
+	 void setBserBrakeEngagedThreshold(float value);
 };
 
 extern VehicleConfiguration vehicleConfiguration;

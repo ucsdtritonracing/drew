@@ -44,6 +44,9 @@ public:
 	steering::State getSteering() const;
 	void setSteering(steering::State state);
 
+	bool getConfigurationLocked();
+	void setConfigurationLocked(bool locked);
+
 	// inverter
 	float getInverterTorqueCapability() const;
 	void setInverterTemperature1(inverter::Temperature1& state);
@@ -81,6 +84,7 @@ private:
     // Polled signals
 	std::atomic<bool> readyToDriveButtonPressed;
 	std::atomic<bool> shutdownCircuitClosed;
+	std::atomic<bool> configurationLocked;
 
 
 	// Abstract State
