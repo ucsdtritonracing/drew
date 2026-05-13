@@ -36,6 +36,21 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
 }
 
 /*
+  * @brief  Transmission Complete callback.
+  * @param  hfdcan pointer to an FDCAN_HandleTypeDef structure that contains the configuration information for the specified FDCAN.
+  * @param  BufferIndexes Indexes of the transmitted buffers. This parameter can be any combination of @arg FDCAN_Tx_location.
+  * @retval None
+  */
+void HAL_FDCAN_TxBufferCompleteCallback(FDCAN_HandleTypeDef *hfdcan, uint32_t BufferIndexes) {
+    // Notify correct CAN Tx Task
+	if (hfdcan->Instance == FDCAN1) {
+		osThreadFlagsSet(rtos::CANBus1TxTask.getHandle(), rtos::tasks::CANTxTask::TRY_TX_FLAG);
+	} else if (hfdcan->Instance == FDCAN2) {
+		osThreadFlagsSet(rtos::CANBus2TxTask.getHandle(), rtos::tasks::CANTxTask::TRY_TX_FLAG);
+	}
+}
+
+/*
   * @brief  Error status callback.
   * @param  hfdcan pointer to an FDCAN_HandleTypeDef structure that contains the configuration information for the specified FDCAN.
   * @param  ErrorStatusITs indicates which Error Status interrupts are signaled. This parameter can be any combination of @arg FDCAN_Error_Status_Interrupts.
