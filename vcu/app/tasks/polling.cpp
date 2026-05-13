@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 
-namespace tasks {
+namespace rtos::tasks {
 
 void PollingTask::loop() {
 	uint32_t read;
@@ -19,4 +19,4 @@ void PollingTask::loop() {
 	loopTimer.wait();
 }
 
-} // namespace tasks
+} // namespace rtos::tasks

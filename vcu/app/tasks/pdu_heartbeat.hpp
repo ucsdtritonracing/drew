@@ -1,10 +1,10 @@
 #pragma once
 
-#include "generics/task.hpp"
+#include "rtos/task.hpp"
 #include "drivers/pdu/pdu.hpp"
 #include "generics/timers.hpp"
 
-namespace tasks {
+namespace rtos::tasks {
 
 class PDUHeartbeatTask: public Task<PDUHeartbeatTask, osPriorityLow, 128> {
 public:
@@ -15,4 +15,4 @@ private:
 	timers::PeriodicTimer loopTimer{PDU_COMMAND_INTERVAL};
 };
 
-} // namespace tasks
+} // namespace rtos::tasks

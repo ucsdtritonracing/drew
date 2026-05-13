@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 
-namespace tasks {
+namespace rtos::tasks {
 
 void ExampleTask::setup() {
 	// initializing methods
@@ -14,4 +14,4 @@ void ExampleTask::loop() {
 	osDelay(DELAY);
 }
 
-} // namespace tasks
+} // namespace rtos::tasks
