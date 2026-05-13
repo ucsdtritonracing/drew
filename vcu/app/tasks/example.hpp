@@ -1,9 +1,9 @@
 #pragma once
 
-#include "generics/task.hpp"
+#include "rtos/task.hpp"
 
 
-namespace tasks {
+namespace rtos::tasks {
 
 class ExampleTask : public Task<ExampleTask> {
 public:
@@ -14,4 +14,4 @@ private:
 	static const uint32_t DELAY = 1000;
 };
 
-} // namespace tasks
+} // namespace rtos::tasks

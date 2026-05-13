@@ -1,11 +1,10 @@
 #include "tasks/can_dispatch.hpp"
-#include "generics/task.hpp"
 #include "main.h"
 #include "cmsis_os.h"
 #include <cstdio>
 
 
-namespace tasks {
+namespace rtos::tasks {
 
 void CANDispatchTask::init(drivers::can::CANBus& CANBus, osMessageQueueId_t queue) {
 	this->CANBus = &CANBus;
@@ -20,4 +19,4 @@ void CANDispatchTask::loop() {
 	}
 }
 
-} // namespace tasks
+} // namespace rtos::tasks

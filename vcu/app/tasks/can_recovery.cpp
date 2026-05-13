@@ -4,7 +4,7 @@
 #include "stm32g4xx_hal.h"
 
 
-namespace tasks {
+namespace rtos::tasks {
 
 void CANRecoveryTask::init(FDCAN_HandleTypeDef &hfdcan1, FDCAN_HandleTypeDef &hfdcan2) {
 	this->hfdcan1 = &hfdcan1;
@@ -24,4 +24,4 @@ void CANRecoveryTask::loop() {
 	}
 }
 
-} // namespace tasks
+} // namespace rtos::tasks

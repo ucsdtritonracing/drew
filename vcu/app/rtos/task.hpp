@@ -5,7 +5,7 @@
 #include <type_traits>
 
 
-namespace tasks {
+namespace rtos {
 
 /*
  * Task template class.
@@ -80,4 +80,4 @@ private:
 	struct has_loop<T, std::void_t<decltype(std::declval<T>().loop())>> : std::true_type {};
 };
 
-} // namespace tasks
+} // namespace rtos

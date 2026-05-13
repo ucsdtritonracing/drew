@@ -1,10 +1,10 @@
 #pragma once
 
-#include "generics/task.hpp"
+#include "rtos/task.hpp"
 #include "drivers/pedals/pedals.hpp"
 
 
-namespace tasks {
+namespace rtos::tasks {
 
 class PedalsTask : public Task<PedalsTask, osPriorityNormal, 256> {
 public:
@@ -14,4 +14,4 @@ public:
 	static constexpr uint32_t PEDAL_BUFFER_FULL_COMPLETE_FLAG = 1u << 1;
 };
 
-} // namespace tasks
+} // namespace rtos::tasks

@@ -1,11 +1,11 @@
 #pragma once
 
-#include "generics/task.hpp"
+#include "rtos/task.hpp"
 #include "drivers/can/can_bus.hpp"
 #include "cmsis_os.h"
 
 
-namespace tasks {
+namespace rtos::tasks {
 
 class CANDispatchTask: public Task<CANDispatchTask, osPriorityHigh, 512> {
 public:
@@ -17,4 +17,4 @@ private:
 	osMessageQueueId_t queue;
 };
 
-} // namespace tasks
+} // namespace rtos::tasks

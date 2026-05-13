@@ -1,12 +1,11 @@
 #include "tasks/pedals.hpp"
 #include "cmsis_os.h"
-#include "generics/task.hpp"
 #include "vehicle/drivers.hpp"
 #include <cmath>
 #include <algorithm>
 
 
-namespace tasks {
+namespace rtos::tasks {
 
 void PedalsTask::loop() {
 	osThreadFlagsWait(PEDAL_BUFFER_HALF_COMPLETE_FLAG, osFlagsWaitAny, osWaitForever);
@@ -16,4 +15,4 @@ void PedalsTask::loop() {
 	vehicle::pedalsDriver.processFullBuffer();
 }
 
-} // namespace tasks
+} // namespace rtos::tasks
