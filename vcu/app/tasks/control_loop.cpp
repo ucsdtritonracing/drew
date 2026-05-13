@@ -1,5 +1,4 @@
 #include "tasks/control_loop.hpp"
-#include "generics/task.hpp"
 #include "vehicle/drivers.hpp"
 #include "vehicle/torque.hpp"
 #include "vehicle/vehicle_configuration.hpp"
@@ -16,7 +15,7 @@
 #include <algorithm>
 
 
-namespace tasks {
+namespace rtos::tasks {
 
 void ControlLoopTask::setup() {
 	appsBrakePedalPlausibilityFaulted = false;
@@ -137,4 +136,4 @@ void ControlLoopTask::loop() {
 	loopTimer.wait();
 }
 
-} // namespace tasks
+} // namespace rtos::tasks

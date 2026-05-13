@@ -1,10 +1,10 @@
 #pragma once
 
-#include "generics/task.hpp"
+#include "rtos/task.hpp"
 #include "generics/timers.hpp"
 
 
-namespace tasks {
+namespace rtos::tasks {
 
 class PollingTask : public Task<PollingTask, osPriorityLow, 128> {
 public:
@@ -15,4 +15,4 @@ private:
 	timers::PeriodicTimer loopTimer{DELAY};
 };
 
-} // namespace tasks
+} // namespace rtos::tasks

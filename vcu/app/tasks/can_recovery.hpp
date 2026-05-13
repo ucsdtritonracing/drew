@@ -1,10 +1,10 @@
 #pragma once
 
-#include "generics/task.hpp"
+#include "rtos/task.hpp"
 #include "drivers/can/can_bus.hpp"
 
 
-namespace tasks {
+namespace rtos::tasks {
 
 class CANRecoveryTask: public Task<CANRecoveryTask, osPriorityLow, 128> {
 public:
@@ -22,4 +22,4 @@ private:
 	FDCAN_HandleTypeDef *hfdcan2;
 };
 
-} // namespace tasks
+} // namespace rtos::tasks

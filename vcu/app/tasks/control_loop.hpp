@@ -1,12 +1,12 @@
 #pragma once
 
-#include "generics/task.hpp"
+#include "rtos/task.hpp"
 #include "generics/timers.hpp"
 #include "vehicle/torque.hpp"
 #include "vehicle/types/mode_types.hpp"
 
 
-namespace tasks {
+namespace rtos::tasks {
 
 class ControlLoopTask : public Task<ControlLoopTask, osPriorityHigh, 128> {
 public:
@@ -36,4 +36,4 @@ private:
 	void onEnter(vehicle::Mode mode, uint32_t currentTick);
 };
 
-} // namespace tasks
+} // namespace rtos::tasks
