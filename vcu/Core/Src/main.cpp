@@ -35,7 +35,6 @@
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
-typedef StaticQueue_t osStaticMessageQDef_t;
 /* USER CODE BEGIN PTD */
 
 /* USER CODE END PTD */
@@ -63,11 +62,20 @@ TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim5;
 TIM_HandleTypeDef htim15;
 
+/* USER CODE BEGIN PV */
+static tasks::CANDispatchTask CANBus1DispatchTask;
+static tasks::CANDispatchTask CANBus2DispatchTask;
+static tasks::ControlLoopTask ControlLoopTask;
+static tasks::PedalsTask PedalsTask;
+static tasks::PollingTask PollingTask;
+static tasks::CANRecoveryTask CANRecoveryTask;
+static tasks::PDUHeartbeatTask PDUHeartbeatTask;
+
 /* Definitions for CANBus1RxQueue */
 osMessageQueueId_t CANBus1RxQueueHandle;
 uint8_t CANBus1RxQueueBuffer[ 64 * sizeof( drivers::can::Message ) ];
-osStaticMessageQDef_t CANBus1RxQueueControlBlock;
-const osMessageQueueAttr_t CANBus1RxQueue_attributes = {
+StaticQueue_t CANBus1RxQueueControlBlock;
+const osMessageQueueAttr_t CANBus1RxQueueAttributes = {
   .name = "CANBus1RxQueue",
   .cb_mem = &CANBus1RxQueueControlBlock,
   .cb_size = sizeof(CANBus1RxQueueControlBlock),
@@ -77,22 +85,14 @@ const osMessageQueueAttr_t CANBus1RxQueue_attributes = {
 /* Definitions for CANBus2RxQueue */
 osMessageQueueId_t CANBus2RxQueueHandle;
 uint8_t CANBus2RxQueueBuffer[ 64 * sizeof( drivers::can::Message ) ];
-osStaticMessageQDef_t CANBus2RxQueueControlBlock;
-const osMessageQueueAttr_t CANBus2RxQueue_attributes = {
+StaticQueue_t CANBus2RxQueueControlBlock;
+const osMessageQueueAttr_t CANBus2RxQueueAttributes = {
   .name = "CANBus2RxQueue",
   .cb_mem = &CANBus2RxQueueControlBlock,
   .cb_size = sizeof(CANBus2RxQueueControlBlock),
   .mq_mem = &CANBus2RxQueueBuffer,
   .mq_size = sizeof(CANBus2RxQueueBuffer)
 };
-/* USER CODE BEGIN PV */
-static tasks::CANDispatchTask CANBus1DispatchTask;
-static tasks::CANDispatchTask CANBus2DispatchTask;
-static tasks::ControlLoopTask ControlLoopTask;
-static tasks::PedalsTask PedalsTask;
-static tasks::PollingTask PollingTask;
-static tasks::CANRecoveryTask CANRecoveryTask;
-static tasks::PDUHeartbeatTask PDUHeartbeatTask;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -178,15 +178,9 @@ int main(void)
   /* start timers, add new ones, ... */
   /* USER CODE END RTOS_TIMERS */
 
-  /* Create the queue(s) */
-  /* creation of CANBus1RxQueue */
-  CANBus1RxQueueHandle = osMessageQueueNew (64, sizeof(drivers::can::Message), &CANBus1RxQueue_attributes);
-
-  /* creation of CANBus2RxQueue */
-  CANBus2RxQueueHandle = osMessageQueueNew (64, sizeof(drivers::can::Message), &CANBus2RxQueue_attributes);
-
   /* USER CODE BEGIN RTOS_QUEUES */
-  /* add queues, ... */
+  CANBus1RxQueueHandle = osMessageQueueNew(sizeof(CANBus1RxQueueBuffer) / sizeof(drivers::can::Message), sizeof(drivers::can::Message), &CANBus1RxQueueAttributes);
+  CANBus2RxQueueHandle = osMessageQueueNew(sizeof(CANBus2RxQueueBuffer) / sizeof(drivers::can::Message), sizeof(drivers::can::Message), &CANBus2RxQueueAttributes);
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
