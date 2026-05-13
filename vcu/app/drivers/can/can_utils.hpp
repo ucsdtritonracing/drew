@@ -27,4 +27,34 @@ inline uint8_t numBytes(uint32_t dlc) {
     return dlcTable[dlc & 0x0F];
 }
 
+/**
+ * @brief Convert from data length in bytes to FDCAN Data Length Code
+ *
+ * @param numBytes Data length in bytes to convert to data length code.
+ */
+inline uint8_t dlcFromBytes(uint32_t numBytes) {
+	if (numBytes <= 8) {
+		return numBytes;
+	}
+
+	switch (numBytes) {
+	case 12:
+		return FDCAN_DLC_BYTES_12;
+	case 16:
+		return FDCAN_DLC_BYTES_16;
+	case 20:
+		return FDCAN_DLC_BYTES_20;
+	case 24:
+		return FDCAN_DLC_BYTES_24;
+	case 32:
+		return FDCAN_DLC_BYTES_32;
+	case 48:
+		return FDCAN_DLC_BYTES_48;
+	case 64:
+		return FDCAN_DLC_BYTES_64;
+	default:
+		return 0;
+	}
+}
+
 } // namespace drivers::can
