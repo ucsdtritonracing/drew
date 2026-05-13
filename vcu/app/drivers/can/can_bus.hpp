@@ -1,6 +1,7 @@
 #pragma once
 
 #include "drivers/can/can_utils.hpp"
+#include "drivers/can/tx_manager.hpp"
 #include "stm32g4xx_hal.h"
 
 
@@ -34,6 +35,15 @@ public:
     void addMessageHandler(void *instance, uint32_t id, CANHandler callback);
 
     /*
+     * @brief Add a CAN message Tx stream.
+     *
+     * @param id CAN ID of the message
+     * @param priority 0 is the highest priority possible
+     * @return TxSlotHandle of the slot created
+     */
+    TxSlotHandle addTxStream(uint32_t id, TxPriority priority);
+
+    /*
      * @brief Process an incoming CAN Message.
      *
      * @param message
@@ -53,6 +63,8 @@ private:
 	static constexpr size_t MAX_HANDLERS = 64;
     HandlerEntry handlers[MAX_HANDLERS];
     size_t numHandlers = 0;
+
+    TxManager txManager;
 
     FDCAN_HandleTypeDef* fdcan;
 };

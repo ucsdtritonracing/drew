@@ -43,6 +43,11 @@ void CANBus::addMessageHandler(void *instance, uint32_t id, CANHandler callback)
 	handlers[numHandlers++] = {instance, id, callback};
 }
 
+
+TxSlotHandle CANBus::addTxStream(uint32_t id, TxPriority priority) {
+	return txManager.addSlot(id, priority);
+}
+
 void CANBus::processMessage(Message *message) const {
 	for (size_t i = 0; i < numHandlers; i++) {
 		HandlerEntry handler = handlers[i];
