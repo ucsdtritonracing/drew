@@ -27,6 +27,24 @@ void CANBus::transmit(uint32_t id, const uint8_t *data, uint32_t dlc) const {
 	HAL_FDCAN_AddMessageToTxFifoQ(fdcan, &txHeader, data);
 }
 
+void CANBus::flushTx() {
+	while (HAL_FDCAN_GetTxFifoFreeLevel(fdcan) > 0) {
+		Message message = txManager.getNextMessage();
+
+		FDCAN_TxHeaderTypeDef txHeader;
+		txHeader.Identifier 			= message.id;
+		txHeader.IdType 				= (message.id <= MAX_CAN_STD_ID) ? FDCAN_STANDARD_ID : FDCAN_EXTENDED_ID;
+		txHeader.TxFrameType 			= FDCAN_DATA_FRAME;
+		txHeader.DataLength 			= dlcFromBytes(message.numBytes);
+		txHeader.ErrorStateIndicator 	= FDCAN_ESI_ACTIVE;
+		txHeader.BitRateSwitch			= FDCAN_BRS_OFF;
+		txHeader.FDFormat				= FDCAN_CLASSIC_CAN;
+		txHeader.TxEventFifoControl		= FDCAN_NO_TX_EVENTS;
+		txHeader.MessageMarker			= 0;
+		HAL_FDCAN_AddMessageToTxFifoQ(fdcan, &txHeader, message.data);
+	}
+}
+
 void CANBus::addMessageHandler(void *instance, uint32_t id, CANHandler callback) {
 	if (numHandlers >= MAX_HANDLERS) {
 		Error_Handler();

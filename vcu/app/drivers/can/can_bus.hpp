@@ -59,6 +59,11 @@ public:
      */
     void transmit(uint32_t id, const uint8_t *data, uint32_t dlc) const;
 
+    /*
+     * @brief Try to transmit the next messages on the bus.
+     */
+    void flushTx();
+
 private:
 	static constexpr size_t MAX_HANDLERS = 64;
     HandlerEntry handlers[MAX_HANDLERS];
