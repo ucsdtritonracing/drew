@@ -44,7 +44,7 @@ public:
 	steering::State getSteering() const;
 	void setSteering(steering::State state);
 
-	bool getConfigurationLocked();
+	bool getConfigurationLocked() const;
 	void setConfigurationLocked(bool locked);
 
 	// inverter

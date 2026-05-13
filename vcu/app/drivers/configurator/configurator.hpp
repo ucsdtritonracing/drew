@@ -1,6 +1,7 @@
 #pragma once
 
 #include "drivers/can/can_bus.hpp"
+#include "drivers/can/can_peripheral.hpp"
 
 #ifndef DRIVERS_CONFIGURATOR_CONFIGURATOR_HPP_
 #define DRIVERS_CONFIGURATOR_CONFIGURATOR_HPP_
@@ -8,7 +9,7 @@
 
 namespace drivers::configurator {
 
-class Configurator {
+class Configurator: public drivers::can::CANPeripheral<Configurator> {
 public:
 	Configurator(drivers::can::CANBus& canBus); // constructor functions
 
@@ -21,8 +22,6 @@ public:
 
 
 private:
-    drivers::can::CANBus& canBus;
-
     static constexpr uint32_t CAN_ID_COMMAND_PEDAL_1= 400; // add actuall ids
     static constexpr uint32_t CAN_ID_COMMAND_PEDAL_2 = 401;
     static constexpr uint32_t CAN_ID_COMMAND_APPS = 402;

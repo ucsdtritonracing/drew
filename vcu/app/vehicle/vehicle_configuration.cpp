@@ -1,5 +1,6 @@
 #include "vehicle/vehicle_configuration.hpp"
 
+
 namespace vehicle {
 
 VehicleConfiguration vehicleConfiguration{};
@@ -16,8 +17,6 @@ float VehicleConfiguration::getBserLoThresholdVoltage() const { return bserLoThr
 float VehicleConfiguration::getBserHiThresholdVoltage() const { return bserHiThresholdVoltage; }
 float VehicleConfiguration::getBsefBrakeEngagedThreshold() const { return bsefBrakeEngagedThreshold; }
 float VehicleConfiguration::getBserBrakeEngagedThreshold() const { return bserBrakeEngagedThreshold; }
-
-}
 
 // Setters
 void VehicleConfiguration::setApps1LoThresholdVoltage(float value) {
@@ -89,7 +88,5 @@ void VehicleConfiguration::setBserBrakeEngagedThreshold(float value) {
     }
     bserBrakeEngagedThreshold = value;
 }
-
-VehicleConfiguration vehicleConfiguration{};
 
 } // namespace vehicle

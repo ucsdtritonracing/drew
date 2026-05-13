@@ -5,7 +5,7 @@
 namespace drivers::configurator {
 
 Configurator::Configurator(drivers::can::CANBus& canBus)
-    : canBus(canBus)
+    : CANPeripheral(canBus)
 {
 }
 
