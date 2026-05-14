@@ -23,8 +23,6 @@ private:
 		bool shutdownCircuitClosed;
 	};
 
-	timers::TimedPulse r2dsTimer;
-
 	torque::TimedFault app1Fault;
 	torque::TimedFault app2Fault;
 	torque::TimedFault bsefFault;
@@ -33,7 +31,7 @@ private:
 	bool appsBrakePedalPlausibilityFaulted;
 
 	const vehicle::Mode getNextMode(vehicle::Mode currentMode, TransitionInputs inputs) const;
-	void onEnter(vehicle::Mode mode, uint32_t currentTick);
+	void onEnter(vehicle::Mode mode);
 };
 
 } // namespace rtos::tasks
