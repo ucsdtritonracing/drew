@@ -122,6 +122,7 @@ int main(void)
   vehicle::pedalsDriver.init(hadc1);
   vehicle::pduDriver.init();
   vehicle::sasDriver.init();
+  vehicle::broadcasterDriver.init();
 
 
   /* USER CODE END 2 */
@@ -172,6 +173,10 @@ int main(void)
   rtos::CANRecoveryTask.start("CAN Recovery Task");
 
   rtos::PDUHeartbeatTask.start("PDU Heartbeat Task");
+
+  rtos::BroadcastTask.start("Broadcast Task");
+
+  rtos::BroadcastTask.start("Broadcast Task");
 
   /* USER CODE END RTOS_THREADS */
 

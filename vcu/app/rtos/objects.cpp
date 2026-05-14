@@ -5,6 +5,7 @@
 #include "tasks/pdu_heartbeat.hpp"
 #include "tasks/pedals.hpp"
 #include "tasks/polling.hpp"
+#include "tasks/broadcast.hpp"
 
 
 namespace rtos {
@@ -18,6 +19,7 @@ tasks::PedalsTask PedalsTask;
 tasks::PollingTask PollingTask;
 tasks::CANRecoveryTask CANRecoveryTask;
 tasks::PDUHeartbeatTask PDUHeartbeatTask;
+tasks::BroadcastTask BroadcastTask;
 
 
 Queue<drivers::can::Message, 64> CANBus1RxQueue;

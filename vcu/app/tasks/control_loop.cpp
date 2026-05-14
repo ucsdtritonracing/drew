@@ -108,6 +108,12 @@ void ControlLoopTask::loop() {
 		vehicle::inverterDriver.sendCommandMessage(0, false);
 		break;
 	case vehicle::Mode::READY_TO_DRIVE:
+		vehicle::vehicleState.setAPPFault(appsPlausibilityFault.torqueInhibited(currentTick));
+		vehicle::vehicleState.setABPPCFault(appsBrakePedalPlausibilityFaulted);
+
+		vehicle::vehicleState.setAPPFault(appsPlausibilityFault.torqueInhibited(currentTick));
+		vehicle::vehicleState.setABPPCFault(appsBrakePedalPlausibilityFaulted);
+
 		const bool torqueInhibited = app1Fault.torqueInhibited(currentTick) ||
 									 app2Fault.torqueInhibited(currentTick) ||
 									 bsefFault.torqueInhibited(currentTick) ||

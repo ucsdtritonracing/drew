@@ -20,13 +20,17 @@ public:
 
 	// abstract state
 	Mode getMode() const;
-	void setReadyToDriveButtonPressed(bool status);
-	void setShutdownCircuitClosed(bool status);
+	bool getAPPFault() const;
+	bool getABPPCFault() const;
 	void setMode(Mode newMode);
+	void setAPPFault(bool status);
+	void setABPPCFault(bool status);
 
 	// polled
 	bool getReadyToDriveButtonPressed() const;
 	bool getShutdownCircuitClosed() const;
+	void setReadyToDriveButtonPressed(bool status);
+	void setShutdownCircuitClosed(bool status);
 
 	// pedals
 	pedals::State getPedals() const;
@@ -85,7 +89,8 @@ private:
 
 	// Abstract State
     std::atomic<Mode> mode;
-
+    std::atomic<bool> appFault;
+    std::atomic<bool> abppcFault;
 };
 
 extern VehicleState vehicleState;
