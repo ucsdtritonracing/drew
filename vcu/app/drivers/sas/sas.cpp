@@ -13,17 +13,22 @@ SAS::SAS(drivers::can::CANBus& canBus)
 void SAS::init() {
 	bindHandler<&SAS::processCANMessage>(CAN_ID_STATUS);
 	txData[1] = 0x00;		// unchanged byte
+
+	configCommandSlotHandle = bindTxStream(CAN_ID_CONFIG, drivers::can::TxPriority::STATUS);
+	resetAngleCommandSlotHandle = bindTxStream(RESET_CALIBRATION_CCW, drivers::can::TxPriority::STATUS);
+	resetCalibrationCommandSlotHandle = bindTxStream(RESET_ANGLE_CCW, drivers::can::TxPriority::STATUS);
+
 }
 
 void SAS::resetAngle() {
     txData[0] = RESET_ANGLE_CCW;
-    canBus.transmit(CAN_ID_CONFIG, txData, FDCAN_DLC_BYTES_2);
+    canBus.publishTxStream(resetAngleCommandSlotHandle, txData, 2);
 }
 
 
 void SAS::resetCalibration() {
     txData[0] = RESET_CALIBRATION_CCW;
-    canBus.transmit(CAN_ID_CONFIG, txData, FDCAN_DLC_BYTES_2);
+    canBus.publishTxStream(configCommandSlotHandle, txData, 2);
 }
 
 constexpr vehicle::steering::Mode SAS::parseMode(const uint8_t& modeByte) {
