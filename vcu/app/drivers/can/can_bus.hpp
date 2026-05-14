@@ -51,15 +51,12 @@ public:
     void processMessage(Message *message) const;
 
     /*
-     * @brief Transmit a CAN frame on the bus.
+     * @brief Publish a new message for a TxSlot on the bus.
      *
-     * @param id CAN ID of the CAN frame
+     * @param handle Handle of the TxSlot
      * @param data Payload of the CAN frame
-     * @param dlc Data Length Code of the CAN frame
+     * @param numBytes Data length of the CAN frame
      */
-    void transmit(uint32_t id, const uint8_t *data, uint32_t dlc) const;
-
-
     void publishTxSlot(TxSlotHandle handle, const uint8_t data[], uint32_t numBytes);
 
     /*
