@@ -7,6 +7,7 @@
 #include "tasks/pedals.hpp"
 #include "tasks/polling.hpp"
 #include "tasks/can_tx.hpp"
+#include "tasks/broadcast.hpp"
 #include "rtos/queue.hpp"
 #include "drivers/can/can_utils.hpp"
 
@@ -22,6 +23,7 @@ extern tasks::PedalsTask PedalsTask;
 extern tasks::PollingTask PollingTask;
 extern tasks::CANRecoveryTask CANRecoveryTask;
 extern tasks::PDUHeartbeatTask PDUHeartbeatTask;
+extern tasks::BroadcastTask BroadcastTask;
 
 extern Queue<drivers::can::Message, 64> CANBus1RxQueue;
 extern Queue<drivers::can::Message, 64> CANBus2RxQueue;

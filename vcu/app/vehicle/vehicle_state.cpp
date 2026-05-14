@@ -40,6 +40,21 @@ void VehicleState::setMode(Mode newMode) {
 }
 
 
+// Faults
+bool VehicleState::getAPPFault() const {
+	return appFault.load(std::memory_order_relaxed);
+}
+bool VehicleState::getABPPCFault() const {
+	return abppcFault.load(std::memory_order_relaxed);
+}
+void VehicleState::setAPPFault(bool status) {
+	appFault.store(status, std::memory_order_relaxed);
+}
+void VehicleState::setABPPCFault(bool status) {
+	abppcFault.store(status, std::memory_order_relaxed);
+}
+
+
 // Pedals
 pedals::State VehicleState::getPedals() const {
 	return pedals.get();
