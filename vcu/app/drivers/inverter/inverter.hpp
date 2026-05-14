@@ -2,6 +2,7 @@
 
 #include "drivers/can/can_bus.hpp"
 #include "drivers/can/can_peripheral.hpp"
+#include "drivers/can/tx_slot.hpp"
 #include "drivers/inverter/inverter_can_types.hpp"
 #include "vehicle/types/inverter_types.hpp"
 #include <type_traits>
@@ -85,7 +86,7 @@ public:
 
 
 private:
-
+	drivers::can::TxSlotHandle torqueCommandSlotHandle;
 	uint8_t txData[drivers::can::MAX_CLASSICAL_CAN_DATA_LENGTH] = 	{};
 
 	static constexpr float COMMON_SCALE = 							10.0f; // temperature, torque, angle, frequency
