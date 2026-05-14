@@ -27,7 +27,7 @@ void CANBus::transmit(uint32_t id, const uint8_t *data, uint32_t dlc) const {
 	HAL_FDCAN_AddMessageToTxFifoQ(fdcan, &txHeader, data);
 }
 
-void CANBus::publishTxStream(TxSlotHandle handle, const uint8_t data[], uint32_t numBytes) {
+void CANBus::publishTxSlot(TxSlotHandle handle, const uint8_t data[], uint32_t numBytes) {
 	txManager.publish(handle, data, numBytes);
 	flushTx();
 }
@@ -72,7 +72,7 @@ void CANBus::addMessageHandler(void *instance, uint32_t id, CANHandler callback)
 }
 
 
-TxSlotHandle CANBus::addTxStream(uint32_t id, TxPriority priority) {
+TxSlotHandle CANBus::addTxSlot(uint32_t id, TxPriority priority) {
 	return txManager.addSlot(id, priority);
 }
 

@@ -24,7 +24,7 @@ namespace drivers::inverter {
 		bindHandler<&Inverter::processFaultFlagsMessage>(CAN_ID_FAULT_CODES);
 		bindHandler<&Inverter::processInternalStatesMessage>(CAN_ID_INTERNAL_STATES);
 
-		torqueCommandSlotHandle = bindTxStream(COMMAND_MESSAGE_ID, drivers::can::TxPriority::CONTROL);
+		torqueCommandSlotHandle = bindTxSlot(COMMAND_MESSAGE_ID, drivers::can::TxPriority::CONTROL);
 	}
 
 	void Inverter::sendCommandMessage(float torqueRequestNm, bool inverterEnable) {
@@ -39,7 +39,7 @@ namespace drivers::inverter {
 		txData[6] = COMMANDED_TORQUE_LIMIT_BYTE_6;
 		txData[7] = COMMANDED_TORQUE_LIMIT_BYTE_7;
 
-		canBus.publishTxStream(torqueCommandSlotHandle, txData, 8);
+		canBus.publishTxSlot(torqueCommandSlotHandle, txData, 8);
 	}
 
 	template <size_t dataLength>

@@ -44,8 +44,8 @@ protected:
 	    );
 	}
 
-	TxSlotHandle bindTxStream(uint32_t id, TxPriority priority) {
-	    return canBus.addTxStream(id, priority);
+	TxSlotHandle bindTxSlot(uint32_t id, TxPriority priority) {
+	    return canBus.addTxSlot(id, priority);
 	}
 };
 

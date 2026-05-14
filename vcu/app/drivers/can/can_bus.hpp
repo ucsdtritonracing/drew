@@ -35,13 +35,13 @@ public:
     void addMessageHandler(void *instance, uint32_t id, CANHandler callback);
 
     /*
-     * @brief Add a CAN message Tx stream.
+     * @brief Add a CAN message Tx slot.
      *
      * @param id CAN ID of the message
      * @param priority 0 is the highest priority possible
      * @return TxSlotHandle of the slot created
      */
-    TxSlotHandle addTxStream(uint32_t id, TxPriority priority);
+    TxSlotHandle addTxSlot(uint32_t id, TxPriority priority);
 
     /*
      * @brief Process an incoming CAN Message.
@@ -60,7 +60,7 @@ public:
     void transmit(uint32_t id, const uint8_t *data, uint32_t dlc) const;
 
 
-    void publishTxStream(TxSlotHandle handle, const uint8_t data[], uint32_t numBytes);
+    void publishTxSlot(TxSlotHandle handle, const uint8_t data[], uint32_t numBytes);
 
     /*
      * @brief Try to transmit the next messages on the bus.

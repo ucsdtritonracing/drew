@@ -19,8 +19,8 @@ void PDU::init() {
 	bindHandler<&PDU::processMessage1>(CAN_ID_RX_1);
 	bindHandler<&PDU::processMessage2>(CAN_ID_RX_2);
 
-	currentCommandSlotHandle = bindTxStream(CAN_ID_SET_CURRENT, drivers::can::TxPriority::STATUS);
-	pwmCommandSlotHandle = bindTxStream(CAN_ID_SET_PWM, drivers::can::TxPriority::STATUS);
+	currentCommandSlotHandle = bindTxSlot(CAN_ID_SET_CURRENT, drivers::can::TxPriority::STATUS);
+	pwmCommandSlotHandle = bindTxSlot(CAN_ID_SET_PWM, drivers::can::TxPriority::STATUS);
 }
 
 void PDU::setCurrentLimit(uint8_t channel, float amps) {
@@ -61,11 +61,11 @@ void PDU::sendCommand(CommandMode mode) {
 	switch (mode) {
 	case CurrentLimit:
 		memcpy(txData, requestedCurrentLimit, drivers::can::MAX_CLASSICAL_CAN_DATA_LENGTH);
-		canBus.publishTxStream(currentCommandSlotHandle, txData, 8);
+		canBus.publishTxSlot(currentCommandSlotHandle, txData, 8);
 		break;
 	case PWM:
 		memcpy(txData, requestedCurrentLimit, drivers::can::MAX_CLASSICAL_CAN_DATA_LENGTH);
-		canBus.publishTxStream(pwmCommandSlotHandle, txData, 8);
+		canBus.publishTxSlot(pwmCommandSlotHandle, txData, 8);
 		break;
 	}
 }
