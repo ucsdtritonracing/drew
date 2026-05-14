@@ -156,6 +156,12 @@ int main(void)
   rtos::CANBus2DispatchTask.init(vehicle::CANBus2, rtos::CANBus2RxQueue.getHandle());
   rtos::CANBus2DispatchTask.start("CAN Bus 2 Dispatch Task");
 
+  rtos::CANBus1TxTask.init(vehicle::CANBus1);
+  rtos::CANBus1TxTask.start("CAN Bus 1 Tx Task");
+
+  rtos::CANBus2TxTask.init(vehicle::CANBus2);
+  rtos::CANBus2TxTask.start("CAN Bus 2 Tx Task");
+
   rtos::ControlLoopTask.start("Control Loop Task");
 
   rtos::PedalsTask.start("Pedals Task");

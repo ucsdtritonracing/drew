@@ -43,6 +43,10 @@ protected:
 	        }
 	    );
 	}
+
+	TxSlotHandle bindTxSlot(uint32_t id, TxPriority priority) {
+	    return canBus.addTxSlot(id, priority);
+	}
 };
 
 } // namespace drivers::can

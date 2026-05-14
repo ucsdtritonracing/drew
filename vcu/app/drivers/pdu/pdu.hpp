@@ -2,6 +2,7 @@
 
 #include "drivers/can/can_bus.hpp"
 #include "drivers/can/can_peripheral.hpp"
+#include "drivers/can/tx_slot.hpp"
 #include "vehicle/types/pdu_types.hpp"
 #include "generics/snapshot.hpp"
 
@@ -82,6 +83,9 @@ private:
 	uint8_t txData[drivers::can::MAX_CLASSICAL_CAN_DATA_LENGTH] = {};
 	uint8_t requestedCurrentLimit[drivers::can::MAX_CLASSICAL_CAN_DATA_LENGTH] = {};
 	uint8_t requestedPWMDutyPercent[drivers::can::MAX_CLASSICAL_CAN_DATA_LENGTH] = {};
+
+	drivers::can::TxSlotHandle currentCommandSlotHandle;
+	drivers::can::TxSlotHandle pwmCommandSlotHandle;
 
 	static constexpr uint8_t CHANNEL_LIMIT_10A_MASK		= 0b01100110;
 	static constexpr uint8_t LOW_CURRENT_LIMIT			= 10;
