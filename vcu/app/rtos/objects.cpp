@@ -11,6 +11,8 @@ namespace rtos {
 
 tasks::CANDispatchTask CANBus1DispatchTask;
 tasks::CANDispatchTask CANBus2DispatchTask;
+tasks::CANTxTask CANBus1TxTask;
+tasks::CANTxTask CANBus2TxTask;
 tasks::ControlLoopTask ControlLoopTask;
 tasks::PedalsTask PedalsTask;
 tasks::PollingTask PollingTask;

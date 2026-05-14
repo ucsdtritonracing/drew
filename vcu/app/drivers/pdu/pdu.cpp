@@ -18,6 +18,9 @@ PDU::PDU(drivers::can::CANBus &canBus) :
 void PDU::init() {
 	bindHandler<&PDU::processMessage1>(CAN_ID_RX_1);
 	bindHandler<&PDU::processMessage2>(CAN_ID_RX_2);
+
+	currentCommandSlotHandle = bindTxSlot(CAN_ID_SET_CURRENT, drivers::can::TxPriority::STATUS);
+	pwmCommandSlotHandle = bindTxSlot(CAN_ID_SET_PWM, drivers::can::TxPriority::STATUS);
 }
 
 void PDU::setCurrentLimit(uint8_t channel, float amps) {
@@ -58,11 +61,11 @@ void PDU::sendCommand(CommandMode mode) {
 	switch (mode) {
 	case CurrentLimit:
 		memcpy(txData, requestedCurrentLimit, drivers::can::MAX_CLASSICAL_CAN_DATA_LENGTH);
-		canBus.transmit(CAN_ID_SET_CURRENT, txData, FDCAN_DLC_BYTES_8);
+		canBus.publishTxSlot(currentCommandSlotHandle, txData, 8);
 		break;
 	case PWM:
 		memcpy(txData, requestedCurrentLimit, drivers::can::MAX_CLASSICAL_CAN_DATA_LENGTH);
-		canBus.transmit(CAN_ID_SET_PWM, txData, FDCAN_DLC_BYTES_8);
+		canBus.publishTxSlot(pwmCommandSlotHandle, txData, 8);
 		break;
 	}
 }
@@ -111,8 +114,8 @@ void PDU::stopAllChannels() {
 	memset(requestedCurrentLimit, 0, vehicle::pdu::NUM_CHANNELS);
 	memset(requestedPWMDutyPercent, 0, vehicle::pdu::NUM_CHANNELS);
 	memset(txData, 0, vehicle::pdu::NUM_CHANNELS);
-	canBus.transmit(CAN_ID_SET_CURRENT, txData, FDCAN_DLC_BYTES_8);
-	canBus.transmit(CAN_ID_SET_PWM, txData, FDCAN_DLC_BYTES_8); // current command won't shut off outputs by itself if PWM commands are present
+	canBus.publishTxSlot(currentCommandSlotHandle, txData, 8);
+	canBus.publishTxSlot(pwmCommandSlotHandle, txData, 8); // current command won't shut off outputs by itself if PWM commands are present
 }
 
 } // namespace drivers::pdu

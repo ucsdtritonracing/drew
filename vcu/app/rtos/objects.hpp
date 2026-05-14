@@ -6,6 +6,7 @@
 #include "tasks/pdu_heartbeat.hpp"
 #include "tasks/pedals.hpp"
 #include "tasks/polling.hpp"
+#include "tasks/can_tx.hpp"
 #include "rtos/queue.hpp"
 #include "drivers/can/can_utils.hpp"
 
@@ -14,6 +15,8 @@ namespace rtos {
 
 extern tasks::CANDispatchTask CANBus1DispatchTask;
 extern tasks::CANDispatchTask CANBus2DispatchTask;
+extern tasks::CANTxTask CANBus1TxTask;
+extern tasks::CANTxTask CANBus2TxTask;
 extern tasks::ControlLoopTask ControlLoopTask;
 extern tasks::PedalsTask PedalsTask;
 extern tasks::PollingTask PollingTask;

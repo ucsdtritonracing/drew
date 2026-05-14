@@ -53,6 +53,9 @@ private:
     static constexpr uint8_t 	RESET_CALIBRATION_CCW	= 0x05;		// "5h Resets the calibration status of the angle"
 
     uint8_t txData[2];
+    drivers::can::TxSlotHandle configCommandSlotHandle;
+    drivers::can::TxSlotHandle resetAngleCommandSlotHandle;
+    drivers::can::TxSlotHandle resetCalibrationCommandSlotHandle;
 };
 
 } // namespace drivers::sas
