@@ -2,6 +2,7 @@
 
 #include "drivers/can/can_bus.hpp"
 #include "drivers/can/can_peripheral.hpp"
+#include "drivers/can/tx_slot.hpp"
 #include "drivers/broadcaster/broadcaster_types.hpp"
 #include "stm32g4xx_hal_fdcan.h"
 #include "vehicle/types/wheels_types.hpp"
@@ -14,12 +15,19 @@ class Broadcaster: public drivers::can::CANPeripheral<Broadcaster> {
 public:
 	Broadcaster(drivers::can::CANBus &canBus);
 
+	void init();
 	void broadcastWheelsMessage(const vehicle::wheels::State& wheels);
 	void broadcastBrakesMessage(const vehicle::pedals::State& pedals);
 	void broadcastAPPMessage(const vehicle::pedals::State& pedals);
 	void broadcastFlagsMessage(Flags flags);
 
 private:
+	drivers::can::TxSlotHandle appMessageSlotHandle;
+	drivers::can::TxSlotHandle brakesMessageSlotHandle;
+	drivers::can::TxSlotHandle wheelsMessageSlotHandle;
+	drivers::can::TxSlotHandle flagsMessageSlotHandle;
+	drivers::can::TxSlotHandle imuMessageSlotHandle;
+
 	uint8_t txData[drivers::can::MAX_CLASSICAL_CAN_DATA_LENGTH] = {};
 
 	static constexpr float WHEELS_SCALE					= 100.0f;
@@ -48,11 +56,11 @@ private:
 	static constexpr size_t WHEELS_RR_START				= 4;
 	static constexpr size_t WHEELS_RL_START				= 6;
 
-	static constexpr uint8_t DLC_WHEELS_MESSAGE			= FDCAN_DLC_BYTES_8;
-	static constexpr uint8_t DLC_BRAKES_MESSAGE			= FDCAN_DLC_BYTES_5;
-	static constexpr uint8_t DLC_APP_MESSAGE			= FDCAN_DLC_BYTES_5;
-	static constexpr uint8_t DLC_IMU_MESSAGE			= FDCAN_DLC_BYTES_8;
-	static constexpr uint8_t DLC_FLAGS_MESSAGE			= FDCAN_DLC_BYTES_1;
+	static constexpr uint8_t WHEELS_MESSAGE_NUM_BYTES	= 8;
+	static constexpr uint8_t BRAKES_MESSAGE_NUM_BYTES	= 5;
+	static constexpr uint8_t APP_MESSAGE_NUM_BYTES		= 5;
+	static constexpr uint8_t IMU_MESSAGE_NUM_BYTES		= 8;
+	static constexpr uint8_t FLAGS_MESSAGE_NUM_BYTES	= 1;
 
 	static constexpr uint32_t CAN_ID_WHEELS_MESSAGE		= 0x12A;
 	static constexpr uint32_t CAN_ID_BRAKES_MESSAGE		= 0x12B;

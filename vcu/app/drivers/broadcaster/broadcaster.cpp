@@ -12,6 +12,15 @@ Broadcaster::Broadcaster(drivers::can::CANBus &canBus) :
 		drivers::can::CANPeripheral<Broadcaster>(canBus) {}
 
 
+void Broadcaster::init() {
+	appMessageSlotHandle = bindTxSlot(CAN_ID_APP_MESSAGE, drivers::can::TxPriority::TELEMETRY);
+	brakesMessageSlotHandle = bindTxSlot(CAN_ID_BRAKES_MESSAGE, drivers::can::TxPriority::TELEMETRY);
+	wheelsMessageSlotHandle = bindTxSlot(CAN_ID_WHEELS_MESSAGE, drivers::can::TxPriority::TELEMETRY);
+	flagsMessageSlotHandle = bindTxSlot(CAN_ID_FLAGS_MESSAGE, drivers::can::TxPriority::TELEMETRY);
+	imuMessageSlotHandle = bindTxSlot(CAN_ID_IMU_MESSAGE, drivers::can::TxPriority::TELEMETRY);
+}
+
+
 void Broadcaster::broadcastWheelsMessage(const vehicle::wheels::State& wheels) {
 	int16_t frontRight	= static_cast<int16_t>(wheels.frontRight * WHEELS_SCALE);
 	int16_t frontLeft	= static_cast<int16_t>(wheels.frontLeft * WHEELS_SCALE);
@@ -32,7 +41,7 @@ void Broadcaster::broadcastWheelsMessage(const vehicle::wheels::State& wheels) {
 	txData[WHEELS_RR_START]		= static_cast<uint8_t>(rawRL & BYTE_MASK);
 	txData[WHEELS_RR_START+1]	= static_cast<uint8_t>((rawRL >> 8) & BYTE_MASK);
 
-	canBus.transmit(CAN_ID_WHEELS_MESSAGE, txData, DLC_WHEELS_MESSAGE);
+	canBus.publishTxSlot(wheelsMessageSlotHandle, txData, WHEELS_MESSAGE_NUM_BYTES);
 }
 
 
@@ -48,7 +57,7 @@ void Broadcaster::broadcastBrakesMessage(const vehicle::pedals::State& pedals) {
 			((pedals.bsefValid & 1u) << BRAKES_BSEF_VALID_BIT) |
 			((pedals.bserValid & 1u) << BRAKES_BSER_VALID_BIT)
 	);
-	canBus.transmit(CAN_ID_BRAKES_MESSAGE, txData, DLC_BRAKES_MESSAGE);
+	canBus.publishTxSlot(brakesMessageSlotHandle, txData, BRAKES_MESSAGE_NUM_BYTES);
 }
 
 
@@ -64,7 +73,7 @@ void Broadcaster::broadcastAPPMessage(const vehicle::pedals::State& pedals) {
 			((pedals.app1Valid & 1u) << APP_APP1_VALID_BIT) |
 			((pedals.app2Valid & 1u) << APP_APP2_VALID_BIT)
 	);
-	canBus.transmit(CAN_ID_APP_MESSAGE, txData, DLC_APP_MESSAGE);
+	canBus.publishTxSlot(appMessageSlotHandle, txData, APP_MESSAGE_NUM_BYTES);
 }
 
 
@@ -76,7 +85,7 @@ void Broadcaster::broadcastFlagsMessage(Flags flags) {
 			((flags.appFault & 1u) << FLAGS_APP_FAULT_BIT) |
 			((flags.abppcFault & 1u) << FLAGS_ABPPC_FAULT_BIT)
 	);
-	canBus.transmit(CAN_ID_FLAGS_MESSAGE, txData, DLC_FLAGS_MESSAGE);
+	canBus.publishTxSlot(flagsMessageSlotHandle, txData, FLAGS_MESSAGE_NUM_BYTES);
 }
 
 } // namespace drivers::broadcaster

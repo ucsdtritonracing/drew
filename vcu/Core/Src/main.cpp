@@ -122,6 +122,7 @@ int main(void)
   vehicle::pedalsDriver.init(hadc1);
   vehicle::pduDriver.init();
   vehicle::sasDriver.init();
+  vehicle::broadcasterDriver.init();
 
 
   /* USER CODE END 2 */
