@@ -123,6 +123,7 @@ int main(void)
   vehicle::pduDriver.init();
   vehicle::sasDriver.init();
   vehicle::broadcasterDriver.init();
+  vehicle::soundDriver.init(R2D_Sound_GPIO_Port, R2D_Sound_Pin);
 
 
   /* USER CODE END 2 */
