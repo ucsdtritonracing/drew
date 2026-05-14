@@ -5,11 +5,18 @@
 
 namespace drivers::can {
 
+struct PendingTx {
+	TxSlotHandle slot;
+	Message message;
+	bool valid;
+};
+
 class TxManager {
 public:
 	TxSlotHandle addSlot(uint32_t id, TxPriority priority);
-	Message getNextMessage();
+	PendingTx getNextTx();
 	void publish(TxSlotHandle handle, const uint8_t data[], uint32_t numBytes);
+	void markQueued(TxSlotHandle handle);
 private:
 	static constexpr uint8_t MAX_SLOTS = 128;
 

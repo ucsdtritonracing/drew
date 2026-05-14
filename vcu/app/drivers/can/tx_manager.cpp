@@ -17,6 +17,14 @@ TxSlotHandle TxManager::addSlot(uint32_t id, TxPriority priority) {
 		.id = numSlots,
 		.valid = true
 	};
+
+
+	TxSlot &slot = slots[numSlots];
+	slot.id = id;
+	slot.priority = priority;
+	slot.newMessage = false;
+	slot.lastTx = 0;
+
 	numSlots++;
 
 	return handle;
@@ -36,21 +44,48 @@ void TxManager::publish(TxSlotHandle handle, const uint8_t data[], uint32_t numB
 }
 
 
-Message TxManager::getNextMessage() {
+void TxManager::markQueued(TxSlotHandle handle) {
+	if (!handle.valid) {
+		return;
+	}
+
+	TxSlot &slot = slots[handle.id];
+	slot.newMessage = false;
+	slot.lastTx = xTaskGetTickCount();
+}
+
+
+PendingTx TxManager::getNextTx() {
 	uint8_t highestPrioritySlotId = 0;
+
+	bool newMessages = false;
 	for (uint8_t id = 0; id < numSlots; id++) {
-		if (slots[id].priority < slots[highestPrioritySlotId].priority) {
+		if (!slots[id].newMessage) {
+			continue;
+		}
+
+		if (!newMessages || slots[id].priority < slots[highestPrioritySlotId].priority) {
 			highestPrioritySlotId = id;
+			newMessages = true;
 		}
 	}
 
-	Message nextMessage;
-	TxSlot &slot = slots[highestPrioritySlotId];
-	nextMessage.id = slot.id;
-	nextMessage.numBytes = slot.numBytes;
-	memcpy(nextMessage.data, slot.data, slot.numBytes);
+	PendingTx nextTx;
+	if (newMessages) {
+		TxSlot &slot = slots[highestPrioritySlotId];
+		nextTx.slot = TxSlotHandle{
+			.id = highestPrioritySlotId,
+			.valid = true
+		};
+		nextTx.valid = true;
+		nextTx.message.id = slot.id;
+		nextTx.message.numBytes = slot.numBytes;
+		memcpy(nextTx.message.data, slot.data, slot.numBytes);
+	} else {
+		nextTx.valid = false;
+	}
 
-	return nextMessage;
+	return nextTx;
 }
 
 } // namespace drivers::can
