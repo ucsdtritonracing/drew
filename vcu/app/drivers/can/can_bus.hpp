@@ -59,6 +59,9 @@ public:
      */
     void transmit(uint32_t id, const uint8_t *data, uint32_t dlc) const;
 
+
+    void publishTxStream(TxSlotHandle handle, const uint8_t data[], uint32_t numBytes);
+
     /*
      * @brief Try to transmit the next messages on the bus.
      */
