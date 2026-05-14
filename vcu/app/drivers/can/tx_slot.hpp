@@ -15,7 +15,7 @@ enum TxPriority : uint8_t {
 
 struct TxSlotHandle {
 	uint8_t id;
-	bool valid;
+	bool valid = false;
 };
 
 struct TxSlot {
