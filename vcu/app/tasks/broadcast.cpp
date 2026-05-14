@@ -12,7 +12,6 @@ void BroadcastTask::loop() {
 
 	vehicle::broadcasterDriver.broadcastBrakesMessage(pedals);
 	vehicle::broadcasterDriver.broadcastAPPMessage(pedals);
-	osDelay(DELAY / 2); // need to space out messages to not overflow buffer
 
 	auto wheels = vehicle::vehicleState.getWheelSpeeds();
 	bool r2dbPressed = vehicle::vehicleState.getReadyToDriveButtonPressed();
@@ -30,7 +29,7 @@ void BroadcastTask::loop() {
 		.abppcFault		= abppcFault
 	});
 
-	osDelay(DELAY / 2);
+	osDelay(DELAY);
 }
 
 } // namespace rtos::tasks
