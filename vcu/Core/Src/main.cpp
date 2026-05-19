@@ -160,7 +160,7 @@ int main(void)
 
   rtos::PollingTask.start("Polling Task");
 
-  rtos::CANRecoveryTask.init(hfdcan1, hfdcan2);
+  rtos::CANRecoveryTask.init(hfdcan1, hfdcan3);
   rtos::CANRecoveryTask.start("CAN Recovery Task");
 
   rtos::PDUHeartbeatTask.start("PDU Heartbeat Task");
