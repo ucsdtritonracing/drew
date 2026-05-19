@@ -224,17 +224,17 @@ void HAL_FDCAN_MspInit(FDCAN_HandleTypeDef* hfdcan)
       __HAL_RCC_FDCAN_CLK_ENABLE();
     }
 
-    __HAL_RCC_GPIOA_CLK_ENABLE();
+    __HAL_RCC_GPIOB_CLK_ENABLE();
     /**FDCAN1 GPIO Configuration
-    PA11     ------> FDCAN1_RX
-    PA12     ------> FDCAN1_TX
+    PB8-BOOT0     ------> FDCAN1_RX
+    PB9     ------> FDCAN1_TX
     */
-    GPIO_InitStruct.Pin = GPIO_PIN_11|GPIO_PIN_12;
+    GPIO_InitStruct.Pin = GPIO_PIN_8|GPIO_PIN_9;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
     GPIO_InitStruct.Alternate = GPIO_AF9_FDCAN1;
-    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
     /* FDCAN1 interrupt Init */
     HAL_NVIC_SetPriority(FDCAN1_IT0_IRQn, 5, 0);
@@ -243,11 +243,11 @@ void HAL_FDCAN_MspInit(FDCAN_HandleTypeDef* hfdcan)
 
     /* USER CODE END FDCAN1_MspInit 1 */
   }
-  else if(hfdcan->Instance==FDCAN2)
+  else if(hfdcan->Instance==FDCAN3)
   {
-    /* USER CODE BEGIN FDCAN2_MspInit 0 */
+    /* USER CODE BEGIN FDCAN3_MspInit 0 */
 
-    /* USER CODE END FDCAN2_MspInit 0 */
+    /* USER CODE END FDCAN3_MspInit 0 */
 
   /** Initializes the peripherals clocks
   */
@@ -265,23 +265,20 @@ void HAL_FDCAN_MspInit(FDCAN_HandleTypeDef* hfdcan)
     }
 
     __HAL_RCC_GPIOB_CLK_ENABLE();
-    /**FDCAN2 GPIO Configuration
-    PB12     ------> FDCAN2_RX
-    PB13     ------> FDCAN2_TX
+    /**FDCAN3 GPIO Configuration
+    PB3     ------> FDCAN3_RX
+    PB4     ------> FDCAN3_TX
     */
-    GPIO_InitStruct.Pin = GPIO_PIN_12|GPIO_PIN_13;
+    GPIO_InitStruct.Pin = GPIO_PIN_3|GPIO_PIN_4;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-    GPIO_InitStruct.Alternate = GPIO_AF9_FDCAN2;
+    GPIO_InitStruct.Alternate = GPIO_AF11_FDCAN3;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-    /* FDCAN2 interrupt Init */
-    HAL_NVIC_SetPriority(FDCAN2_IT0_IRQn, 5, 0);
-    HAL_NVIC_EnableIRQ(FDCAN2_IT0_IRQn);
-    /* USER CODE BEGIN FDCAN2_MspInit 1 */
+    /* USER CODE BEGIN FDCAN3_MspInit 1 */
 
-    /* USER CODE END FDCAN2_MspInit 1 */
+    /* USER CODE END FDCAN3_MspInit 1 */
   }
 
 }
@@ -306,10 +303,10 @@ void HAL_FDCAN_MspDeInit(FDCAN_HandleTypeDef* hfdcan)
     }
 
     /**FDCAN1 GPIO Configuration
-    PA11     ------> FDCAN1_RX
-    PA12     ------> FDCAN1_TX
+    PB8-BOOT0     ------> FDCAN1_RX
+    PB9     ------> FDCAN1_TX
     */
-    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_11|GPIO_PIN_12);
+    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_8|GPIO_PIN_9);
 
     /* FDCAN1 interrupt DeInit */
     HAL_NVIC_DisableIRQ(FDCAN1_IT0_IRQn);
@@ -317,188 +314,26 @@ void HAL_FDCAN_MspDeInit(FDCAN_HandleTypeDef* hfdcan)
 
     /* USER CODE END FDCAN1_MspDeInit 1 */
   }
-  else if(hfdcan->Instance==FDCAN2)
+  else if(hfdcan->Instance==FDCAN3)
   {
-    /* USER CODE BEGIN FDCAN2_MspDeInit 0 */
+    /* USER CODE BEGIN FDCAN3_MspDeInit 0 */
 
-    /* USER CODE END FDCAN2_MspDeInit 0 */
+    /* USER CODE END FDCAN3_MspDeInit 0 */
     /* Peripheral clock disable */
     HAL_RCC_FDCAN_CLK_ENABLED--;
     if(HAL_RCC_FDCAN_CLK_ENABLED==0){
       __HAL_RCC_FDCAN_CLK_DISABLE();
     }
 
-    /**FDCAN2 GPIO Configuration
-    PB12     ------> FDCAN2_RX
-    PB13     ------> FDCAN2_TX
+    /**FDCAN3 GPIO Configuration
+    PB3     ------> FDCAN3_RX
+    PB4     ------> FDCAN3_TX
     */
-    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_12|GPIO_PIN_13);
+    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_3|GPIO_PIN_4);
 
-    /* FDCAN2 interrupt DeInit */
-    HAL_NVIC_DisableIRQ(FDCAN2_IT0_IRQn);
-    /* USER CODE BEGIN FDCAN2_MspDeInit 1 */
+    /* USER CODE BEGIN FDCAN3_MspDeInit 1 */
 
-    /* USER CODE END FDCAN2_MspDeInit 1 */
-  }
-
-}
-
-/**
-  * @brief TIM_IC MSP Initialization
-  * This function configures the hardware resources used in this example
-  * @param htim_ic: TIM_IC handle pointer
-  * @retval None
-  */
-void HAL_TIM_IC_MspInit(TIM_HandleTypeDef* htim_ic)
-{
-  GPIO_InitTypeDef GPIO_InitStruct = {0};
-  if(htim_ic->Instance==TIM3)
-  {
-    /* USER CODE BEGIN TIM3_MspInit 0 */
-
-    /* USER CODE END TIM3_MspInit 0 */
-    /* Peripheral clock enable */
-    __HAL_RCC_TIM3_CLK_ENABLE();
-
-    __HAL_RCC_GPIOB_CLK_ENABLE();
-    /**TIM3 GPIO Configuration
-    PB1     ------> TIM3_CH4
-    */
-    GPIO_InitStruct.Pin = RRWSS_Pin;
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-    GPIO_InitStruct.Alternate = GPIO_AF2_TIM3;
-    HAL_GPIO_Init(RRWSS_GPIO_Port, &GPIO_InitStruct);
-
-    /* TIM3 interrupt Init */
-    HAL_NVIC_SetPriority(TIM3_IRQn, 5, 0);
-    HAL_NVIC_EnableIRQ(TIM3_IRQn);
-    /* USER CODE BEGIN TIM3_MspInit 1 */
-
-    /* USER CODE END TIM3_MspInit 1 */
-  }
-  else if(htim_ic->Instance==TIM5)
-  {
-    /* USER CODE BEGIN TIM5_MspInit 0 */
-
-    /* USER CODE END TIM5_MspInit 0 */
-    /* Peripheral clock enable */
-    __HAL_RCC_TIM5_CLK_ENABLE();
-
-    __HAL_RCC_GPIOB_CLK_ENABLE();
-    /**TIM5 GPIO Configuration
-    PB2     ------> TIM5_CH1
-    */
-    GPIO_InitStruct.Pin = RLWSS_Pin;
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-    GPIO_InitStruct.Alternate = GPIO_AF2_TIM5;
-    HAL_GPIO_Init(RLWSS_GPIO_Port, &GPIO_InitStruct);
-
-    /* TIM5 interrupt Init */
-    HAL_NVIC_SetPriority(TIM5_IRQn, 5, 0);
-    HAL_NVIC_EnableIRQ(TIM5_IRQn);
-    /* USER CODE BEGIN TIM5_MspInit 1 */
-
-    /* USER CODE END TIM5_MspInit 1 */
-  }
-  else if(htim_ic->Instance==TIM15)
-  {
-    /* USER CODE BEGIN TIM15_MspInit 0 */
-
-    /* USER CODE END TIM15_MspInit 0 */
-    /* Peripheral clock enable */
-    __HAL_RCC_TIM15_CLK_ENABLE();
-
-    __HAL_RCC_GPIOB_CLK_ENABLE();
-    /**TIM15 GPIO Configuration
-    PB14     ------> TIM15_CH1
-    PB15     ------> TIM15_CH2
-    */
-    GPIO_InitStruct.Pin = FLWSS_Pin|FRWSS_Pin;
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-    GPIO_InitStruct.Alternate = GPIO_AF1_TIM15;
-    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-    /* TIM15 interrupt Init */
-    HAL_NVIC_SetPriority(TIM1_BRK_TIM15_IRQn, 5, 0);
-    HAL_NVIC_EnableIRQ(TIM1_BRK_TIM15_IRQn);
-    /* USER CODE BEGIN TIM15_MspInit 1 */
-
-    /* USER CODE END TIM15_MspInit 1 */
-  }
-
-}
-
-/**
-  * @brief TIM_IC MSP De-Initialization
-  * This function freeze the hardware resources used in this example
-  * @param htim_ic: TIM_IC handle pointer
-  * @retval None
-  */
-void HAL_TIM_IC_MspDeInit(TIM_HandleTypeDef* htim_ic)
-{
-  if(htim_ic->Instance==TIM3)
-  {
-    /* USER CODE BEGIN TIM3_MspDeInit 0 */
-
-    /* USER CODE END TIM3_MspDeInit 0 */
-    /* Peripheral clock disable */
-    __HAL_RCC_TIM3_CLK_DISABLE();
-
-    /**TIM3 GPIO Configuration
-    PB1     ------> TIM3_CH4
-    */
-    HAL_GPIO_DeInit(RRWSS_GPIO_Port, RRWSS_Pin);
-
-    /* TIM3 interrupt DeInit */
-    HAL_NVIC_DisableIRQ(TIM3_IRQn);
-    /* USER CODE BEGIN TIM3_MspDeInit 1 */
-
-    /* USER CODE END TIM3_MspDeInit 1 */
-  }
-  else if(htim_ic->Instance==TIM5)
-  {
-    /* USER CODE BEGIN TIM5_MspDeInit 0 */
-
-    /* USER CODE END TIM5_MspDeInit 0 */
-    /* Peripheral clock disable */
-    __HAL_RCC_TIM5_CLK_DISABLE();
-
-    /**TIM5 GPIO Configuration
-    PB2     ------> TIM5_CH1
-    */
-    HAL_GPIO_DeInit(RLWSS_GPIO_Port, RLWSS_Pin);
-
-    /* TIM5 interrupt DeInit */
-    HAL_NVIC_DisableIRQ(TIM5_IRQn);
-    /* USER CODE BEGIN TIM5_MspDeInit 1 */
-
-    /* USER CODE END TIM5_MspDeInit 1 */
-  }
-  else if(htim_ic->Instance==TIM15)
-  {
-    /* USER CODE BEGIN TIM15_MspDeInit 0 */
-
-    /* USER CODE END TIM15_MspDeInit 0 */
-    /* Peripheral clock disable */
-    __HAL_RCC_TIM15_CLK_DISABLE();
-
-    /**TIM15 GPIO Configuration
-    PB14     ------> TIM15_CH1
-    PB15     ------> TIM15_CH2
-    */
-    HAL_GPIO_DeInit(GPIOB, FLWSS_Pin|FRWSS_Pin);
-
-    /* TIM15 interrupt DeInit */
-    HAL_NVIC_DisableIRQ(TIM1_BRK_TIM15_IRQn);
-    /* USER CODE BEGIN TIM15_MspDeInit 1 */
-
-    /* USER CODE END TIM15_MspDeInit 1 */
+    /* USER CODE END FDCAN3_MspDeInit 1 */
   }
 
 }
