@@ -490,11 +490,17 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : R2D_Button_Pin SDC_IN_Pin */
-  GPIO_InitStruct.Pin = R2D_Button_Pin|SDC_IN_Pin;
+  /*Configure GPIO pin : R2D_Button_Pin */
+  GPIO_InitStruct.Pin = R2D_Button_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(R2D_Button_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : SDC_IN_Pin */
+  GPIO_InitStruct.Pin = SDC_IN_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  HAL_GPIO_Init(SDC_IN_GPIO_Port, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
   HAL_NVIC_SetPriority(EXTI15_10_IRQn, 5, 0);
