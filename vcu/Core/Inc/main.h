@@ -81,19 +81,9 @@ void Error_Handler(void);
 #define BSEF_IN_GPIO_Port GPIOA
 #define LD2_Pin GPIO_PIN_5
 #define LD2_GPIO_Port GPIOA
-#define RRWSS_Pin GPIO_PIN_1
-#define RRWSS_GPIO_Port GPIOB
-#define RLWSS_Pin GPIO_PIN_2
-#define RLWSS_GPIO_Port GPIOB
-#define FLWSS_Pin GPIO_PIN_14
-#define FLWSS_GPIO_Port GPIOB
-#define FRWSS_Pin GPIO_PIN_15
-#define FRWSS_GPIO_Port GPIOB
-#define IMD_Indicator_Pin GPIO_PIN_6
-#define IMD_Indicator_GPIO_Port GPIOC
-#define BMS_Indicator_Pin GPIO_PIN_8
-#define BMS_Indicator_GPIO_Port GPIOC
-#define R2D_Sound_Pin GPIO_PIN_9
+#define R2D_Button_Pin GPIO_PIN_6
+#define R2D_Button_GPIO_Port GPIOA
+#define R2D_Sound_Pin GPIO_PIN_7
 #define R2D_Sound_GPIO_Port GPIOA
 #define T_SWDIO_Pin GPIO_PIN_13
 #define T_SWDIO_GPIO_Port GPIOA
@@ -101,14 +91,6 @@ void Error_Handler(void);
 #define T_SWCLK_GPIO_Port GPIOA
 #define SDC_IN_Pin GPIO_PIN_15
 #define SDC_IN_GPIO_Port GPIOA
-#define R2D_Button_Pin GPIO_PIN_10
-#define R2D_Button_GPIO_Port GPIOC
-#define IMD_Fault_Pin GPIO_PIN_11
-#define IMD_Fault_GPIO_Port GPIOC
-#define BMS_Fault_Pin GPIO_PIN_2
-#define BMS_Fault_GPIO_Port GPIOD
-#define T_SWO_Pin GPIO_PIN_3
-#define T_SWO_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

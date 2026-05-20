@@ -57,10 +57,6 @@
 /* External variables --------------------------------------------------------*/
 extern DMA_HandleTypeDef hdma_adc1;
 extern FDCAN_HandleTypeDef hfdcan1;
-extern FDCAN_HandleTypeDef hfdcan2;
-extern TIM_HandleTypeDef htim3;
-extern TIM_HandleTypeDef htim5;
-extern TIM_HandleTypeDef htim15;
 extern TIM_HandleTypeDef htim1;
 
 /* USER CODE BEGIN EV */
@@ -194,20 +190,6 @@ void FDCAN1_IT0_IRQHandler(void)
 }
 
 /**
-  * @brief This function handles TIM1 break interrupt and TIM15 global interrupt.
-  */
-void TIM1_BRK_TIM15_IRQHandler(void)
-{
-  /* USER CODE BEGIN TIM1_BRK_TIM15_IRQn 0 */
-
-  /* USER CODE END TIM1_BRK_TIM15_IRQn 0 */
-  HAL_TIM_IRQHandler(&htim15);
-  /* USER CODE BEGIN TIM1_BRK_TIM15_IRQn 1 */
-
-  /* USER CODE END TIM1_BRK_TIM15_IRQn 1 */
-}
-
-/**
   * @brief This function handles TIM1 update interrupt and TIM16 global interrupt.
   */
 void TIM1_UP_TIM16_IRQHandler(void)
@@ -222,20 +204,6 @@ void TIM1_UP_TIM16_IRQHandler(void)
 }
 
 /**
-  * @brief This function handles TIM3 global interrupt.
-  */
-void TIM3_IRQHandler(void)
-{
-  /* USER CODE BEGIN TIM3_IRQn 0 */
-
-  /* USER CODE END TIM3_IRQn 0 */
-  HAL_TIM_IRQHandler(&htim3);
-  /* USER CODE BEGIN TIM3_IRQn 1 */
-
-  /* USER CODE END TIM3_IRQn 1 */
-}
-
-/**
   * @brief This function handles EXTI line[15:10] interrupts.
   */
 void EXTI15_10_IRQHandler(void)
@@ -247,34 +215,6 @@ void EXTI15_10_IRQHandler(void)
   /* USER CODE BEGIN EXTI15_10_IRQn 1 */
 
   /* USER CODE END EXTI15_10_IRQn 1 */
-}
-
-/**
-  * @brief This function handles TIM5 global interrupt.
-  */
-void TIM5_IRQHandler(void)
-{
-  /* USER CODE BEGIN TIM5_IRQn 0 */
-
-  /* USER CODE END TIM5_IRQn 0 */
-  HAL_TIM_IRQHandler(&htim5);
-  /* USER CODE BEGIN TIM5_IRQn 1 */
-
-  /* USER CODE END TIM5_IRQn 1 */
-}
-
-/**
-  * @brief This function handles FDCAN2 interrupt 0.
-  */
-void FDCAN2_IT0_IRQHandler(void)
-{
-  /* USER CODE BEGIN FDCAN2_IT0_IRQn 0 */
-
-  /* USER CODE END FDCAN2_IT0_IRQn 0 */
-  HAL_FDCAN_IRQHandler(&hfdcan2);
-  /* USER CODE BEGIN FDCAN2_IT0_IRQn 1 */
-
-  /* USER CODE END FDCAN2_IT0_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */
