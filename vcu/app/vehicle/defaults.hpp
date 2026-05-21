@@ -6,12 +6,12 @@
 namespace vehicle::defaults {
 
 const AnalogCalibration APP1_THRESHOLDS = {
-	.faultThresholds	= {0.6, 3.1},
-	.signalThresholds	= {2.14, 2.69}
+	.faultThresholds	= {0.3, 3.0},
+	.signalThresholds	= {0.88, 1.252}
 };
 const AnalogCalibration APP2_THRESHOLDS = {
-	.faultThresholds	= {0.2, 2.7},
-	.signalThresholds	= {1.83, 2.47}
+	.faultThresholds	= {0.3, 3.0},
+	.signalThresholds	= {0.85, 1.257}
 };
 const AnalogCalibration BSEF_THRESHOLDS = {
 	.faultThresholds	= {0.33, 2.97},
