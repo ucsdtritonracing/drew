@@ -66,7 +66,7 @@ void Wheels::onCapture(WheelId id, uint32_t now, uint32_t capture) {
 		if (capture >= d.lastCapture) {
 			d.latestPeriod = capture - d.lastCapture;
 		} else {
-			d.latestPeriod = wheels[id].htim->Init.Period - d.lastCapture + capture + 1;
+			d.latestPeriod = wheels[id].htim.Init.Period - d.lastCapture + capture + 1;
 		}
 	}
 	d.lastCapture = capture;
