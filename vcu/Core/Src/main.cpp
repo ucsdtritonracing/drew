@@ -126,7 +126,7 @@ int main(void)
 		  {.htim = htim2, .channel = TIM_CHANNEL_3},
 		  {.htim = htim5, .channel = TIM_CHANNEL_2},
 		  {.htim = htim2, .channel = TIM_CHANNEL_1},
-		  (float)HAL_RCC_GetPCLK1Freq() / (float)(htim5.Instance->PSC + 1));
+		  (float)HAL_RCC_GetPCLK1Freq() / (float)(htim2.Instance->PSC + 1));
 
 
   /* USER CODE END 2 */
