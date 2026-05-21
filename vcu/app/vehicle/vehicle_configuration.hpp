@@ -9,6 +9,7 @@
 namespace vehicle {
 
 class VehicleConfiguration {
+public:
 	static constexpr pdu::ChannelConfig PDU_12V_RIGHT_CHANNEL 		{ 1, 3.0f  };
 	static constexpr pdu::ChannelConfig PDU_12V_MAIN_CHANNEL		{ 2, 3.0f  };
 	static constexpr pdu::ChannelConfig PDU_TSB_FANS_CHANNEL		{ 3, 3.0f  };
@@ -18,7 +19,6 @@ class VehicleConfiguration {
 	static constexpr pdu::ChannelConfig PDU_UNUSED_CHANNEL			{ 7, 0.0f  };
 	static constexpr pdu::ChannelConfig PDU_12V_LEFT_CHANNEL 		{ 8, 3.0f  };
 
-public:
 	AnalogCalibration app1Thresholds = defaults::APP1_THRESHOLDS;
 	AnalogCalibration app2Thresholds = defaults::APP2_THRESHOLDS;
 	AnalogCalibration bsefThresholds = defaults::BSEF_THRESHOLDS;
