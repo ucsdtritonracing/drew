@@ -1,11 +1,4 @@
 #include "rtos/objects.hpp"
-#include "tasks/can_dispatch.hpp"
-#include "tasks/can_recovery.hpp"
-#include "tasks/control_loop.hpp"
-#include "tasks/pdu_heartbeat.hpp"
-#include "tasks/pedals.hpp"
-#include "tasks/polling.hpp"
-#include "tasks/broadcast.hpp"
 
 
 namespace rtos {
@@ -20,6 +13,7 @@ tasks::PollingTask PollingTask;
 tasks::CANRecoveryTask CANRecoveryTask;
 tasks::PDUHeartbeatTask PDUHeartbeatTask;
 tasks::BroadcastTask BroadcastTask;
+tasks::WheelsTask WheelsTask;
 
 
 Queue<drivers::can::Message, 64> CANBus1RxQueue;
