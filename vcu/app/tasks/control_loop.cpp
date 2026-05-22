@@ -19,6 +19,10 @@ namespace rtos::tasks {
 
 void ControlLoopTask::setup() {
 	appsBrakePedalPlausibilityFaulted = false;
+	vehicle::pduDriver.enableChannel(vehicle::VehicleConfiguration::PDU_12V_MAIN_CHANNEL);
+	vehicle::pduDriver.enableChannel(vehicle::VehicleConfiguration::PDU_12V_LEFT_CHANNEL);
+	vehicle::pduDriver.enableChannel(vehicle::VehicleConfiguration::PDU_12V_RIGHT_CHANNEL);
+	vehicle::pduDriver.enableChannel(vehicle::VehicleConfiguration::PDU_TSB_FANS_CHANNEL);
 }
 
 const vehicle::Mode ControlLoopTask::getNextMode(vehicle::Mode currentMode, TransitionInputs inputs) const {
@@ -45,15 +49,20 @@ const vehicle::Mode ControlLoopTask::getNextMode(vehicle::Mode currentMode, Tran
 void ControlLoopTask::onEnter(vehicle::Mode mode) {
 	switch (mode) {
 	case vehicle::Mode::IDLE:
+		vehicle::pduDriver.disableChannel(vehicle::VehicleConfiguration::PDU_PUMPS_CHANNEL);
+		vehicle::pduDriver.disableChannel(vehicle::VehicleConfiguration::PDU_RADIATOR_FANS_CHANNEL);
 		break;
 	case vehicle::Mode::READY_TO_DRIVE:
-		vehicle::soundDriver.play();
 		app1Fault.reset();
 		app2Fault.reset();
 		bsefFault.reset();
 		bserFault.reset();
 		appsPlausibilityFault.reset();
 		appsBrakePedalPlausibilityFaulted = false;
+
+		vehicle::soundDriver.play();
+		vehicle::pduDriver.enableChannel(vehicle::VehicleConfiguration::PDU_PUMPS_CHANNEL);
+		vehicle::pduDriver.enableChannel(vehicle::VehicleConfiguration::PDU_RADIATOR_FANS_CHANNEL);
 		break;
 	}
 }
