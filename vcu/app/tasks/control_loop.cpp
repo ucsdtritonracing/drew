@@ -19,6 +19,10 @@ namespace rtos::tasks {
 
 void ControlLoopTask::setup() {
 	appsBrakePedalPlausibilityFaulted = false;
+	vehicle::pduDriver.enableChannel(vehicle::VehicleConfiguration::PDU_12V_MAIN_CHANNEL);
+	vehicle::pduDriver.enableChannel(vehicle::VehicleConfiguration::PDU_12V_LEFT_CHANNEL);
+	vehicle::pduDriver.enableChannel(vehicle::VehicleConfiguration::PDU_12V_RIGHT_CHANNEL);
+	vehicle::pduDriver.enableChannel(vehicle::VehicleConfiguration::PDU_TSB_FANS_CHANNEL);
 }
 
 const vehicle::Mode ControlLoopTask::getNextMode(vehicle::Mode currentMode, TransitionInputs inputs) const {
