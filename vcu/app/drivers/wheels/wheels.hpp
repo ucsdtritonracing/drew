@@ -55,4 +55,4 @@ private:
 	uint32_t tickFrequency;
 };
 
-} // namespace drivers::pedals
+} // namespace drivers::wheels
