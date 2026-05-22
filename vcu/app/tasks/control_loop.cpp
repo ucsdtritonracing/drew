@@ -100,7 +100,7 @@ void ControlLoopTask::loop() {
 	if (brakePressed) {
 		vehicle::pduDriver.enableChannel(vehicle::VehicleConfiguration::PDU_BRAKE_LIGHT_CHANNEL);
 	} else {
-		vehicle::pduDriver.enableChannel(vehicle::VehicleConfiguration::PDU_BRAKE_LIGHT_CHANNEL);
+		vehicle::pduDriver.disableChannel(vehicle::VehicleConfiguration::PDU_BRAKE_LIGHT_CHANNEL);
 	}
 
 	// torque
