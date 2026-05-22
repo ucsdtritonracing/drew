@@ -122,10 +122,10 @@ int main(void)
   vehicle::broadcasterDriver.init();
   vehicle::soundDriver.init(R2D_Sound_GPIO_Port, R2D_Sound_Pin);
   vehicle::wheelsDriver.init(
-		  {.htim = htim2, .channel = TIM_CHANNEL_4},
-		  {.htim = htim2, .channel = TIM_CHANNEL_3},
-		  {.htim = htim5, .channel = TIM_CHANNEL_2},
-		  {.htim = htim2, .channel = TIM_CHANNEL_1},
+		  {.htim = &htim2, .channel = TIM_CHANNEL_4},
+		  {.htim = &htim2, .channel = TIM_CHANNEL_3},
+		  {.htim = &htim5, .channel = TIM_CHANNEL_2},
+		  {.htim = &htim2, .channel = TIM_CHANNEL_1},
 		  (float)HAL_RCC_GetPCLK1Freq() / (float)(htim2.Instance->PSC + 1));
 
 
@@ -471,7 +471,7 @@ static void MX_TIM2_Init(void)
 
   /* USER CODE END TIM2_Init 1 */
   htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 0;
+  htim2.Init.Prescaler = 119;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim2.Init.Period = 4294967295;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -489,12 +489,11 @@ static void MX_TIM2_Init(void)
   sConfigIC.ICPolarity = TIM_INPUTCHANNELPOLARITY_FALLING;
   sConfigIC.ICSelection = TIM_ICSELECTION_DIRECTTI;
   sConfigIC.ICPrescaler = TIM_ICPSC_DIV1;
-  sConfigIC.ICFilter = 2;
+  sConfigIC.ICFilter = 6;
   if (HAL_TIM_IC_ConfigChannel(&htim2, &sConfigIC, TIM_CHANNEL_1) != HAL_OK)
   {
     Error_Handler();
   }
-  sConfigIC.ICPolarity = TIM_INPUTCHANNELPOLARITY_RISING;
   if (HAL_TIM_IC_ConfigChannel(&htim2, &sConfigIC, TIM_CHANNEL_3) != HAL_OK)
   {
     Error_Handler();
@@ -528,7 +527,7 @@ static void MX_TIM5_Init(void)
 
   /* USER CODE END TIM5_Init 1 */
   htim5.Instance = TIM5;
-  htim5.Init.Prescaler = 0;
+  htim5.Init.Prescaler = 119;
   htim5.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim5.Init.Period = 4294967295;
   htim5.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -546,7 +545,7 @@ static void MX_TIM5_Init(void)
   sConfigIC.ICPolarity = TIM_INPUTCHANNELPOLARITY_FALLING;
   sConfigIC.ICSelection = TIM_ICSELECTION_DIRECTTI;
   sConfigIC.ICPrescaler = TIM_ICPSC_DIV1;
-  sConfigIC.ICFilter = 2;
+  sConfigIC.ICFilter = 6;
   if (HAL_TIM_IC_ConfigChannel(&htim5, &sConfigIC, TIM_CHANNEL_2) != HAL_OK)
   {
     Error_Handler();

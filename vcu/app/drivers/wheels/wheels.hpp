@@ -8,7 +8,7 @@
 namespace drivers::wheels {
 
 struct WheelInput {
-	TIM_HandleTypeDef htim;
+	TIM_HandleTypeDef* htim;
 	uint32_t channel;
 };
 
