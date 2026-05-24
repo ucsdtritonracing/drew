@@ -21,6 +21,7 @@ private:
 		bool brakePressed;
 		bool readyToDriveButtonPressed;
 		bool shutdownCircuitClosed;
+		bool configurationModeRequested;
 	};
 
 	torque::TimedFault app1Fault;
