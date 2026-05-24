@@ -46,7 +46,7 @@ void Configurator::processCommandConfigurationMode(const drivers::can::Message& 
 	if (message.numBytes != CONFIGURATION_MODE_MESSAGE_NUM_BYTES) {
 		return;
 	}
-	configurationModeRequested = message.data[0];
+	configurationModeRequested = static_cast<bool>(message.data[0]);
 }
 
 
