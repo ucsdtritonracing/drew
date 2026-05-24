@@ -25,4 +25,6 @@ const AnalogCalibration BSER_THRESHOLDS = {
 constexpr float BSEF_BRAKE_ENGAGED_THRESHOLD 	= 0.25;
 constexpr float BSER_BRAKE_ENGAGED_THRESHOLD 	= 0.25;
 
+constexpr float MAX_TORQUE_NM					= 10.0f;
+
 } // namespace vehicle::defaults
