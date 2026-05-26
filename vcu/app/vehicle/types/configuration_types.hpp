@@ -26,6 +26,14 @@ public:
     uint16_t getMax() const { return max; }
     uint16_t getMinAdcReading() const { return minAdcReading; }
     uint16_t getMaxAdcReading() const { return maxAdcReading; }
+    void setMin(float value) {
+    	min = value;
+    	minAdcReading = drivers::adc::voltageToAdcReading(min);
+    }
+    void setMax(float value) {
+    	max = value;
+    	maxAdcReading = drivers::adc::voltageToAdcReading(max);
+    }
 
 private:
     float min;
