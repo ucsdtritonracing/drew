@@ -11,20 +11,20 @@ bool VehicleConfiguration::valid() {
 		return false;
 	}
 
-	if (app1Thresholds.faultThresholds.validRange() ||
-		app1Thresholds.signalThresholds.validRange()) {
+	if (!app1Thresholds.faultThresholds.validRange() ||
+		!app1Thresholds.signalThresholds.validRange()) {
 		return false;
 	}
-	if (app2Thresholds.faultThresholds.validRange() ||
-		app2Thresholds.signalThresholds.validRange()) {
+	if (!app2Thresholds.faultThresholds.validRange() ||
+		!app2Thresholds.signalThresholds.validRange()) {
 		return false;
 	}
-	if (bsefThresholds.faultThresholds.validRange() ||
-		bsefThresholds.signalThresholds.validRange()) {
+	if (!bsefThresholds.faultThresholds.validRange() ||
+		!bsefThresholds.signalThresholds.validRange()) {
 		return false;
 	}
-	if (bserThresholds.faultThresholds.validRange() ||
-		bserThresholds.signalThresholds.validRange()) {
+	if (!bserThresholds.faultThresholds.validRange() ||
+		!bserThresholds.signalThresholds.validRange()) {
 		return false;
 	}
 
