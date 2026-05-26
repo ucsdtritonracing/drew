@@ -152,7 +152,7 @@ void ControlLoopTask::loop() {
 		}
 
 		torqueScalar = std::clamp(torqueScalar, 0.0f, 1.0f);
-		const float driverTorqueRequestNm = torqueScalar * torque::MAX_TORQUE_LIMIT_NM;
+		const float driverTorqueRequestNm = torqueScalar * std::min(torque::MAX_TORQUE_LIMIT_NM, vehicle::vehicleConfiguration.maxTorqueNm);
 		const float torqueRequest = std::min(driverTorqueRequestNm, torqueCapability);
 
 		vehicle::inverterDriver.sendCommandMessage(torqueRequest, true);
