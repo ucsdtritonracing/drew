@@ -15,7 +15,7 @@ public:
 	{};
 
     bool validRange() const {
-    	return max > min && max <= 1 && min >= 0;
+    	return (max > min) && (max <= 1) && (min >= 0);
     }
 
     bool inRange(uint16_t adcReading) const {
