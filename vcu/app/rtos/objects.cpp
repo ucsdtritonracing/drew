@@ -20,6 +20,7 @@ tasks::PollingTask PollingTask;
 tasks::CANRecoveryTask CANRecoveryTask;
 tasks::PDUHeartbeatTask PDUHeartbeatTask;
 tasks::BroadcastTask BroadcastTask;
+tasks::StartupTask StartupTask;
 
 
 Queue<drivers::can::Message, 64> CANBus1RxQueue;
