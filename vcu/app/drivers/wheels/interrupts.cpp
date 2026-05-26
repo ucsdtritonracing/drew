@@ -5,7 +5,7 @@
 
 
 
-static inline uint32_t getTIMActiveChannel(uint32_t channel) {
+constexpr uint32_t getTIMActiveChannel(uint32_t channel) {
     switch (channel) {
         case TIM_CHANNEL_1: return HAL_TIM_ACTIVE_CHANNEL_1;
         case TIM_CHANNEL_2: return HAL_TIM_ACTIVE_CHANNEL_2;
