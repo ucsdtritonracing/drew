@@ -1,11 +1,4 @@
 #include "rtos/objects.hpp"
-#include "tasks/can_dispatch.hpp"
-#include "tasks/can_recovery.hpp"
-#include "tasks/control_loop.hpp"
-#include "tasks/pdu_heartbeat.hpp"
-#include "tasks/pedals.hpp"
-#include "tasks/polling.hpp"
-#include "tasks/broadcast.hpp"
 
 
 namespace rtos {
