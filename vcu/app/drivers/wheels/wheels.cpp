@@ -62,7 +62,6 @@ void Wheels::updateSpeeds() {
 void Wheels::onCapture(WheelId id, uint32_t now, uint32_t capture) {
 	WheelData& d = data[id];
 	if (d.initialized) {
-		d.latestPeriod = capture - d.lastCapture;
 		if (capture >= d.lastCapture) {
 			d.latestPeriod = capture - d.lastCapture;
 		} else {
