@@ -14,6 +14,7 @@ tasks::CANRecoveryTask CANRecoveryTask;
 tasks::PDUHeartbeatTask PDUHeartbeatTask;
 tasks::BroadcastTask BroadcastTask;
 tasks::StartupTask StartupTask;
+tasks::WheelsTask WheelsTask;
 
 
 Queue<drivers::can::Message, 64> CANBus1RxQueue;

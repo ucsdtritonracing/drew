@@ -79,18 +79,24 @@ void Error_Handler(void);
 #define BSER_IN_GPIO_Port GPIOA
 #define BSEF_IN_Pin GPIO_PIN_1
 #define BSEF_IN_GPIO_Port GPIOA
-#define LD2_Pin GPIO_PIN_5
-#define LD2_GPIO_Port GPIOA
+#define RRWSS_Pin GPIO_PIN_5
+#define RRWSS_GPIO_Port GPIOA
 #define R2D_Button_Pin GPIO_PIN_6
 #define R2D_Button_GPIO_Port GPIOA
 #define R2D_Sound_Pin GPIO_PIN_7
 #define R2D_Sound_GPIO_Port GPIOA
+#define FRWSS_Pin GPIO_PIN_9
+#define FRWSS_GPIO_Port GPIOA
+#define FLWSS_Pin GPIO_PIN_10
+#define FLWSS_GPIO_Port GPIOA
 #define T_SWDIO_Pin GPIO_PIN_13
 #define T_SWDIO_GPIO_Port GPIOA
 #define T_SWCLK_Pin GPIO_PIN_14
 #define T_SWCLK_GPIO_Port GPIOA
 #define SDC_IN_Pin GPIO_PIN_15
 #define SDC_IN_GPIO_Port GPIOA
+#define RLWSS_Pin GPIO_PIN_12
+#define RLWSS_GPIO_Port GPIOC
 
 /* USER CODE BEGIN Private defines */
 

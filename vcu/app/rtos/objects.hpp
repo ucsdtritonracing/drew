@@ -9,6 +9,7 @@
 #include "tasks/can_tx.hpp"
 #include "tasks/broadcast.hpp"
 #include "tasks/startup.hpp"
+#include "tasks/wheels.hpp"
 #include "rtos/queue.hpp"
 #include "drivers/can/can_utils.hpp"
 
@@ -26,6 +27,7 @@ extern tasks::CANRecoveryTask CANRecoveryTask;
 extern tasks::PDUHeartbeatTask PDUHeartbeatTask;
 extern tasks::BroadcastTask BroadcastTask;
 extern tasks::StartupTask StartupTask;
+extern tasks::WheelsTask WheelsTask;
 
 extern Queue<drivers::can::Message, 64> CANBus1RxQueue;
 extern Queue<drivers::can::Message, 64> CANBus2RxQueue;
