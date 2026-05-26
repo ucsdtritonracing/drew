@@ -18,7 +18,7 @@ struct WheelData {
 	uint32_t lastUpdateTime;
 	bool initialized = false;
 
-    float filteredSpeed;
+    float filteredSpeed = 0.0f;
     bool filterInitialized = false;
 };
 
