@@ -5,7 +5,7 @@
 
 namespace torque {
 
-constexpr uint16_t MAX_TORQUE_LIMIT_NM = 10;
+constexpr float MAX_TORQUE_LIMIT_NM = 10;
 
 // T.4.2 Accelerator Pedal Position Sensor - APPS
 constexpr float APPS_DEVIATION_MIN_ACTIVATION_THRESHOLD = 0.1;		// T.4.2.3
