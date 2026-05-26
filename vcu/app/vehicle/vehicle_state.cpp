@@ -120,14 +120,6 @@ void VehicleState::setInverterFaultFlags(inverter::FaultFlags& state) {
 	inverterFaultFlags.update(std::move(state));
 }
 
-bool VehicleState::getConfigurationLocked() const {
-	return configurationLocked.load(std::memory_order_relaxed);
-}
-
-void VehicleState::setConfigurationLocked(bool locked){
-	configurationLocked.store(locked, std::memory_order_relaxed);
-}
-
 
 VehicleState vehicleState{};
 
