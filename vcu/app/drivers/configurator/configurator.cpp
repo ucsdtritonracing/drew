@@ -14,6 +14,8 @@ Configurator::Configurator(drivers::can::CANBus& canBus)
 
 void Configurator::init() {
 	bindHandler<&Configurator::processCommandSetParameter>(CAN_ID_SET_PARAMETER);
+	bindHandler<&Configurator::processCommandWriteConfiguration>(CAN_ID_WRITE_CONFIGURATION);
+	bindHandler<&Configurator::processCommandConfigurationMode>(CAN_ID_CONFIGURATION_MODE);
 	parameterResponseSlotHandle = bindTxSlot(CAN_ID_PARAMETER_RESPONSE, drivers::can::STATUS);
 }
 

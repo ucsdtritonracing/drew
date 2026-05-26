@@ -33,7 +33,7 @@ private:
 	uint8_t txData[can::MAX_CLASSICAL_CAN_DATA_LENGTH];
 
     static constexpr uint32_t CAN_ID_SET_PARAMETER					= 0x190;
-    static constexpr uint32_t CAN_ID_PARAMETER_RESPONSE				= 0xCCC;
+    static constexpr uint32_t CAN_ID_PARAMETER_RESPONSE				= 0x192;
     static constexpr uint32_t CAN_ID_CONFIGURATION_MODE				= 0x193;
     static constexpr uint32_t CAN_ID_WRITE_CONFIGURATION			= 0x194;
 
@@ -44,7 +44,7 @@ private:
 
     static constexpr size_t CONFIGURATION_MODE_MESSAGE_NUM_BYTES	= 1;
 
-    static constexpr size_t WRITE_CONFIGURATION_MESSAGE_NUM_BYTES	= 1;
+    static constexpr size_t WRITE_CONFIGURATION_MESSAGE_NUM_BYTES	= 0;
 
 
 	std::optional<Parameter> parseParameterId(const drivers::can::Message& message);
