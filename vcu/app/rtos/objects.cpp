@@ -13,6 +13,7 @@ tasks::PollingTask PollingTask;
 tasks::CANRecoveryTask CANRecoveryTask;
 tasks::PDUHeartbeatTask PDUHeartbeatTask;
 tasks::BroadcastTask BroadcastTask;
+tasks::StartupTask StartupTask;
 tasks::WheelsTask WheelsTask;
 
 
