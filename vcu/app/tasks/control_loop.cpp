@@ -128,6 +128,7 @@ void ControlLoopTask::loop() {
 		vehicle::inverterDriver.sendCommandMessage(0, false);
 		break;
 	case vehicle::Mode::CONFIGURATION:
+		vehicle::inverterDriver.sendCommandMessage(0, false);
 		break;
 	case vehicle::Mode::READY_TO_DRIVE:
 		vehicle::vehicleState.setAPPFault(appsPlausibilityFault.torqueInhibited(currentTick));
