@@ -4,6 +4,7 @@
 #include "vehicle/types/configuration_types.hpp"
 #include "vehicle/types/pdu_types.hpp"
 #include "vehicle/pedal_map.hpp"
+#include <stdint.h>
 
 
 namespace vehicle {
@@ -28,9 +29,14 @@ public:
 
 	float bsefBrakeEngagedThreshold = defaults::BSEF_BRAKE_ENGAGED_THRESHOLD;
 	float bserBrakeEngagedThreshold = defaults::BSER_BRAKE_ENGAGED_THRESHOLD;
-
+  
 	float maxTorqueNm = defaults::MAX_TORQUE_NM;
 
+  size_t frontTriggerWheelTeeth	= defaults::FRONT_TRIGGER_WHEEL_TEETH;
+	size_t rearTriggerWheelTeeth	= defaults::REAR_TRIGGER_WHEEL_TEETH;
+	float frontWheelMetersPerRevolution	= defaults::FRONT_WHEEL_METERS_PER_REVOLUTION;
+	float rearWheelMetersPerRevolution	= defaults::REAR_WHEEL_METERS_PER_REVOLUTION;
+  
 	bool valid();
 
 private:

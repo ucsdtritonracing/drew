@@ -12,5 +12,6 @@ drivers::pedals::Pedals pedalsDriver;
 drivers::broadcaster::Broadcaster broadcasterDriver(CANBus1);
 drivers::sound::Sound soundDriver;
 drivers::configurator::Configurator configuratorDriver(CANBus1);
+drivers::wheels::Wheels wheelsDriver;
 
 } // namespace vehicle
