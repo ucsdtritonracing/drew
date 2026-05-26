@@ -29,8 +29,15 @@ const vehicle::Mode ControlLoopTask::getNextMode(vehicle::Mode currentMode, Tran
 	vehicle::Mode nextMode = currentMode;
 
 	switch (currentMode) {
+	case vehicle::Mode::CONFIGURATION:
+		if (!inputs.configurationModeRequested) {
+			nextMode = vehicle::Mode::IDLE;
+		}
+		break;
 	case vehicle::Mode::IDLE:
-		if (inputs.brakePressed && inputs.readyToDriveButtonPressed && inputs.shutdownCircuitClosed) {
+		if (inputs.configurationModeRequested) {
+			nextMode = vehicle::Mode::CONFIGURATION;
+		} else if (inputs.brakePressed && inputs.readyToDriveButtonPressed && inputs.shutdownCircuitClosed) {
 			nextMode = vehicle::Mode::READY_TO_DRIVE;
 		}
 		break;
@@ -64,6 +71,8 @@ void ControlLoopTask::onEnter(vehicle::Mode mode) {
 		vehicle::pduDriver.enableChannel(vehicle::VehicleConfiguration::PDU_PUMPS_CHANNEL);
 		vehicle::pduDriver.enableChannel(vehicle::VehicleConfiguration::PDU_RADIATOR_FANS_CHANNEL);
 		break;
+	case vehicle::Mode::CONFIGURATION:
+		break;
 	}
 }
 
@@ -76,6 +85,7 @@ void ControlLoopTask::loop() {
 	const float torqueCapability = vehicle::vehicleState.getInverterTorqueCapability();
 	const bool readyToDriveButtonPressed = vehicle::vehicleState.getReadyToDriveButtonPressed();
 	const bool shutdownCircuitClosed = vehicle::vehicleState.getShutdownCircuitClosed();
+	const bool configurationModeRequested = vehicle::configuratorDriver.requestingConfigurationMode();
 	// computed state
 	const float appCommand = pedals.app1;	// value being used for calculations
 	const bool brakePressed = (pedals.bsef > vehicle::vehicleConfiguration.bsefBrakeEngagedThreshold && pedals.bsefValid) ||
@@ -87,7 +97,7 @@ void ControlLoopTask::loop() {
 	/*		TRANSITION		*/
 	const vehicle::Mode nextMode = getNextMode(
 		mode,
-		TransitionInputs{brakePressed, readyToDriveButtonPressed, shutdownCircuitClosed}
+		TransitionInputs{brakePressed, readyToDriveButtonPressed, shutdownCircuitClosed, configurationModeRequested}
 	);
 	if (nextMode != mode) {
 		onEnter(nextMode);
@@ -117,6 +127,9 @@ void ControlLoopTask::loop() {
 	case vehicle::Mode::IDLE:
 		vehicle::inverterDriver.sendCommandMessage(0, false);
 		break;
+	case vehicle::Mode::CONFIGURATION:
+		vehicle::inverterDriver.sendCommandMessage(0, false);
+		break;
 	case vehicle::Mode::READY_TO_DRIVE:
 		vehicle::vehicleState.setAPPFault(appsPlausibilityFault.torqueInhibited(currentTick));
 		vehicle::vehicleState.setABPPCFault(appsBrakePedalPlausibilityFaulted);
@@ -139,7 +152,7 @@ void ControlLoopTask::loop() {
 		}
 
 		torqueScalar = std::clamp(torqueScalar, 0.0f, 1.0f);
-		const float driverTorqueRequestNm = torqueScalar * torque::MAX_TORQUE_LIMIT_NM;
+		const float driverTorqueRequestNm = torqueScalar * std::min(torque::MAX_TORQUE_LIMIT_NM, vehicle::vehicleConfiguration.maxTorqueNm);
 		const float torqueRequest = std::min(driverTorqueRequestNm, torqueCapability);
 
 		vehicle::inverterDriver.sendCommandMessage(torqueRequest, true);

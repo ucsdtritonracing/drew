@@ -3,6 +3,7 @@
 #include "vehicle/defaults.hpp"
 #include "vehicle/types/configuration_types.hpp"
 #include "vehicle/types/pdu_types.hpp"
+#include "vehicle/pedal_map.hpp"
 #include <stdint.h>
 
 
@@ -19,6 +20,8 @@ public:
 	static constexpr pdu::ChannelConfig PDU_UNUSED_CHANNEL			{ 7, 0.0f  };
 	static constexpr pdu::ChannelConfig PDU_12V_LEFT_CHANNEL 		{ 8, 3.0f  };
 
+	PedalMap pedalMap;
+
 	AnalogCalibration app1Thresholds = defaults::APP1_THRESHOLDS;
 	AnalogCalibration app2Thresholds = defaults::APP2_THRESHOLDS;
 	AnalogCalibration bsefThresholds = defaults::BSEF_THRESHOLDS;
@@ -26,11 +29,21 @@ public:
 
 	float bsefBrakeEngagedThreshold = defaults::BSEF_BRAKE_ENGAGED_THRESHOLD;
 	float bserBrakeEngagedThreshold = defaults::BSER_BRAKE_ENGAGED_THRESHOLD;
+  
+	float maxTorqueNm = defaults::MAX_TORQUE_NM;
 
-	size_t frontTriggerWheelTeeth	= defaults::FRONT_TRIGGER_WHEEL_TEETH;
+  size_t frontTriggerWheelTeeth	= defaults::FRONT_TRIGGER_WHEEL_TEETH;
 	size_t rearTriggerWheelTeeth	= defaults::REAR_TRIGGER_WHEEL_TEETH;
 	float frontWheelMetersPerRevolution	= defaults::FRONT_WHEEL_METERS_PER_REVOLUTION;
 	float rearWheelMetersPerRevolution	= defaults::REAR_WHEEL_METERS_PER_REVOLUTION;
+  
+	bool valid();
+
+private:
+	static constexpr float MIN_THRESHOLD_VOLTAGE        = 0.0f;
+	static constexpr float MAX_THRESHOLD_VOLTAGE        = 5.0f;
+	static constexpr float MIN_BRAKE_ENGAGED_THRESHOLD  = 0.0f;
+	static constexpr float MAX_BRAKE_ENGAGED_THRESHOLD  = 1.0f;
 };
 
 extern VehicleConfiguration vehicleConfiguration;

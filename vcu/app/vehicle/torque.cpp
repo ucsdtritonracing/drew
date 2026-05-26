@@ -7,7 +7,7 @@
 namespace torque {
 
 float computeDriverTorqueRequest(float app) {
-	return 1.0f / (1.0f + std::exp(-11.0f * (app - 0.5f)));
+	return vehicle::vehicleConfiguration.pedalMap.getPedalOutput(app);
 }
 
 bool isAPPSPlausible(float app1, float app2) {

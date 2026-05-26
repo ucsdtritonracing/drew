@@ -6,24 +6,24 @@
 
 namespace vehicle {
 
-class VoltageRange {
+class Range {
 public:
-	VoltageRange(float min, float max)
+	Range(float min, float max)
 		: min(min), max(max),
-		  minAdcReading(drivers::adc::voltageToAdcReading(min)),
-		  maxAdcReading(drivers::adc::voltageToAdcReading(max))
+		  minAdcReading(min * drivers::adc::ADC_MAX_VALUE),
+		  maxAdcReading(max * drivers::adc::ADC_MAX_VALUE)
 	{};
 
     bool validRange() const {
-    	return max > min;
+    	return (max > min) && (max <= 1) && (min >= 0);
     }
 
     bool inRange(uint16_t adcReading) const {
     	return adcReading >= minAdcReading && adcReading <= maxAdcReading;
     }
 
-    uint16_t getMin() const { return min; }
-    uint16_t getMax() const { return max; }
+    float getMin() const { return min; }
+    float getMax() const { return max; }
     uint16_t getMinAdcReading() const { return minAdcReading; }
     uint16_t getMaxAdcReading() const { return maxAdcReading; }
 
@@ -35,8 +35,8 @@ private:
 };
 
 struct AnalogCalibration {
-	VoltageRange faultThresholds;	// indicates faults if out of range
-	VoltageRange signalThresholds;	// maps from 0 - 1
+	Range faultThresholds;	// indicates faults if out of range
+	Range signalThresholds;	// maps from 0 - 1
 
 	float normalize(float adcReading) const {
     	if (!faultThresholds.inRange(adcReading)) {

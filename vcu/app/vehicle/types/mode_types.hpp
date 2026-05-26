@@ -5,7 +5,8 @@ namespace vehicle {
 
 enum Mode {
 	IDLE,
-	READY_TO_DRIVE
+	READY_TO_DRIVE,
+	CONFIGURATION,
 };
 
 } // namespace vehicle

@@ -29,6 +29,8 @@ void BroadcastTask::loop() {
 		.abppcFault		= abppcFault
 	});
 
+	vehicle::configuratorDriver.broadcastNextConfigurationParameter();
+
 	osDelay(DELAY);
 }
 
