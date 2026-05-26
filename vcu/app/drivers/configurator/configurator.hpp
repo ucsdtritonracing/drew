@@ -1,36 +1,35 @@
 #pragma once
 
+#include "drivers/configurator/parameter.hpp"
 #include "drivers/can/can_bus.hpp"
 #include "drivers/can/can_peripheral.hpp"
-
-#ifndef DRIVERS_CONFIGURATOR_CONFIGURATOR_HPP_
-#define DRIVERS_CONFIGURATOR_CONFIGURATOR_HPP_
+#include "drivers/can/tx_slot.hpp"
+#include "vehicle/vehicle_configuration.hpp"
 
 
 namespace drivers::configurator {
 
 class Configurator: public drivers::can::CANPeripheral<Configurator> {
 public:
-	Configurator(drivers::can::CANBus& canBus); // constructor functions
+	Configurator(drivers::can::CANBus& canBus);
 
 	void init();
 
-	void processCommandPedal1(const drivers::can::Message& message); //PEDAL MAP 1
-	void processCommandPedal2(const drivers::can::Message& message); //PEDAL MAP 2
-	void processCommandAPPS(const drivers::can::Message& message); //APPS
-	void processCommandBrakePedal(const drivers::can::Message& message); //Brake Pedal
-
+	void processCommandSetParameter(const drivers::can::Message& message);
+	void processCommandGetParameter(const drivers::can::Message& message);
+	void processCommandPushConfiguration(const drivers::can::Message& message);
 
 private:
-    static constexpr uint32_t CAN_ID_COMMAND_PEDAL_1= 400; // add actuall ids
-    static constexpr uint32_t CAN_ID_COMMAND_PEDAL_2 = 401;
-    static constexpr uint32_t CAN_ID_COMMAND_APPS = 402;
-    static constexpr uint32_t CAN_ID_COMMAND_BRAKE_PEDAL = 403;
+	Parameter parseParameterId(const drivers::can::Message& message);
+	void sendParameterValue(Parameter parameter, uint32_t data, uint16_t info);
 
+	drivers::can::TxSlotHandle parameterResponseSlotHandle;
 
+    static constexpr uint32_t CAN_ID_SET_PARAMETER		= 0x190;
+    static constexpr uint32_t CAN_ID_GET_PARAMETER		= 0x191;
+    static constexpr uint32_t CAN_ID_PARAMETER_RESPONSE	= 0xCCC;
 
-};// Class
+    vehicle::VehicleConfiguration stagedConfiguration;
+};
 
-}// namespace
-
-#endif /* DRIVERS_CONFIGURATOR_CONFIGURATOR_HPP_ */
+} // namespace drivers::configurator
