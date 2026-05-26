@@ -34,13 +34,13 @@ float PedalMap::getPedalOutput(float pedalInput) const {
 }
 
 void PedalMap::setPoint(size_t index, float value) {
-	if (index >= NUM_EDITABLE_POINTS) {
+	if (index > NUM_EDITABLE_POINTS) {
 		return;
 	}
 	if (value < 0 || value > 1) {
 		return;
 	}
-	points[index + 1] = value;
+	points[index] = value;
 }
 
 float PedalMap::getPoint(size_t index) const {
