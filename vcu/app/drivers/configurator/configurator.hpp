@@ -19,6 +19,11 @@ public:
 	void processCommandSetParameter(const drivers::can::Message& message);
 	void processCommandWriteConfiguration(const drivers::can::Message& message);
 	void processCommandConfigurationMode(const drivers::can::Message& message);
+	void processCommandSetThrottleLow(const drivers::can::Message& message);
+	void processCommandSetThrottleMax(const drivers::can::Message& message);
+	void processCommandSetSASZero(const drivers::can::Message& message);
+	void processCommandSetBPSEngaged(const drivers::can::Message& message);
+
 
 	bool requestingConfigurationMode() const;
 	void broadcastNextConfigurationParameter();
@@ -36,6 +41,10 @@ private:
     static constexpr uint32_t CAN_ID_PARAMETER_RESPONSE				= 0x192;
     static constexpr uint32_t CAN_ID_CONFIGURATION_MODE				= 0x193;
     static constexpr uint32_t CAN_ID_WRITE_CONFIGURATION			= 0x194;
+    static constexpr uint32_t CAN_ID_CONFIGURE_THROTTLE_LOW 		= 0x195;
+    static constexpr uint32_t CAN_ID_CONFIGURE_THROTTLE_HIGH 		= 0x196;
+    static constexpr uint32_t CAN_ID_CONFIGURE_SAS_ZERO		 		= 0x197;
+    static constexpr uint32_t CAN_ID_CONFIGURE_BRAKE_ENGAGE 		= 0x198;
 
     static constexpr size_t PARAMETER_MESSAGE_DATA_START			= 4;
     static constexpr size_t PARAMETER_MESSAGE_INFO_START			= 2;
@@ -43,8 +52,8 @@ private:
     static constexpr float PARAMETER_MESSAGE_SCALE					= 1000000;
 
     static constexpr size_t CONFIGURATION_MODE_MESSAGE_NUM_BYTES	= 1;
-
     static constexpr size_t WRITE_CONFIGURATION_MESSAGE_NUM_BYTES	= 0;
+    static constexpr size_t AUTO_CONFIGURATION_MESSAGE_NUM_BYTES 	= 0;
 
 
 	std::optional<Parameter> parseParameterId(const drivers::can::Message& message);

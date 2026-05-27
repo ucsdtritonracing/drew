@@ -16,6 +16,11 @@ void Configurator::init() {
 	bindHandler<&Configurator::processCommandSetParameter>(CAN_ID_SET_PARAMETER);
 	bindHandler<&Configurator::processCommandWriteConfiguration>(CAN_ID_WRITE_CONFIGURATION);
 	bindHandler<&Configurator::processCommandConfigurationMode>(CAN_ID_CONFIGURATION_MODE);
+	bindHandler<&Configurator::processCommandSetThrottleLow>(CAN_ID_CONFIGURE_THROTTLE_LOW);
+	bindHandler<&Configurator::processCommandSetThrottleMax>(CAN_ID_CONFIGURE_THROTTLE_HIGH);
+	bindHandler<&Configurator::processCommandSetSASZero>(CAN_ID_CONFIGURE_SAS_ZERO);
+	bindHandler<&Configurator::processCommandSetBPSEngaged>(CAN_ID_CONFIGURE_BRAKE_ENGAGE);
+
 	parameterResponseSlotHandle = bindTxSlot(CAN_ID_PARAMETER_RESPONSE, drivers::can::STATUS);
 }
 
@@ -51,6 +56,44 @@ void Configurator::processCommandConfigurationMode(const drivers::can::Message& 
 	configurationModeRequested = static_cast<bool>(message.data[0]);
 }
 
+void Configurator::processCommandSetThrottleLow(const drivers::can::Message& message){
+	if (message.numBytes != AUTO_CONFIGURATION_MESSAGE_NUM_BYTES) {
+			return;
+	}
+	vehicle::pedals::State pedalState = vehicle::vehicleState.getPedals();
+	if(!pedalState.app1Valid || !pedalState.app2Valid){
+		return;
+	} else {
+		setThreshold(Parameter::APP2_THRESHOLD, ThresholdType::SIGNAL_LOW, pedalState.app2);
+		setThreshold(Parameter::APP1_THRESHOLD, ThresholdType::SIGNAL_LOW, pedalState.app1);
+	}
+}
+
+void Configurator::processCommandSetThrottleMax(const drivers::can::Message& message){
+	if (message.numBytes != AUTO_CONFIGURATION_MESSAGE_NUM_BYTES) {
+			return;
+	}
+	vehicle::pedals::State pedalState = vehicle::vehicleState.getPedals();
+	if(!pedalState.bsefValid || !pedalState.bserValid){
+		return;
+	} else {
+		setThreshold(Parameter::APP2_THRESHOLD, ThresholdType::SIGNAL_HIGH, pedalState.app2);
+		setThreshold(Parameter::APP1_THRESHOLD, ThresholdType::SIGNAL_HIGH, pedalState.app1);
+	}
+}
+
+void Configurator::processCommandSetBPSEngaged(const drivers::can::Message& message){
+	if (message.numBytes != AUTO_CONFIGURATION_MESSAGE_NUM_BYTES) {
+			return;
+	}
+	vehicle::pedals::State pedalState = vehicle::vehicleState.getPedals();
+	if(!pedalState.app1Valid || !pedalState.app2Valid){
+		return;
+	} else {
+		setThreshold(Parameter::BSER_THRESHOLD, ThresholdType::ENGAGE, pedalState.bser);
+		setThreshold(Parameter::BSEF_THRESHOLD, ThresholdType::ENGAGE, pedalState.bsef);
+	}
+}
 
 void Configurator::processCommandSetParameter(const drivers::can::Message& message) {
 	if (vehicle::vehicleState.getMode() != vehicle::Mode::CONFIGURATION) {
