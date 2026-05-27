@@ -32,4 +32,6 @@ constexpr size_t REAR_TRIGGER_WHEEL_TEETH	= 24;
 constexpr float FRONT_WHEEL_METERS_PER_REVOLUTION = 1.276;
 constexpr float REAR_WHEEL_METERS_PER_REVOLUTION = 1.276;
 
+constexpr float SAS_ZERO = 0;
+
 } // namespace vehicle::defaults

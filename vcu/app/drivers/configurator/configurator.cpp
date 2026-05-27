@@ -82,6 +82,18 @@ void Configurator::processCommandSetThrottleMax(const drivers::can::Message& mes
 	}
 }
 
+void Configurator::processCommandSetSASZero(const drivers::can::Message& message){
+	if (message.numBytes != AUTO_CONFIGURATION_MESSAGE_NUM_BYTES) {
+			return;
+	}
+	vehicle::steering::State steering = vehicle::vehicleState.getSteering();
+	if(steering.mode != vehicle::steering::CALIBRATED_VALID){
+		return;
+	} else {
+		stagedConfiguration.sasZero = steering.angleDegrees;
+	}
+}
+
 void Configurator::processCommandSetBPSEngaged(const drivers::can::Message& message){
 	if (message.numBytes != AUTO_CONFIGURATION_MESSAGE_NUM_BYTES) {
 			return;

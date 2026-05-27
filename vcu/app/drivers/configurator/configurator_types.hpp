@@ -20,6 +20,7 @@ enum class Parameter: uint16_t {
 	BSER_THRESHOLD				= 0x0004,
 	MAX_TORQUE_REQUEST			= 0x0005,
 	PEDAL_MAP					= 0x0006,
+	SAS_ZER0					= 0x0007,
 };
 
 } // namespace drivers::configurator
