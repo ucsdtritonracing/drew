@@ -182,6 +182,8 @@ int main(void)
 
   rtos::WheelsTask.start("Wheels Task");
 
+  rtos::StartupTask.start("Startup Task");
+
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_EVENTS */
