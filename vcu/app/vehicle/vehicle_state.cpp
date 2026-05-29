@@ -13,7 +13,7 @@ namespace vehicle {
 VehicleState::VehicleState() {
 	readyToDriveButtonPressed 	= false;
 	shutdownCircuitClosed 		= false;
-	mode 						= IDLE;
+	mode 						= Mode::IDLE;
 }
 
 // Polled
