@@ -6,26 +6,26 @@
 namespace vehicle::defaults {
 
 const AnalogCalibration APP1_THRESHOLDS = {
-	.faultThresholds	= {0.3, 3.0},
-	.signalThresholds	= {0.88, 1.252}
+	.faultThresholds	= {0.2, 0.8},
+	.signalThresholds	= {0.479, 0.618}
 };
 const AnalogCalibration APP2_THRESHOLDS = {
-	.faultThresholds	= {0.3, 3.0},
-	.signalThresholds	= {0.85, 1.257}
+	.faultThresholds	= {0.2, 0.8},
+	.signalThresholds	= {0.352, 0.464}
 };
 const AnalogCalibration BSEF_THRESHOLDS = {
-	.faultThresholds	= {0.33, 2.97},
-	.signalThresholds	= {0.33, 2.97}
+	.faultThresholds	= {0.17, 0.8},
+	.signalThresholds	= {0.17, 0.8}
 };
 const AnalogCalibration BSER_THRESHOLDS = {
-	.faultThresholds	= {0.33, 2.97},
-	.signalThresholds	= {0.33, 2.97}
+	.faultThresholds	= {0.17, 0.8},
+	.signalThresholds	= {0.17, 0.8}
 };
 
-constexpr float BSEF_BRAKE_ENGAGED_THRESHOLD 	= 0.25;
-constexpr float BSER_BRAKE_ENGAGED_THRESHOLD 	= 0.25;
+constexpr float BSEF_BRAKE_ENGAGED_THRESHOLD 	= 0.16;
+constexpr float BSER_BRAKE_ENGAGED_THRESHOLD 	= 0.16;
 
-constexpr float MAX_TORQUE_NM					= 10.0f;
+constexpr float MAX_TORQUE_NM					= 30.0f;
 
 constexpr size_t FRONT_TRIGGER_WHEEL_TEETH	= 15;
 constexpr size_t REAR_TRIGGER_WHEEL_TEETH	= 24;
