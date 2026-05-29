@@ -16,7 +16,7 @@ void BroadcastTask::loop() {
 	auto wheels = vehicle::vehicleState.getWheelSpeeds();
 	bool r2dbPressed = vehicle::vehicleState.getReadyToDriveButtonPressed();
 	bool sdcClosed = vehicle::vehicleState.getShutdownCircuitClosed();
-	bool r2dEnabled = vehicle::vehicleState.getMode() == vehicle::Mode::READY_TO_DRIVE;
+	vehicle::Mode mode = vehicle::vehicleState.getMode();
 	bool appFault = vehicle::vehicleState.getAPPFault();
 	bool abppcFault = vehicle::vehicleState.getABPPCFault();
 
@@ -24,12 +24,10 @@ void BroadcastTask::loop() {
 	vehicle::broadcasterDriver.broadcastFlagsMessage({
 		.r2dbPressed	= r2dbPressed,
 		.sdcClosed		= sdcClosed,
-		.r2dEnabled		= r2dEnabled,
 		.appFault		= appFault,
-		.abppcFault		= abppcFault
+		.abppcFault		= abppcFault,
+		.mode			= mode
 	});
-
-	vehicle::configuratorDriver.broadcastNextConfigurationParameter();
 
 	osDelay(DELAY);
 }

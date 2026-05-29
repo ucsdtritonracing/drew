@@ -35,9 +35,10 @@ private:
 
 	static constexpr size_t FLAGS_R2DB_PRESSED_BIT		= 0;
 	static constexpr size_t FLAGS_SDC_CLOSED_BIT		= 1;
-	static constexpr size_t FLAGS_R2D_ENABLED_BIT		= 2;
-	static constexpr size_t FLAGS_APP_FAULT_BIT			= 3;
-	static constexpr size_t FLAGS_ABPPC_FAULT_BIT		= 4;
+	static constexpr size_t FLAGS_APP_FAULT_BIT			= 2;
+	static constexpr size_t FLAGS_ABPPC_FAULT_BIT		= 3;
+	static constexpr size_t FLAGS_MODE_BIT_START		= 4;
+	static constexpr uint8_t FLAGS_MODE_MASK			= 0b11;
 
 	static constexpr size_t APP_APP1_START				= 0;
 	static constexpr size_t APP_APP2_START				= 2;

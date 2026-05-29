@@ -91,9 +91,9 @@ void Broadcaster::broadcastFlagsMessage(Flags flags) {
 	txData[0] = static_cast<uint8_t>(
 			((flags.r2dbPressed & 1u) << FLAGS_R2DB_PRESSED_BIT) |
 			((flags.sdcClosed & 1u) << FLAGS_SDC_CLOSED_BIT) |
-			((flags.r2dEnabled & 1u) << FLAGS_R2D_ENABLED_BIT) |
 			((flags.appFault & 1u) << FLAGS_APP_FAULT_BIT) |
-			((flags.abppcFault & 1u) << FLAGS_ABPPC_FAULT_BIT)
+			((flags.abppcFault & 1u) << FLAGS_ABPPC_FAULT_BIT) |
+			((static_cast<uint8_t>(flags.mode) & FLAGS_MODE_MASK) << FLAGS_MODE_BIT_START)
 	);
 	canBus.publishTxSlot(flagsMessageSlotHandle, txData, FLAGS_MESSAGE_NUM_BYTES);
 }
