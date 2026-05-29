@@ -41,15 +41,21 @@ private:
 
 	static constexpr size_t APP_APP1_START				= 0;
 	static constexpr size_t APP_APP2_START				= 2;
-	static constexpr size_t APP_FLAGS_START				= 4;
-	static constexpr size_t APP_APP1_VALID_BIT			= 0;
-	static constexpr size_t APP_APP2_VALID_BIT			= 1;
+	static constexpr size_t APP_APP1_RAW_START			= 4;
+	static constexpr size_t APP_APP2_RAW_START			= 6;
+	static constexpr size_t APP_APP1_VALID_START		= 5;
+	static constexpr size_t APP_APP2_VALID_START		= 7;
+	static constexpr size_t APP_APP1_VALID_BIT			= 7;
+	static constexpr size_t APP_APP2_VALID_BIT			= 7;
 
 	static constexpr size_t BRAKES_BSEF_START			= 0;
 	static constexpr size_t BRAKES_BSER_START			= 2;
-	static constexpr size_t BRAKES_FLAGS_START			= 4;
-	static constexpr size_t BRAKES_BSEF_VALID_BIT		= 0;
-	static constexpr size_t BRAKES_BSER_VALID_BIT		= 1;
+	static constexpr size_t BRAKES_BSEF_RAW_START		= 4;
+	static constexpr size_t BRAKES_BSER_RAW_START		= 6;
+	static constexpr size_t BRAKES_BSEF_VALID_START		= 5;
+	static constexpr size_t BRAKES_BSER_VALID_START		= 7;
+	static constexpr size_t BRAKES_BSEF_VALID_BIT		= 7;
+	static constexpr size_t BRAKES_BSER_VALID_BIT		= 7;
 
 	static constexpr size_t WHEELS_FR_START				= 0;
 	static constexpr size_t WHEELS_FL_START				= 2;
@@ -57,8 +63,8 @@ private:
 	static constexpr size_t WHEELS_RL_START				= 6;
 
 	static constexpr uint8_t WHEELS_MESSAGE_NUM_BYTES	= 8;
-	static constexpr uint8_t BRAKES_MESSAGE_NUM_BYTES	= 5;
-	static constexpr uint8_t APP_MESSAGE_NUM_BYTES		= 5;
+	static constexpr uint8_t BRAKES_MESSAGE_NUM_BYTES	= 8;
+	static constexpr uint8_t APP_MESSAGE_NUM_BYTES		= 8;
 	static constexpr uint8_t IMU_MESSAGE_NUM_BYTES		= 8;
 	static constexpr uint8_t FLAGS_MESSAGE_NUM_BYTES	= 1;
 

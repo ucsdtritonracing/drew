@@ -53,10 +53,15 @@ void Broadcaster::broadcastBrakesMessage(const vehicle::pedals::State& pedals) {
 	txData[BRAKES_BSEF_START+1]	= static_cast<uint8_t>((bsef >> 8) & BYTE_MASK);
 	txData[BRAKES_BSER_START]	= static_cast<uint8_t>(bser & BYTE_MASK);
 	txData[BRAKES_BSER_START+1]	= static_cast<uint8_t>((bser >> 8) & BYTE_MASK);
-	txData[BRAKES_FLAGS_START]	= static_cast<uint8_t>(
-			((pedals.bsefValid & 1u) << BRAKES_BSEF_VALID_BIT) |
-			((pedals.bserValid & 1u) << BRAKES_BSER_VALID_BIT)
-	);
+
+	txData[BRAKES_BSEF_RAW_START]	= static_cast<uint8_t>(pedals.bsefRaw & BYTE_MASK);
+	txData[BRAKES_BSEF_RAW_START+1]	= static_cast<uint8_t>((pedals.bsefRaw >> 8) & BYTE_MASK);
+	txData[BRAKES_BSER_RAW_START]	= static_cast<uint8_t>(pedals.bserRaw & BYTE_MASK);
+	txData[BRAKES_BSER_RAW_START+1]	= static_cast<uint8_t>((pedals.bserRaw >> 8) & BYTE_MASK);
+
+	txData[BRAKES_BSEF_VALID_START]	|= static_cast<uint8_t>((pedals.bsefValid & 1u) << BRAKES_BSEF_VALID_BIT);
+	txData[BRAKES_BSER_VALID_START] |= static_cast<uint8_t>((pedals.bserValid & 1u) << BRAKES_BSER_VALID_BIT);
+
 	canBus.publishTxSlot(brakesMessageSlotHandle, txData, BRAKES_MESSAGE_NUM_BYTES);
 }
 
@@ -65,14 +70,19 @@ void Broadcaster::broadcastAPPMessage(const vehicle::pedals::State& pedals) {
 	uint16_t app1	= static_cast<uint16_t>(pedals.app1 * PEDALS_SCALE);
 	uint16_t app2	= static_cast<uint16_t>(pedals.app2 * PEDALS_SCALE);
 
-	txData[APP_APP1_START]	= static_cast<uint8_t>(app1 & BYTE_MASK);
+	txData[APP_APP1_START]		= static_cast<uint8_t>(app1 & BYTE_MASK);
 	txData[APP_APP1_START+1]	= static_cast<uint8_t>((app1 >> 8) & BYTE_MASK);
-	txData[APP_APP2_START]	= static_cast<uint8_t>(app2 & BYTE_MASK);
+	txData[APP_APP2_START]		= static_cast<uint8_t>(app2 & BYTE_MASK);
 	txData[APP_APP2_START+1]	= static_cast<uint8_t>((app2 >> 8) & BYTE_MASK);
-	txData[APP_FLAGS_START]	= static_cast<uint8_t>(
-			((pedals.app1Valid & 1u) << APP_APP1_VALID_BIT) |
-			((pedals.app2Valid & 1u) << APP_APP2_VALID_BIT)
-	);
+
+	txData[APP_APP1_RAW_START]		= static_cast<uint8_t>(pedals.app1Raw & BYTE_MASK);
+	txData[APP_APP1_RAW_START+1]	= static_cast<uint8_t>((pedals.app1Raw >> 8) & BYTE_MASK);
+	txData[APP_APP2_RAW_START]		= static_cast<uint8_t>(pedals.app2Raw & BYTE_MASK);
+	txData[APP_APP2_RAW_START+1]	= static_cast<uint8_t>((pedals.app2Raw >> 8) & BYTE_MASK);
+
+	txData[APP_APP1_VALID_START]	|= static_cast<uint8_t>((pedals.app1Valid & 1u) << APP_APP1_VALID_BIT);
+	txData[APP_APP2_VALID_START]	|= static_cast<uint8_t>((pedals.app2Valid & 1u) << APP_APP2_VALID_BIT);
+
 	canBus.publishTxSlot(appMessageSlotHandle, txData, APP_MESSAGE_NUM_BYTES);
 }
 
