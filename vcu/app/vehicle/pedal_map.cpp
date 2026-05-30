@@ -11,7 +11,7 @@ PedalMap::PedalMap() {
 	points[NUM_TOTAL_POINTS - 1] = 1;
 	for (size_t i = 1; i <= NUM_EDITABLE_POINTS; i++) {
 		const float input = static_cast<float>(i) / (NUM_TOTAL_POINTS - 1);
-		points[i] = 1.0f / (1.0f + std::exp(-11.0f * (input - 0.5f)));
+		points[i] = input;
 	}
 }
 
