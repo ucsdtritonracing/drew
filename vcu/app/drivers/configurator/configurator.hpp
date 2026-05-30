@@ -1,11 +1,10 @@
 #pragma once
 
-#include "drivers/configurator/configurator_types.hpp"
 #include "drivers/can/can_bus.hpp"
 #include "drivers/can/can_peripheral.hpp"
 #include "drivers/can/tx_slot.hpp"
+#include "vehicle/pedal_map.hpp"
 #include "vehicle/vehicle_configuration.hpp"
-#include <optional>
 
 
 namespace drivers::configurator {
@@ -15,50 +14,43 @@ public:
 	Configurator(drivers::can::CANBus& canBus);
 
 	void init();
-
-	void processCommandSetParameter(const drivers::can::Message& message);
-	void processCommandWriteConfiguration(const drivers::can::Message& message);
-	void processCommandConfigurationMode(const drivers::can::Message& message);
-
 	bool requestingConfigurationMode() const;
-	void broadcastNextConfigurationParameter();
+
+	void processCommandConfigurationMode(const drivers::can::Message& message);
+	void processCommandWriteConfiguration(const drivers::can::Message& message);
+	void processCommandFlashConfiguration(const drivers::can::Message& message);
+	void processCommandThreshold(const drivers::can::Message& message);
+	void processCommandBSEEngage(const drivers::can::Message& message);
+	void processCommandPedalMap(const drivers::can::Message& message);
+	void processCommandTorque(const drivers::can::Message& message);
+
+	void broadcastConfigurationParameters();
 
 private:
-    vehicle::VehicleConfiguration stagedConfiguration;
 	bool configurationModeRequested = false;
-	int broadcastParameterIndex = 0;
-	static constexpr int NUM_BROADCAST_PARAMETER_VALUES = 34;
+    vehicle::VehicleConfiguration stagedConfiguration;
 
-	drivers::can::TxSlotHandle parameterResponseSlotHandle;
+	drivers::can::TxSlotHandle app1SlotHandle;
+	drivers::can::TxSlotHandle app2SlotHandle;
+	drivers::can::TxSlotHandle bsefSlotHandle;
+	drivers::can::TxSlotHandle bserSlotHandle;
+	drivers::can::TxSlotHandle bseEngageSlotHandle;
+
+	drivers::can::TxSlotHandle torqueSlotHandle;
+
+	drivers::can::TxSlotHandle pedalMapPointSlotHandles[vehicle::PedalMap::NUM_EDITABLE_POINTS];
+
 	uint8_t txData[can::MAX_CLASSICAL_CAN_DATA_LENGTH];
 
-    static constexpr uint32_t CAN_ID_SET_PARAMETER					= 0x190;
-    static constexpr uint32_t CAN_ID_PARAMETER_RESPONSE				= 0x192;
-    static constexpr uint32_t CAN_ID_CONFIGURATION_MODE				= 0x193;
-    static constexpr uint32_t CAN_ID_WRITE_CONFIGURATION			= 0x194;
+	void broadcastAPP1Parameter();
+	void broadcastAPP2Parameter();
+	void broadcastBSEFParameter();
+	void broadcastBSERParameter();
+	void broadcastBSEEngageParameter();
+	void broadcastTorqueParameter();
+	void broadcastPedalMapParameters();
 
-    static constexpr size_t PARAMETER_MESSAGE_DATA_START			= 4;
-    static constexpr size_t PARAMETER_MESSAGE_INFO_START			= 2;
-    static constexpr size_t PARAMETER_MESSAGE_NUM_BYTES				= 8;
-    static constexpr float PARAMETER_MESSAGE_SCALE					= 1000000;
-
-    static constexpr size_t CONFIGURATION_MODE_MESSAGE_NUM_BYTES	= 1;
-
-    static constexpr size_t WRITE_CONFIGURATION_MESSAGE_NUM_BYTES	= 0;
-
-
-	std::optional<Parameter> parseParameterId(const drivers::can::Message& message);
-	std::optional<ThresholdType> parseThresholdType(uint16_t info);
-
-	uint32_t scale(float value);
-	float unscale(uint32_t data);
-
-	void setThreshold(Parameter parameter, ThresholdType type, float value);
-	void setMaxTorque(float value);
-
-	void sendParameterValue(Parameter parameter, uint16_t info, float data);
-	void sendThresholdRanges(Parameter parameter);
-
+	void packThreshold(vehicle::AnalogCalibration calibration, uint8_t *data);
 };
 
 } // namespace drivers::configurator
