@@ -37,14 +37,14 @@ const vehicle::Mode ControlLoopTask::getNextMode(vehicle::Mode currentMode, Tran
 	case vehicle::Mode::IDLE:
 		if (inputs.configurationModeRequested) {
 			nextMode = vehicle::Mode::CONFIGURATION;
-		} else if (/*inputs.brakePressed && */inputs.readyToDriveButtonPressed/* && inputs.shutdownCircuitClosed*/) {
+		} else if (inputs.brakePressed && inputs.readyToDriveButtonPressed && inputs.shutdownCircuitClosed) {
 			nextMode = vehicle::Mode::READY_TO_DRIVE;
 		}
 		break;
 	case vehicle::Mode::READY_TO_DRIVE:
-//		if (!inputs.shutdownCircuitClosed) {
-//			nextMode = vehicle::Mode::IDLE;
-//		}
+		if (!inputs.shutdownCircuitClosed) {
+			nextMode = vehicle::Mode::IDLE;
+		}
 		break;
 	default:
 		nextMode = vehicle::Mode::IDLE;
@@ -129,7 +129,6 @@ void ControlLoopTask::loop() {
 		break;
 	case vehicle::Mode::CONFIGURATION:
 		vehicle::inverterDriver.sendCommandMessage(0, false);
-		vehicle::configuratorDriver.broadcastNextConfigurationParameter();
 		break;
 	case vehicle::Mode::READY_TO_DRIVE:
 		vehicle::vehicleState.setAPPFault(appsPlausibilityFault.torqueInhibited(currentTick));
