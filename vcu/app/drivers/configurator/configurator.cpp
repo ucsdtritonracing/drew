@@ -148,6 +148,20 @@ void Configurator::setThreshold(Parameter parameter, ThresholdType type, float v
 	}
 }
 
+void Configurator::processCommandBSEEngage(const drivers::can::Message& message) {
+	if (message.numBytes != BSE_ENGAGE_MESSAGE_LENGTH) {
+		return;
+	}
+
+	const uint16_t rawBSEFEngage =		static_cast<uint16_t>(message.data[0]) |
+										static_cast<uint16_t>(message.data[1] << 8);
+	const uint16_t rawBSEREngage =		static_cast<uint16_t>(message.data[2]) |
+						 				static_cast<uint16_t>(message.data[3] << 8);
+
+	stagedConfiguration.bsefBrakeEngagedThreshold = rawBSEFEngage * THRESHOLD_MESSAGE_SCALE;
+	stagedConfiguration.bserBrakeEngagedThreshold = rawBSEREngage * THRESHOLD_MESSAGE_SCALE;
+}
+
 
 void Configurator::sendThresholdRanges(Parameter parameter) {
 	vehicle::AnalogCalibration* calibration = nullptr;
