@@ -37,7 +37,7 @@ public:
 	float frontWheelMetersPerRevolution	= defaults::FRONT_WHEEL_METERS_PER_REVOLUTION;
 	float rearWheelMetersPerRevolution	= defaults::REAR_WHEEL_METERS_PER_REVOLUTION;
   
-	bool valid();
+	bool valid() const;
 
 private:
 	static constexpr float MIN_THRESHOLD_VOLTAGE        = 0.0f;

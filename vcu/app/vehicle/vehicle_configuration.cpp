@@ -6,7 +6,7 @@ namespace vehicle {
 
 VehicleConfiguration vehicleConfiguration{};
 
-bool VehicleConfiguration::valid() {
+bool VehicleConfiguration::valid() const {
 	if (maxTorqueNm > torque::MAX_TORQUE_LIMIT_NM) {
 		return false;
 	}
