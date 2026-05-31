@@ -1,5 +1,6 @@
 #include "drivers/configurator/configurator.hpp"
 #include "drivers/configurator/configurator_can.hpp"
+#include "drivers/storage/storage.hpp"
 #include "vehicle/vehicle_state.hpp"
 #include "vehicle/vehicle_configuration.hpp"
 #include "vehicle/types/configuration_types.hpp"
@@ -37,6 +38,10 @@ void Configurator::init() {
 	for (size_t i = 0; i < vehicle::PedalMap::NUM_EDITABLE_POINTS; i++) {
 		pedalMapPointSlotHandles[i] = bindTxSlot(CAN_ID_CFG_PEDAL_MAP_BASE + i, drivers::can::TELEMETRY);
 	}
+
+    if (!drivers::storage::ConfigStorage::load(stagedConfiguration)) {
+    	drivers::storage::ConfigStorage::save(stagedConfiguration);
+    }
 }
 
 
@@ -58,7 +63,10 @@ void Configurator::processCommandFlashConfiguration(const drivers::can::Message&
 		return;
 	}
 	if (stagedConfiguration.valid() && vehicle::vehicleState.getMode() == vehicle::Mode::CONFIGURATION) {
-		// TODO: flash
+		if (drivers::storage::ConfigStorage::save(stagedConfiguration)) {
+			vehicle::vehicleConfiguration = stagedConfiguration;
+			configurationModeRequested = false;
+		}
 	}
 }
 void Configurator::processCommandConfigurationMode(const drivers::can::Message& message) {
