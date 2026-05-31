@@ -135,6 +135,20 @@ void Configurator::processCommandThreshold(const drivers::can::Message& message)
 	calibration->signalThresholds = {signalLo, signalHi};
 }
 
+void Configurator::processCommandBSEEngage(const drivers::can::Message& message) {
+	if (message.numBytes != BSE_ENGAGE_MESSAGE_LENGTH) {
+		return;
+	}
+
+	const uint16_t rawBSEFEngage =		static_cast<uint16_t>(message.data[0]) |
+										static_cast<uint16_t>(message.data[1] << 8);
+	const uint16_t rawBSEREngage =		static_cast<uint16_t>(message.data[2]) |
+						 				static_cast<uint16_t>(message.data[3] << 8);
+
+	stagedConfiguration.bsefBrakeEngagedThreshold = rawBSEFEngage * THRESHOLD_MESSAGE_SCALE;
+	stagedConfiguration.bserBrakeEngagedThreshold = rawBSEREngage * THRESHOLD_MESSAGE_SCALE;
+}
+
 
 void Configurator::processCommandPedalMap(const drivers::can::Message& message) {
 	if (message.id < CAN_ID_CMD_PEDAL_MAP_BASE || message.id >= CAN_ID_CMD_PEDAL_MAP_BASE + vehicle::PedalMap::NUM_EDITABLE_POINTS) {
