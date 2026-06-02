@@ -32,11 +32,16 @@ public:
   
 	float maxTorqueNm = defaults::MAX_TORQUE_NM;
 
-  size_t frontTriggerWheelTeeth	= defaults::FRONT_TRIGGER_WHEEL_TEETH;
+	size_t frontTriggerWheelTeeth	= defaults::FRONT_TRIGGER_WHEEL_TEETH;
 	size_t rearTriggerWheelTeeth	= defaults::REAR_TRIGGER_WHEEL_TEETH;
 	float frontWheelMetersPerRevolution	= defaults::FRONT_WHEEL_METERS_PER_REVOLUTION;
 	float rearWheelMetersPerRevolution	= defaults::REAR_WHEEL_METERS_PER_REVOLUTION;
   
+	float wheelSpeedSensorAlpha			= defaults::WHEEL_SPEED_SENSOR_ALPHA;
+	size_t wheelSpeedSensorTimeoutMs	= defaults::WHEEL_SPEED_SENSOR_TIMEOUT_MS;
+
+	size_t strategy						= defaults::STRATEGY;
+
 	bool valid() const;
 
 private:

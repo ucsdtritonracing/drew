@@ -35,6 +35,15 @@ bool VehicleConfiguration::valid() const {
 		return false;
 	}
 
+	if (wheelSpeedSensorAlpha < 0 || wheelSpeedSensorAlpha > 1) {
+		return false;
+	}
+	if (wheelSpeedSensorTimeoutMs < 0) {
+		return false;
+	}
+
+	if (strategy > )
+
 	return true;
 }
 
