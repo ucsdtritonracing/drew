@@ -36,11 +36,13 @@ void Wheels::filter(WheelData& data, size_t teeth, float metersPerRevolution, ui
 	float revolutionsPerSecond = frequency / (float) teeth;
     float rawSpeed = revolutionsPerSecond * metersPerRevolution;
 
+    float alpha = vehicle::vehicleConfiguration.wheelSpeedSensorAlpha;
+
 	if (!data.filterInitialized) {
 		data.filterInitialized = true;
 		data.filteredSpeed = rawSpeed;
 	} else {
-		data.filteredSpeed = Wheels::ALPHA * rawSpeed + (1.0f - Wheels::ALPHA) * data.filteredSpeed;
+		data.filteredSpeed = alpha * rawSpeed + (1.0f - alpha) * data.filteredSpeed;
 	}
 }
 
