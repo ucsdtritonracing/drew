@@ -9,4 +9,10 @@ enum class Mode : uint8_t {
 	CONFIGURATION	= 2,
 };
 
+enum class Strategy : uint8_t {
+	DEFAULT			= 0,
+	ECO				= 1,
+	LAUNCH			= 2,
+};
+
 } // namespace vehicle
