@@ -39,8 +39,8 @@ void Configurator::init() {
 		pedalMapPointSlotHandles[i] = bindTxSlot(CAN_ID_CFG_PEDAL_MAP_BASE + i, drivers::can::TELEMETRY);
 	}
 
-    if (!drivers::storage::ConfigStorage::load(stagedConfiguration)) {
-    	drivers::storage::ConfigStorage::save(stagedConfiguration);
+    if (drivers::storage::ConfigStorage::load(stagedConfiguration)) {
+    	vehicle::vehicleConfiguration = stagedConfiguration;
     }
 }
 
@@ -175,57 +175,66 @@ void Configurator::processCommandPedalMap(const drivers::can::Message& message) 
 }
 
 
-void Configurator::broadcastAPP1Parameter() {
-	packThreshold(stagedConfiguration.app1Thresholds, txData);
+void Configurator::broadcastAPP1Parameter(vehicle::VehicleConfiguration &config) {
+	packThreshold(config.app1Thresholds, txData);
 	canBus.publishTxSlot(app1SlotHandle, txData, THRESHOLD_MESSAGE_LENGTH);
 }
-void Configurator::broadcastAPP2Parameter() {
-	packThreshold(stagedConfiguration.app2Thresholds, txData);
+void Configurator::broadcastAPP2Parameter(vehicle::VehicleConfiguration &config) {
+	packThreshold(config.app2Thresholds, txData);
 	canBus.publishTxSlot(app2SlotHandle, txData, THRESHOLD_MESSAGE_LENGTH);
 }
-void Configurator::broadcastBSEFParameter() {
-	packThreshold(stagedConfiguration.bsefThresholds, txData);
+void Configurator::broadcastBSEFParameter(vehicle::VehicleConfiguration &config) {
+	packThreshold(config.bsefThresholds, txData);
 	canBus.publishTxSlot(bsefSlotHandle, txData, THRESHOLD_MESSAGE_LENGTH);
 }
-void Configurator::broadcastBSERParameter() {
-	packThreshold(stagedConfiguration.bserThresholds, txData);
+void Configurator::broadcastBSERParameter(vehicle::VehicleConfiguration &config) {
+	packThreshold(config.bserThresholds, txData);
 	canBus.publishTxSlot(bserSlotHandle, txData, THRESHOLD_MESSAGE_LENGTH);
 }
-void Configurator::broadcastBSEEngageParameter() {
-	const uint16_t scaledBSEFEngaged = static_cast<uint16_t>(stagedConfiguration.bsefBrakeEngagedThreshold / THRESHOLD_MESSAGE_SCALE);
-	const uint16_t scaledBSEREngaged = static_cast<uint16_t>(stagedConfiguration.bserBrakeEngagedThreshold / THRESHOLD_MESSAGE_SCALE);
+void Configurator::broadcastBSEEngageParameter(vehicle::VehicleConfiguration &config) {
+	const uint16_t scaledBSEFEngaged = static_cast<uint16_t>(config.bsefBrakeEngagedThreshold / THRESHOLD_MESSAGE_SCALE);
+	const uint16_t scaledBSEREngaged = static_cast<uint16_t>(config.bserBrakeEngagedThreshold / THRESHOLD_MESSAGE_SCALE);
 	txData[0] = static_cast<uint8_t>(scaledBSEFEngaged);
 	txData[1] = static_cast<uint8_t>(scaledBSEFEngaged >> 8);
 	txData[2] = static_cast<uint8_t>(scaledBSEREngaged);
 	txData[3] = static_cast<uint8_t>(scaledBSEREngaged >> 8);
 	canBus.publishTxSlot(bserSlotHandle, txData, THRESHOLD_MESSAGE_LENGTH);
 }
-void Configurator::broadcastTorqueParameter() {
-	const uint32_t scaled = stagedConfiguration.maxTorqueNm / TORQUE_MESSAGE_SCALE;
+void Configurator::broadcastTorqueParameter(vehicle::VehicleConfiguration &config) {
+	const uint32_t scaled = config.maxTorqueNm / TORQUE_MESSAGE_SCALE;
 	txData[0] = static_cast<uint8_t>(scaled);
 	txData[1] = static_cast<uint8_t>(scaled >> 8);
 	txData[2] = static_cast<uint8_t>(scaled >> 16);
 	txData[3] = static_cast<uint8_t>(scaled >> 24);
 	canBus.publishTxSlot(torqueSlotHandle, txData, TORQUE_MESSAGE_LENGTH);
 }
-void Configurator::broadcastPedalMapParameters() {
+void Configurator::broadcastPedalMapParameters(vehicle::VehicleConfiguration &config) {
 	for (size_t i = 0; i < vehicle::PedalMap::NUM_EDITABLE_POINTS; i++) {
-		const uint16_t scaled = stagedConfiguration.pedalMap.getPoint(i) / PEDAL_MAP_MESSAGE_SCALE;
+		const uint16_t scaled = config.pedalMap.getPoint(i) / PEDAL_MAP_MESSAGE_SCALE;
 		txData[0] = static_cast<uint8_t>(scaled);
 		txData[1] = static_cast<uint8_t>(scaled >> 8);
 		canBus.publishTxSlot(pedalMapPointSlotHandles[i], txData, PEDAL_MAP_MESSAGE_LENGTH);
 	}
 }
-void Configurator::broadcastConfigurationParameters() {
-	broadcastAPP1Parameter();
-	broadcastAPP2Parameter();
-	broadcastBSEFParameter();
-	broadcastBSERParameter();
-	broadcastBSEEngageParameter();
-	broadcastTorqueParameter();
-	broadcastPedalMapParameters();
+void Configurator::broadcastParameters() {
+	switch (vehicle::vehicleState.getMode()) {
+	case vehicle::Mode::CONFIGURATION:
+		broadcastAPP1Parameter(stagedConfiguration);
+		broadcastAPP2Parameter(stagedConfiguration);
+		broadcastBSEFParameter(stagedConfiguration);
+		broadcastBSERParameter(stagedConfiguration);
+		broadcastBSEEngageParameter(stagedConfiguration);
+		broadcastPedalMapParameters(stagedConfiguration);
+		broadcastTorqueParameter(stagedConfiguration);
+		break;
+	case vehicle::Mode::IDLE:
+	case vehicle::Mode::READY_TO_DRIVE:
+		broadcastTorqueParameter(vehicle::vehicleConfiguration);
+		break;
+	default:
+		break;
+	}
 }
-
 
 void Configurator::packThreshold(vehicle::AnalogCalibration calibration, uint8_t *data) {
 	uint16_t faultLo = static_cast<uint16_t>(calibration.faultThresholds.getMin() / THRESHOLD_MESSAGE_SCALE);
