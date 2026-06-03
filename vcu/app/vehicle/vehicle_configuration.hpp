@@ -22,10 +22,10 @@ public:
 
 	PedalMap pedalMap;
 
-	AnalogCalibration app1Thresholds = defaults::APP1_THRESHOLDS;
-	AnalogCalibration app2Thresholds = defaults::APP2_THRESHOLDS;
-	AnalogCalibration bsefThresholds = defaults::BSEF_THRESHOLDS;
-	AnalogCalibration bserThresholds = defaults::BSER_THRESHOLDS;
+	ThresholdConfig app1Thresholds = defaults::APP1_THRESHOLDS;
+	ThresholdConfig app2Thresholds = defaults::APP2_THRESHOLDS;
+	ThresholdConfig bsefThresholds = defaults::BSEF_THRESHOLDS;
+	ThresholdConfig bserThresholds = defaults::BSER_THRESHOLDS;
 
 	float bsefBrakeEngagedThreshold = defaults::BSEF_BRAKE_ENGAGED_THRESHOLD;
 	float bserBrakeEngagedThreshold = defaults::BSER_BRAKE_ENGAGED_THRESHOLD;

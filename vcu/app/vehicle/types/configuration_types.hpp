@@ -34,7 +34,7 @@ private:
     uint16_t maxAdcReading;
 };
 
-struct AnalogCalibration {
+struct ThresholdConfig {
 	Range faultThresholds;	// indicates faults if out of range
 	Range signalThresholds;	// maps from 0 - 1
 

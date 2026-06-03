@@ -106,20 +106,20 @@ void Configurator::processCommandThreshold(const drivers::can::Message& message)
 		return;
 	}
 
-	vehicle::AnalogCalibration *calibration;
+	vehicle::ThresholdConfig *thresholds;
 
 	switch (message.id) {
 	case CAN_ID_CMD_APP1_THRESHOLD:
-		calibration = &stagedConfiguration.app1Thresholds;
+		thresholds = &stagedConfiguration.app1Thresholds;
 		break;
 	case CAN_ID_CMD_APP2_THRESHOLD:
-		calibration = &stagedConfiguration.app2Thresholds;
+		thresholds = &stagedConfiguration.app2Thresholds;
 		break;
 	case CAN_ID_CMD_BSEF_THRESHOLD:
-		calibration = &stagedConfiguration.bsefThresholds;
+		thresholds = &stagedConfiguration.bsefThresholds;
 		break;
 	case CAN_ID_CMD_BSER_THRESHOLD:
-		calibration = &stagedConfiguration.bserThresholds;
+		thresholds = &stagedConfiguration.bserThresholds;
 		break;
 	default:
 		return;
@@ -139,8 +139,8 @@ void Configurator::processCommandThreshold(const drivers::can::Message& message)
 	const float signalLo = rawSignalLo * THRESHOLD_MESSAGE_SCALE;
 	const float signalHi = rawSignalHi * THRESHOLD_MESSAGE_SCALE;
 
-	calibration->faultThresholds = {faultLo, faultHi};
-	calibration->signalThresholds = {signalLo, signalHi};
+	thresholds->faultThresholds = {faultLo, faultHi};
+	thresholds->signalThresholds = {signalLo, signalHi};
 }
 
 void Configurator::processCommandBSEEngage(const drivers::can::Message& message) {
@@ -236,11 +236,11 @@ void Configurator::broadcastParameters() {
 	}
 }
 
-void Configurator::packThreshold(vehicle::AnalogCalibration calibration, uint8_t *data) {
-	uint16_t faultLo = static_cast<uint16_t>(calibration.faultThresholds.getMin() / THRESHOLD_MESSAGE_SCALE);
-	uint16_t faultHi = static_cast<uint16_t>(calibration.faultThresholds.getMax() / THRESHOLD_MESSAGE_SCALE);
-	uint16_t signalLo = static_cast<uint16_t>(calibration.signalThresholds.getMin() / THRESHOLD_MESSAGE_SCALE);
-	uint16_t signalHi = static_cast<uint16_t>(calibration.signalThresholds.getMax() / THRESHOLD_MESSAGE_SCALE);
+void Configurator::packThreshold(vehicle::ThresholdConfig thresholds, uint8_t *data) {
+	uint16_t faultLo = static_cast<uint16_t>(thresholds.faultThresholds.getMin() / THRESHOLD_MESSAGE_SCALE);
+	uint16_t faultHi = static_cast<uint16_t>(thresholds.faultThresholds.getMax() / THRESHOLD_MESSAGE_SCALE);
+	uint16_t signalLo = static_cast<uint16_t>(thresholds.signalThresholds.getMin() / THRESHOLD_MESSAGE_SCALE);
+	uint16_t signalHi = static_cast<uint16_t>(thresholds.signalThresholds.getMax() / THRESHOLD_MESSAGE_SCALE);
 
 
 	data[0] = static_cast<uint8_t>(faultLo);

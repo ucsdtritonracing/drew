@@ -50,7 +50,7 @@ private:
 	void broadcastTorqueParameter(vehicle::VehicleConfiguration &config);
 	void broadcastPedalMapParameters(vehicle::VehicleConfiguration &config);
 
-	void packThreshold(vehicle::AnalogCalibration calibration, uint8_t *data);
+	void packThreshold(vehicle::ThresholdConfig calibration, uint8_t *data);
 };
 
 } // namespace drivers::configurator
