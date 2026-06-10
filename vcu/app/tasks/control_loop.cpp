@@ -117,11 +117,7 @@ void ControlLoopTask::loop() {
 
 	/*		OUTPUTS		*/
 	// brake light
-	if (brakePressed) {
-		vehicle::pduDriver.enableChannel(vehicle::VehicleConfiguration::PDU_BRAKE_LIGHT_CHANNEL);
-	} else {
-		vehicle::pduDriver.disableChannel(vehicle::VehicleConfiguration::PDU_BRAKE_LIGHT_CHANNEL);
-	}
+	vehicle::outputsDriver.setBrakeLight(brakePressed);
 
 	// torque
 	switch (nextMode) {

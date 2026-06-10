@@ -12,6 +12,7 @@ void StartupTask::setup() {
 	vehicle::pduDriver.enableChannel(vehicle::VehicleConfiguration::PDU_TSB_FANS_CHANNEL);
 	vehicle::pduDriver.enableChannel(vehicle::VehicleConfiguration::PDU_PUMPS_CHANNEL);
 	vehicle::pduDriver.enableChannel(vehicle::VehicleConfiguration::PDU_RADIATOR_FANS_CHANNEL);
+	vehicle::pduDriver.enableChannel(vehicle::VehicleConfiguration::PDU_BRAKE_LIGHT_CHANNEL);
 	osDelay(STARTUP_DELAY);
 	vehicle::pduDriver.enableChannel(vehicle::VehicleConfiguration::PDU_12V_LEFT_CHANNEL);
 }
