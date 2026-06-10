@@ -64,7 +64,7 @@ void ControlLoopTask::onEnter(vehicle::Mode mode) {
 		appsPlausibilityFault.reset();
 		appsBrakePedalPlausibilityFaulted = false;
 
-		vehicle::soundDriver.play();
+		vehicle::outputsDriver.playSound();
 		break;
 	case vehicle::Mode::CONFIGURATION:
 		break;

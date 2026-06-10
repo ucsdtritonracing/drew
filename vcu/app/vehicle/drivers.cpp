@@ -10,7 +10,7 @@ drivers::sas::SAS sasDriver(CANBus1);
 drivers::inverter::Inverter inverterDriver(CANBus1);
 drivers::pedals::Pedals pedalsDriver;
 drivers::broadcaster::Broadcaster broadcasterDriver(CANBus1);
-drivers::sound::Sound soundDriver;
+drivers::gpio::Outputs outputsDriver;
 drivers::configurator::Configurator configuratorDriver(CANBus1);
 drivers::wheels::Wheels wheelsDriver;
 
