@@ -85,6 +85,8 @@ void Error_Handler(void);
 #define R2D_Button_GPIO_Port GPIOA
 #define R2D_Sound_Pin GPIO_PIN_7
 #define R2D_Sound_GPIO_Port GPIOA
+#define BRAKE_LIGHT_Pin GPIO_PIN_2
+#define BRAKE_LIGHT_GPIO_Port GPIOB
 #define FRWSS_Pin GPIO_PIN_9
 #define FRWSS_GPIO_Port GPIOA
 #define FLWSS_Pin GPIO_PIN_10
