@@ -29,6 +29,10 @@ void BroadcastTask::loop() {
 		.mode			= mode
 	});
 
+	if (mode == vehicle::Mode::CONFIGURATION) {
+		vehicle::configuratorDriver.broadcastConfigurationParameters();
+	}
+
 	osDelay(DELAY);
 }
 
