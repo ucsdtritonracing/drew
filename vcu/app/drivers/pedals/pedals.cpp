@@ -49,11 +49,22 @@ void Pedals::processBuffer(size_t start, size_t length) {
 		}
 	}
 
+
+	float app1Average = (numAPP1Valid == 0) ? 0 : app1Sum / numAPP1Valid;
+	float app2Average = (numAPP2Valid == 0) ? 0 : app2Sum / numAPP2Valid;
+	float bsefAverage = (numBSEFValid == 0) ? 0 : bsefSum / numBSEFValid;
+	float bserAverage = (numBSERValid == 0) ? 0 : bserSum / numBSERValid;
+
+
 	const vehicle::pedals::State state = {
-		.app1 = (numAPP1Valid == 0) ? 0 : app1Thresholds.normalize(app1Sum / numAPP1Valid),
-		.app2 = (numAPP2Valid == 0) ? 0 : app2Thresholds.normalize(app2Sum / numAPP2Valid),
-		.bsef = (numBSEFValid == 0) ? 0 : bsefThresholds.normalize(bsefSum / numBSEFValid),
-		.bser = (numBSERValid == 0) ? 0 : bserThresholds.normalize(bserSum / numBSERValid),
+		.app1 = app1Thresholds.normalize(app1Average),
+		.app2 = app2Thresholds.normalize(app2Average),
+		.bsef = bsefThresholds.normalize(bsefAverage),
+		.bser = bserThresholds.normalize(bserAverage),
+		.app1Raw = static_cast<uint16_t>(app1Average),
+		.app2Raw = static_cast<uint16_t>(app2Average),
+		.bsefRaw = static_cast<uint16_t>(bsefAverage),
+		.bserRaw = static_cast<uint16_t>(bserAverage),
 		.app1Valid = (numAPP1Valid > 0),
 		.app2Valid = (numAPP2Valid > 0),
 		.bsefValid = (numBSEFValid > 0),
