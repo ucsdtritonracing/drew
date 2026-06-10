@@ -127,6 +127,7 @@ int main(void)
 		  {.htim = &htim5, .channel = TIM_CHANNEL_2},
 		  {.htim = &htim2, .channel = TIM_CHANNEL_1},
 		  (float)HAL_RCC_GetPCLK1Freq() / (float)(htim2.Instance->PSC + 1));
+  vehicle::configuratorDriver.init();
 
 
   /* USER CODE END 2 */
@@ -181,6 +182,8 @@ int main(void)
   rtos::BroadcastTask.start("Broadcast Task");
 
   rtos::WheelsTask.start("Wheels Task");
+
+  rtos::StartupTask.start("Startup Task");
 
   /* USER CODE END RTOS_THREADS */
 
