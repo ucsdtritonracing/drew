@@ -1,4 +1,7 @@
 #include "drivers/storage/storage.hpp"
+#include "drivers/storage/crc.hpp"
+#include "stm32g4xx_hal.h"
+
 
 namespace drivers::storage {
 
@@ -60,12 +63,7 @@ bool ConfigStorage::eraseAndWrite(const Record &stored) {
 }
 
 uint32_t ConfigStorage::computeChecksum(const vehicle::VehicleConfiguration &config) {
-	const uint8_t *data = reinterpret_cast<const uint8_t*>(&config);
-	uint32_t crc = 0;
-	for (size_t i = 0; i < sizeof(vehicle::VehicleConfiguration); i++) {
-		crc ^= data[i];
-	}
-	return crc;
+    return crc(reinterpret_cast<const uint8_t*>(&config), sizeof(config));
 }
 
 } // namespace drivers::storage
