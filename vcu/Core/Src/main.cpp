@@ -120,7 +120,9 @@ int main(void)
   vehicle::pduDriver.init();
   vehicle::sasDriver.init();
   vehicle::broadcasterDriver.init();
-  vehicle::soundDriver.init(R2D_Sound_GPIO_Port, R2D_Sound_Pin);
+  vehicle::outputsDriver.init(
+		  {R2D_Sound_GPIO_Port, R2D_Sound_Pin},
+		  {BRAKE_LIGHT_GPIO_Port, BRAKE_LIGHT_Pin});
   vehicle::wheelsDriver.init(
 		  {.htim = &htim2, .channel = TIM_CHANNEL_4},
 		  {.htim = &htim2, .channel = TIM_CHANNEL_3},
@@ -597,6 +599,9 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(R2D_Sound_GPIO_Port, R2D_Sound_Pin, GPIO_PIN_RESET);
 
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(BRAKE_LIGHT_GPIO_Port, BRAKE_LIGHT_Pin, GPIO_PIN_RESET);
+
   /*Configure GPIO pin : B1_Pin */
   GPIO_InitStruct.Pin = B1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
@@ -615,6 +620,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(R2D_Sound_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : BRAKE_LIGHT_Pin */
+  GPIO_InitStruct.Pin = BRAKE_LIGHT_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(BRAKE_LIGHT_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : SDC_IN_Pin */
   GPIO_InitStruct.Pin = SDC_IN_Pin;
