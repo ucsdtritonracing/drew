@@ -6,6 +6,7 @@
 #include "vehicle/types/threshold_types.hpp"
 #include "vehicle/vehicle_state.hpp"
 #include "vehicle/vehicle_configuration.hpp"
+#include "vehicle/types/configuration_types.hpp"
 #include <string.h>
 
 
@@ -16,6 +17,7 @@ Configurator::Configurator(drivers::can::CANBus& canBus)
 
 
 void Configurator::init() {
+	bindHandler<&Configurator::processCommandConfigurationMode>(CAN_ID_CONFIGURATION_MODE);
 	bindHandler<&Configurator::processCommandConfigurationMode>(CAN_ID_CONFIGURATION_MODE);
 	bindHandler<&Configurator::processCommandWriteConfiguration>(CAN_ID_WRITE_CONFIGURATION);
 	bindHandler<&Configurator::processCommandFlashConfiguration>(CAN_ID_FLASH_CONFIGURATION);
@@ -52,6 +54,7 @@ bool Configurator::requestingConfigurationMode() const {
 
 void Configurator::processCommandWriteConfiguration(const drivers::can::Message& message) {
 	if (message.numBytes != WRITE_CONFIG_MESSAGE_LENGTH) {
+	if (message.numBytes != WRITE_CONFIG_MESSAGE_LENGTH) {
 		return;
 	}
 	if (stagedConfiguration.valid() && vehicle::vehicleState.getMode() == vehicle::Mode::CONFIGURATION) {
@@ -71,8 +74,16 @@ void Configurator::processCommandFlashConfiguration(const drivers::can::Message&
 }
 void Configurator::processCommandConfigurationMode(const drivers::can::Message& message) {
 	if (message.numBytes != CONFIG_MODE_MESSAGE_LENGTH) {
+	if (message.numBytes != CONFIG_MODE_MESSAGE_LENGTH) {
 		return;
 	}
+
+	bool enable = message.data[0] != 0;
+
+	if (!configurationModeRequested && enable) {
+		stagedConfiguration = vehicle::vehicleConfiguration;
+	}
+	configurationModeRequested = enable;
 
 	bool enable = message.data[0] != 0;
 
@@ -83,6 +94,8 @@ void Configurator::processCommandConfigurationMode(const drivers::can::Message& 
 }
 
 
+void Configurator::processCommandTorque(const drivers::can::Message& message) {
+	if (message.numBytes != TORQUE_MESSAGE_LENGTH) {
 void Configurator::processCommandTorque(const drivers::can::Message& message) {
 	if (message.numBytes != TORQUE_MESSAGE_LENGTH) {
 		return;
@@ -96,11 +109,21 @@ void Configurator::processCommandTorque(const drivers::can::Message& message) {
 	const float value = raw * TORQUE_MESSAGE_SCALE;
 
 	if (value < 0 || value > torque::MAX_TORQUE_LIMIT_NM) {
+	const uint32_t raw = static_cast<uint32_t>(message.data[0])		  |
+						 static_cast<uint32_t>(message.data[1] << 8)  |
+						 static_cast<uint32_t>(message.data[2] << 16) |
+						 static_cast<uint32_t>(message.data[3] << 24);
+
+	const float value = raw * TORQUE_MESSAGE_SCALE;
+
+	if (value < 0 || value > torque::MAX_TORQUE_LIMIT_NM) {
 		return;
 	}
 	stagedConfiguration.torqueConfig.maxTorqueNm = value;
 }
 
+void Configurator::processCommandThreshold(const drivers::can::Message& message) {
+	if (message.numBytes != THRESHOLD_MESSAGE_LENGTH) {
 void Configurator::processCommandThreshold(const drivers::can::Message& message) {
 	if (message.numBytes != THRESHOLD_MESSAGE_LENGTH) {
 		return;

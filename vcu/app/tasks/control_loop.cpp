@@ -19,10 +19,6 @@ namespace rtos::tasks {
 
 void ControlLoopTask::setup() {
 	appsBrakePedalPlausibilityFaulted = false;
-//	vehicle::pduDriver.enableChannel(vehicle::VehicleConfiguration::PDU_12V_MAIN_CHANNEL);
-//	vehicle::pduDriver.enableChannel(vehicle::VehicleConfiguration::PDU_12V_LEFT_CHANNEL);
-//	vehicle::pduDriver.enableChannel(vehicle::VehicleConfiguration::PDU_12V_RIGHT_CHANNEL);
-//	vehicle::pduDriver.enableChannel(vehicle::VehicleConfiguration::PDU_TSB_FANS_CHANNEL);
 }
 
 const vehicle::Mode ControlLoopTask::getNextMode(vehicle::Mode currentMode, TransitionInputs inputs) const {
@@ -37,7 +33,10 @@ const vehicle::Mode ControlLoopTask::getNextMode(vehicle::Mode currentMode, Tran
 	case vehicle::Mode::IDLE:
 		if (inputs.configurationModeRequested) {
 			nextMode = vehicle::Mode::CONFIGURATION;
-		} else if (inputs.brakePressed && inputs.readyToDriveButtonPressed && inputs.shutdownCircuitClosed) {
+		} else if (inputs.brakePressed &&
+				   inputs.readyToDriveButtonPressed &&
+				   inputs.shutdownCircuitClosed &&
+				   !inputs.acceleratorPressed) {
 			nextMode = vehicle::Mode::READY_TO_DRIVE;
 		}
 		break;
@@ -56,8 +55,6 @@ const vehicle::Mode ControlLoopTask::getNextMode(vehicle::Mode currentMode, Tran
 void ControlLoopTask::onEnter(vehicle::Mode mode) {
 	switch (mode) {
 	case vehicle::Mode::IDLE:
-//		vehicle::pduDriver.disableChannel(vehicle::VehicleConfiguration::PDU_PUMPS_CHANNEL);
-//		vehicle::pduDriver.disableChannel(vehicle::VehicleConfiguration::PDU_RADIATOR_FANS_CHANNEL);
 		break;
 	case vehicle::Mode::READY_TO_DRIVE:
 		app1Fault.reset();
@@ -67,9 +64,7 @@ void ControlLoopTask::onEnter(vehicle::Mode mode) {
 		appsPlausibilityFault.reset();
 		appsBrakePedalPlausibilityFaulted = false;
 
-		vehicle::soundDriver.play();
-//		vehicle::pduDriver.enableChannel(vehicle::VehicleConfiguration::PDU_PUMPS_CHANNEL);
-//		vehicle::pduDriver.enableChannel(vehicle::VehicleConfiguration::PDU_RADIATOR_FANS_CHANNEL);
+		vehicle::outputsDriver.playSound();
 		break;
 	case vehicle::Mode::CONFIGURATION:
 		break;
@@ -97,7 +92,13 @@ void ControlLoopTask::loop() {
 	/*		TRANSITION		*/
 	const vehicle::Mode nextMode = getNextMode(
 		mode,
-		TransitionInputs{brakePressed, readyToDriveButtonPressed, shutdownCircuitClosed, configurationModeRequested}
+		TransitionInputs{
+			.brakePressed				= brakePressed,
+			.acceleratorPressed			= appCommand > 0,
+			.readyToDriveButtonPressed	= readyToDriveButtonPressed,
+			.shutdownCircuitClosed		= shutdownCircuitClosed,
+			.configurationModeRequested	= configurationModeRequested
+		}
 	);
 	if (nextMode != mode) {
 		onEnter(nextMode);
@@ -116,11 +117,7 @@ void ControlLoopTask::loop() {
 
 	/*		OUTPUTS		*/
 	// brake light
-	if (brakePressed) {
-		vehicle::pduDriver.enableChannel(vehicle::vehicleConfiguration.pduConfig.PDU_BRAKE_LIGHT_CHANNEL);
-	} else {
-		vehicle::pduDriver.disableChannel(vehicle::vehicleConfiguration.pduConfig.PDU_BRAKE_LIGHT_CHANNEL);
-	}
+	vehicle::outputsDriver.setBrakeLight(brakePressed);
 
 	// torque
 	switch (nextMode) {

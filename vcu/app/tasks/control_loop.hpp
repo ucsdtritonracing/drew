@@ -19,6 +19,7 @@ private:
 
 	struct TransitionInputs {
 		bool brakePressed;
+		bool acceleratorPressed;
 		bool readyToDriveButtonPressed;
 		bool shutdownCircuitClosed;
 		bool configurationModeRequested;
