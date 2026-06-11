@@ -5,7 +5,6 @@ namespace drivers::storage {
 bool ConfigStorage::save(const vehicle::VehicleConfiguration &config) {
 	Record record;
 	record.magic = CONFIG_MAGIC;
-	record.version = CONFIG_VERSION;
 	record.config = config;
 	record.checksum = computeChecksum(config);
 
@@ -15,11 +14,12 @@ bool ConfigStorage::save(const vehicle::VehicleConfiguration &config) {
 bool ConfigStorage::load(vehicle::VehicleConfiguration &config) {
 	const auto *stored = reinterpret_cast<const Record*>(CONFIG_FLASH_ADDR);
 
-	if (stored->magic != CONFIG_MAGIC || stored->version != CONFIG_VERSION
-			|| stored->checksum != computeChecksum(stored->config)) {
+	if (stored->magic != CONFIG_MAGIC || stored->checksum != computeChecksum(stored->config)) {
 		return false;
 	}
-
+	if (stored->config.version != CONFIG_VERSION) {
+		return false;
+	}
 	if (!stored->config.valid()) {
 		return false;
 	}

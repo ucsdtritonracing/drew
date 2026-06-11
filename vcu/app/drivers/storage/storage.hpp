@@ -11,7 +11,6 @@ class ConfigStorage {
 public:
 	struct Record {
 		uint32_t magic;
-		uint32_t version;
 		vehicle::VehicleConfiguration config;
 		uint32_t checksum;
 	};
