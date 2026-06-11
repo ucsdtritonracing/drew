@@ -16,7 +16,7 @@ public:
 	};
 
 	static constexpr uint32_t CONFIG_FLASH_ADDR	= 0x0807F800; // Last 2KB page
-	static constexpr uint32_t CONFIG_MAGIC		= 0xDEADF5AE;
+	static constexpr uint32_t CONFIG_MAGIC		= 0xAEF5ADDE;
 
 	static bool save(const vehicle::VehicleConfiguration &config);
 	static bool load(vehicle::VehicleConfiguration &config);
@@ -30,6 +30,7 @@ private:
 
 	static_assert(std::is_trivially_copyable_v<vehicle::VehicleConfiguration>,
 			"VehicleConfiguration must be trivially copyable for flash storage");
+
 	static_assert(sizeof(vehicle::VehicleConfiguration) == EXPECTED_CONFIG_SIZE,
 			"VehicleConfiguration layout changed, update CONFIG_VERSION");
 };
