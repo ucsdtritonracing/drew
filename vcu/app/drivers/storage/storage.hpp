@@ -23,8 +23,8 @@ public:
 	static bool load(vehicle::VehicleConfiguration &config);
 
 private:
-	static constexpr uint32_t CONFIG_VERSION = 1;
-	static constexpr size_t EXPECTED_CONFIG_SIZE = 196;
+	static constexpr uint32_t CONFIG_VERSION = 2;
+	static constexpr size_t EXPECTED_CONFIG_SIZE = 276;
 
 	static bool eraseAndWrite(const Record &stored);
 	static uint32_t computeChecksum(const vehicle::VehicleConfiguration &config);

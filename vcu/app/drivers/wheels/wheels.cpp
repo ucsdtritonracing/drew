@@ -36,7 +36,7 @@ void Wheels::filter(WheelData& data, size_t teeth, float metersPerRevolution, ui
 	float revolutionsPerSecond = frequency / (float) teeth;
     float rawSpeed = revolutionsPerSecond * metersPerRevolution;
 
-    float alpha = vehicle::vehicleConfiguration.wheelSpeedSensorAlpha;
+    float alpha = vehicle::vehicleConfiguration.wheelsConfig.wheelSpeedSensorAlpha;
 
 	if (!data.filterInitialized) {
 		data.filterInitialized = true;
@@ -48,10 +48,11 @@ void Wheels::filter(WheelData& data, size_t teeth, float metersPerRevolution, ui
 
 void Wheels::updateSpeeds() {
 	uint32_t now = HAL_GetTick();
-	filter(data[WheelId::FL], vehicle::vehicleConfiguration.frontTriggerWheelTeeth, vehicle::vehicleConfiguration.frontWheelMetersPerRevolution, now);
-	filter(data[WheelId::FR], vehicle::vehicleConfiguration.frontTriggerWheelTeeth, vehicle::vehicleConfiguration.frontWheelMetersPerRevolution, now);
-	filter(data[WheelId::RL], vehicle::vehicleConfiguration.rearTriggerWheelTeeth, vehicle::vehicleConfiguration.rearWheelMetersPerRevolution, now);
-	filter(data[WheelId::RR], vehicle::vehicleConfiguration.rearTriggerWheelTeeth, vehicle::vehicleConfiguration.rearWheelMetersPerRevolution, now);
+	const auto config = vehicle::vehicleConfiguration.wheelsConfig;
+	filter(data[WheelId::FL], config.frontTriggerWheelTeeth, config.frontWheelMetersPerRevolution, now);
+	filter(data[WheelId::FR], config.frontTriggerWheelTeeth, config.frontWheelMetersPerRevolution, now);
+	filter(data[WheelId::RL], config.rearTriggerWheelTeeth, config.rearWheelMetersPerRevolution, now);
+	filter(data[WheelId::RR], config.rearTriggerWheelTeeth, config.rearWheelMetersPerRevolution, now);
 
 	vehicle::vehicleState.setWheelSpeeds(vehicle::wheels::State{
 		data[WheelId::FL].filteredSpeed,

@@ -1,56 +1,58 @@
 #pragma once
 
-#include "drivers/pedals/adc.hpp"
-#include <stdint.h>
+#include "vehicle/types/threshold_types.hpp"
+#include "vehicle/types/mode_types.hpp"
+#include "vehicle/pedal_map.hpp"
+#include "vehicle/defaults.hpp"
+#include "drivers/pdu/pdu.hpp"
 
 
 namespace vehicle {
 
-class Range {
-public:
-	Range(float min, float max)
-		: min(min), max(max),
-		  minAdcReading(min * drivers::adc::ADC_MAX_VALUE),
-		  maxAdcReading(max * drivers::adc::ADC_MAX_VALUE)
-	{};
+struct PedalsConfig {
+	ThresholdConfig app1Thresholds					= defaults::APP1_THRESHOLDS;
+	ThresholdConfig app2Thresholds					= defaults::APP2_THRESHOLDS;
+	ThresholdConfig bsefThresholds					= defaults::BSEF_THRESHOLDS;
+	ThresholdConfig bserThresholds					= defaults::BSER_THRESHOLDS;
 
-    bool validRange() const {
-    	return (max > min) && (max <= 1) && (min >= 0);
-    }
+	float bsefBrakeEngagedThreshold					= defaults::BSEF_BRAKE_ENGAGED_THRESHOLD;
+	float bserBrakeEngagedThreshold					= defaults::BSER_BRAKE_ENGAGED_THRESHOLD;
 
-    bool inRange(uint16_t adcReading) const {
-    	return adcReading >= minAdcReading && adcReading <= maxAdcReading;
-    }
-
-    float getMin() const { return min; }
-    float getMax() const { return max; }
-    uint16_t getMinAdcReading() const { return minAdcReading; }
-    uint16_t getMaxAdcReading() const { return maxAdcReading; }
-
-private:
-    float min;
-    float max;
-    uint16_t minAdcReading;
-    uint16_t maxAdcReading;
+	bool valid() const;
 };
 
-struct ThresholdConfig {
-	Range faultThresholds;	// indicates faults if out of range
-	Range signalThresholds;	// maps from 0 - 1
+struct WheelsConfig {
+	size_t frontTriggerWheelTeeth					= defaults::FRONT_TRIGGER_WHEEL_TEETH;
+	size_t rearTriggerWheelTeeth					= defaults::REAR_TRIGGER_WHEEL_TEETH;
+	float frontWheelMetersPerRevolution				= defaults::FRONT_WHEEL_METERS_PER_REVOLUTION;
+	float rearWheelMetersPerRevolution				= defaults::REAR_WHEEL_METERS_PER_REVOLUTION;
 
-	float normalize(float adcReading) const {
-    	if (!faultThresholds.inRange(adcReading)) {
-    		return 0;
-    	}
-    	if (adcReading < signalThresholds.getMinAdcReading()) {
-    		return 0;
-    	}
-    	if (adcReading > signalThresholds.getMaxAdcReading()) {
-    		return 1;
-    	}
+	float wheelSpeedSensorAlpha						= defaults::WHEEL_SPEED_SENSOR_ALPHA;
+	size_t wheelSpeedSensorTimeoutMs				= defaults::WHEEL_SPEED_SENSOR_TIMEOUT_MS;
 
-    	return (adcReading - signalThresholds.getMinAdcReading()) / (signalThresholds.getMaxAdcReading() - signalThresholds.getMinAdcReading());
-	}
+	bool valid() const;
+};
+
+struct TorqueConfig {
+	float maxTorqueNm								= defaults::MAX_TORQUE_NM;
+	PedalMap pedalMap;
+
+	vehicle::Strategy strategy						= vehicle::Strategy::DEFAULT;
+
+	bool valid() const;
+};
+
+struct PDUConfig {
+	pdu::ChannelConfig PDU_12V_RIGHT_CHANNEL 		{ 1, 3.0f  };
+	pdu::ChannelConfig PDU_12V_MAIN_CHANNEL			{ 2, 3.0f  };
+	pdu::ChannelConfig PDU_TSB_FANS_CHANNEL			{ 3, 3.0f  };
+	pdu::ChannelConfig PDU_RADIATOR_FANS_CHANNEL	{ 4, 10.0f };
+	pdu::ChannelConfig PDU_PUMPS_CHANNEL			{ 5, 5.0f  };
+	pdu::ChannelConfig PDU_BRAKE_LIGHT_CHANNEL		{ 6, 2.0f  };
+	pdu::ChannelConfig PDU_UNUSED_CHANNEL			{ 7, 0.0f  };
+	pdu::ChannelConfig PDU_12V_LEFT_CHANNEL 		{ 8, 3.0f  };
+
+	bool valid() const;
 };
 
 } // namespace vehicle

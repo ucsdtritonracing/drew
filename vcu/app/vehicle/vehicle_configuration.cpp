@@ -7,42 +7,18 @@ namespace vehicle {
 VehicleConfiguration vehicleConfiguration{};
 
 bool VehicleConfiguration::valid() const {
-	if (maxTorqueNm > torque::MAX_TORQUE_LIMIT_NM) {
+	if (!pedalsConfig.valid()) {
 		return false;
 	}
-
-	if (!app1Thresholds.faultThresholds.validRange() ||
-		!app1Thresholds.signalThresholds.validRange()) {
+	if (!torqueConfig.valid()) {
 		return false;
 	}
-	if (!app2Thresholds.faultThresholds.validRange() ||
-		!app2Thresholds.signalThresholds.validRange()) {
+	if (!wheelsConfig.valid()) {
 		return false;
 	}
-	if (!bsefThresholds.faultThresholds.validRange() ||
-		!bsefThresholds.signalThresholds.validRange()) {
+	if (!pduConfig.valid()) {
 		return false;
 	}
-	if (!bserThresholds.faultThresholds.validRange() ||
-		!bserThresholds.signalThresholds.validRange()) {
-		return false;
-	}
-
-	if (bsefBrakeEngagedThreshold < 0 || bsefBrakeEngagedThreshold > 1) {
-		return false;
-	}
-	if (bserBrakeEngagedThreshold < 0 || bserBrakeEngagedThreshold > 1) {
-		return false;
-	}
-
-	if (wheelSpeedSensorAlpha < 0 || wheelSpeedSensorAlpha > 1) {
-		return false;
-	}
-	if (wheelSpeedSensorTimeoutMs < 0) {
-		return false;
-	}
-
-	if (strategy > )
 
 	return true;
 }

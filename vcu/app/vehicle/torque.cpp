@@ -7,7 +7,7 @@
 namespace torque {
 
 float computeDriverTorqueRequest(float app) {
-	return vehicle::vehicleConfiguration.pedalMap.getPedalOutput(app);
+	return vehicle::vehicleConfiguration.torqueConfig.pedalMap.getPedalOutput(app);
 }
 
 bool isAPPSPlausible(float app1, float app2) {
@@ -20,8 +20,8 @@ bool isAPPSPlausible(float app1, float app2) {
 bool isAPPSBrakePedalPlausible(bool faultActive, float app, float bsef, float bser) {
 	if (!faultActive) {
 		return (app <= ABPPC_APP_FAULT_THRESHOLD) ||
-			   ((bsef <= vehicle::vehicleConfiguration.bsefBrakeEngagedThreshold) &&
-			   (bser <= vehicle::vehicleConfiguration.bserBrakeEngagedThreshold));
+			   ((bsef <= vehicle::vehicleConfiguration.pedalsConfig.bsefBrakeEngagedThreshold) &&
+			   (bser <= vehicle::vehicleConfiguration.pedalsConfig.bserBrakeEngagedThreshold));
 	} else {
 		return (app <= ABPPC_APP_RESET_THRESHOLD);
 	}

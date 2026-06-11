@@ -98,7 +98,7 @@ void Configurator::processCommandTorque(const drivers::can::Message& message) {
 	if (value < 0 || value > torque::MAX_TORQUE_LIMIT_NM) {
 		return;
 	}
-	stagedConfiguration.maxTorqueNm = value;
+	stagedConfiguration.torqueConfig.maxTorqueNm = value;
 }
 
 void Configurator::processCommandThreshold(const drivers::can::Message& message) {
@@ -110,16 +110,16 @@ void Configurator::processCommandThreshold(const drivers::can::Message& message)
 
 	switch (message.id) {
 	case CAN_ID_CMD_APP1_THRESHOLD:
-		thresholds = &stagedConfiguration.app1Thresholds;
+		thresholds = &stagedConfiguration.pedalsConfig.app1Thresholds;
 		break;
 	case CAN_ID_CMD_APP2_THRESHOLD:
-		thresholds = &stagedConfiguration.app2Thresholds;
+		thresholds = &stagedConfiguration.pedalsConfig.app2Thresholds;
 		break;
 	case CAN_ID_CMD_BSEF_THRESHOLD:
-		thresholds = &stagedConfiguration.bsefThresholds;
+		thresholds = &stagedConfiguration.pedalsConfig.bsefThresholds;
 		break;
 	case CAN_ID_CMD_BSER_THRESHOLD:
-		thresholds = &stagedConfiguration.bserThresholds;
+		thresholds = &stagedConfiguration.pedalsConfig.bserThresholds;
 		break;
 	default:
 		return;
@@ -153,8 +153,8 @@ void Configurator::processCommandBSEEngage(const drivers::can::Message& message)
 	const uint16_t rawBSEREngage =		static_cast<uint16_t>(message.data[2]) |
 						 				static_cast<uint16_t>(message.data[3] << 8);
 
-	stagedConfiguration.bsefBrakeEngagedThreshold = rawBSEFEngage * THRESHOLD_MESSAGE_SCALE;
-	stagedConfiguration.bserBrakeEngagedThreshold = rawBSEREngage * THRESHOLD_MESSAGE_SCALE;
+	stagedConfiguration.pedalsConfig.bsefBrakeEngagedThreshold = rawBSEFEngage * THRESHOLD_MESSAGE_SCALE;
+	stagedConfiguration.pedalsConfig.bserBrakeEngagedThreshold = rawBSEREngage * THRESHOLD_MESSAGE_SCALE;
 }
 
 
@@ -171,29 +171,29 @@ void Configurator::processCommandPedalMap(const drivers::can::Message& message) 
 						 static_cast<uint32_t>(message.data[3] << 24);
 	const float value = raw * PEDAL_MAP_MESSAGE_SCALE;
 
-	stagedConfiguration.pedalMap.setPoint(index, value);
+	stagedConfiguration.torqueConfig.pedalMap.setPoint(index, value);
 }
 
 
 void Configurator::broadcastAPP1Parameter(vehicle::VehicleConfiguration &config) {
-	packThreshold(config.app1Thresholds, txData);
+	packThreshold(config.pedalsConfig.app1Thresholds, txData);
 	canBus.publishTxSlot(app1SlotHandle, txData, THRESHOLD_MESSAGE_LENGTH);
 }
 void Configurator::broadcastAPP2Parameter(vehicle::VehicleConfiguration &config) {
-	packThreshold(config.app2Thresholds, txData);
+	packThreshold(config.pedalsConfig.app2Thresholds, txData);
 	canBus.publishTxSlot(app2SlotHandle, txData, THRESHOLD_MESSAGE_LENGTH);
 }
 void Configurator::broadcastBSEFParameter(vehicle::VehicleConfiguration &config) {
-	packThreshold(config.bsefThresholds, txData);
+	packThreshold(config.pedalsConfig.bsefThresholds, txData);
 	canBus.publishTxSlot(bsefSlotHandle, txData, THRESHOLD_MESSAGE_LENGTH);
 }
 void Configurator::broadcastBSERParameter(vehicle::VehicleConfiguration &config) {
-	packThreshold(config.bserThresholds, txData);
+	packThreshold(config.pedalsConfig.bserThresholds, txData);
 	canBus.publishTxSlot(bserSlotHandle, txData, THRESHOLD_MESSAGE_LENGTH);
 }
 void Configurator::broadcastBSEEngageParameter(vehicle::VehicleConfiguration &config) {
-	const uint16_t scaledBSEFEngaged = static_cast<uint16_t>(config.bsefBrakeEngagedThreshold / THRESHOLD_MESSAGE_SCALE);
-	const uint16_t scaledBSEREngaged = static_cast<uint16_t>(config.bserBrakeEngagedThreshold / THRESHOLD_MESSAGE_SCALE);
+	const uint16_t scaledBSEFEngaged = static_cast<uint16_t>(config.pedalsConfig.bsefBrakeEngagedThreshold / THRESHOLD_MESSAGE_SCALE);
+	const uint16_t scaledBSEREngaged = static_cast<uint16_t>(config.pedalsConfig.bserBrakeEngagedThreshold / THRESHOLD_MESSAGE_SCALE);
 	txData[0] = static_cast<uint8_t>(scaledBSEFEngaged);
 	txData[1] = static_cast<uint8_t>(scaledBSEFEngaged >> 8);
 	txData[2] = static_cast<uint8_t>(scaledBSEREngaged);
@@ -201,7 +201,7 @@ void Configurator::broadcastBSEEngageParameter(vehicle::VehicleConfiguration &co
 	canBus.publishTxSlot(bserSlotHandle, txData, THRESHOLD_MESSAGE_LENGTH);
 }
 void Configurator::broadcastTorqueParameter(vehicle::VehicleConfiguration &config) {
-	const uint32_t scaled = config.maxTorqueNm / TORQUE_MESSAGE_SCALE;
+	const uint32_t scaled = config.torqueConfig.maxTorqueNm / TORQUE_MESSAGE_SCALE;
 	txData[0] = static_cast<uint8_t>(scaled);
 	txData[1] = static_cast<uint8_t>(scaled >> 8);
 	txData[2] = static_cast<uint8_t>(scaled >> 16);
@@ -210,7 +210,7 @@ void Configurator::broadcastTorqueParameter(vehicle::VehicleConfiguration &confi
 }
 void Configurator::broadcastPedalMapParameters(vehicle::VehicleConfiguration &config) {
 	for (size_t i = 0; i < vehicle::PedalMap::NUM_EDITABLE_POINTS; i++) {
-		const uint16_t scaled = config.pedalMap.getPoint(i) / PEDAL_MAP_MESSAGE_SCALE;
+		const uint16_t scaled = config.torqueConfig.pedalMap.getPoint(i) / PEDAL_MAP_MESSAGE_SCALE;
 		txData[0] = static_cast<uint8_t>(scaled);
 		txData[1] = static_cast<uint8_t>(scaled >> 8);
 		canBus.publishTxSlot(pedalMapPointSlotHandles[i], txData, PEDAL_MAP_MESSAGE_LENGTH);
