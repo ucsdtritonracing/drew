@@ -83,8 +83,8 @@ void ControlLoopTask::loop() {
 	const bool configurationModeRequested = vehicle::configuratorDriver.requestingConfigurationMode();
 	// computed state
 	const float appCommand = pedals.app1;	// value being used for calculations
-	const bool brakePressed = (pedals.bsef > vehicle::vehicleConfiguration.bsefBrakeEngagedThreshold && pedals.bsefValid) ||
-							  (pedals.bser > vehicle::vehicleConfiguration.bserBrakeEngagedThreshold && pedals.bserValid);
+	const bool brakePressed = (pedals.bsef > vehicle::vehicleConfiguration.pedalsConfig.bsefBrakeEngagedThreshold && pedals.bsefValid) ||
+							  (pedals.bser > vehicle::vehicleConfiguration.pedalsConfig.bserBrakeEngagedThreshold && pedals.bserValid);
 	const bool appsPlausible = torque::isAPPSPlausible(pedals.app1, pedals.app2);
 	const bool appsBrakePedalPlausible = torque::isAPPSBrakePedalPlausible(appsBrakePedalPlausibilityFaulted, appCommand, pedals.bsef, pedals.bser);
 
@@ -149,7 +149,7 @@ void ControlLoopTask::loop() {
 		}
 
 		torqueScalar = std::clamp(torqueScalar, 0.0f, 1.0f);
-		const float driverTorqueRequestNm = torqueScalar * std::min(torque::MAX_TORQUE_LIMIT_NM, vehicle::vehicleConfiguration.maxTorqueNm);
+		const float driverTorqueRequestNm = torqueScalar * std::min(torque::MAX_TORQUE_LIMIT_NM, vehicle::vehicleConfiguration.torqueConfig.maxTorqueNm);
 		const float torqueRequest = std::min(driverTorqueRequestNm, torqueCapability);
 
 		vehicle::inverterDriver.sendCommandMessage(torqueRequest, true);

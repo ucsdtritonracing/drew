@@ -14,10 +14,10 @@ void Pedals::init(ADC_HandleTypeDef& hadc) {
 }
 
 void Pedals::processBuffer(size_t start, size_t length) {
-	const auto app1Thresholds = vehicle::vehicleConfiguration.app1Thresholds;
-	const auto app2Thresholds = vehicle::vehicleConfiguration.app2Thresholds;
-	const auto bsefThresholds = vehicle::vehicleConfiguration.bsefThresholds;
-	const auto bserThresholds = vehicle::vehicleConfiguration.bserThresholds;
+	const auto app1Thresholds = vehicle::vehicleConfiguration.pedalsConfig.app1Thresholds;
+	const auto app2Thresholds = vehicle::vehicleConfiguration.pedalsConfig.app2Thresholds;
+	const auto bsefThresholds = vehicle::vehicleConfiguration.pedalsConfig.bsefThresholds;
+	const auto bserThresholds = vehicle::vehicleConfiguration.pedalsConfig.bserThresholds;
 
 	float app1Sum = 0;
 	float app2Sum = 0;

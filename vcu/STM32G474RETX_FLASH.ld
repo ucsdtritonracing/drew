@@ -45,7 +45,8 @@ _Min_Stack_Size = 0x400; /* required amount of stack */
 MEMORY
 {
   RAM    (xrw)    : ORIGIN = 0x20000000,   LENGTH = 128K
-  FLASH    (rx)    : ORIGIN = 0x8000000,   LENGTH = 512K
+  FLASH    (rx)    : ORIGIN = 0x8000000,   LENGTH = 510K
+  CONFIG (r)       : ORIGIN = 0x0807F800,  LENGTH = 2K
 }
 
 /* Sections */
@@ -175,6 +176,12 @@ SECTIONS
     . = . + _Min_Stack_Size;
     . = ALIGN(8);
   } >RAM
+
+  /* Configuration parameter sections for persistent config */
+  .config_storage (NOLOAD) :
+  {
+    KEEP(*(.config_storage))
+  } >CONFIG
 
   /* Remove information from the compiler libraries */
   /DISCARD/ :

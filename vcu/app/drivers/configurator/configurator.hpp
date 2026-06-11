@@ -24,7 +24,7 @@ public:
 	void processCommandPedalMap(const drivers::can::Message& message);
 	void processCommandTorque(const drivers::can::Message& message);
 
-	void broadcastConfigurationParameters();
+	void broadcastParameters();
 
 private:
 	bool configurationModeRequested = false;
@@ -42,15 +42,15 @@ private:
 
 	uint8_t txData[can::MAX_CLASSICAL_CAN_DATA_LENGTH];
 
-	void broadcastAPP1Parameter();
-	void broadcastAPP2Parameter();
-	void broadcastBSEFParameter();
-	void broadcastBSERParameter();
-	void broadcastBSEEngageParameter();
-	void broadcastTorqueParameter();
-	void broadcastPedalMapParameters();
+	void broadcastAPP1Parameter(vehicle::VehicleConfiguration &config);
+	void broadcastAPP2Parameter(vehicle::VehicleConfiguration &config);
+	void broadcastBSEFParameter(vehicle::VehicleConfiguration &config);
+	void broadcastBSERParameter(vehicle::VehicleConfiguration &config);
+	void broadcastBSEEngageParameter(vehicle::VehicleConfiguration &config);
+	void broadcastTorqueParameter(vehicle::VehicleConfiguration &config);
+	void broadcastPedalMapParameters(vehicle::VehicleConfiguration &config);
 
-	void packThreshold(vehicle::AnalogCalibration calibration, uint8_t *data);
+	void packThreshold(vehicle::ThresholdConfig thresholds, uint8_t *data);
 };
 
 } // namespace drivers::configurator
