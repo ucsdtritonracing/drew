@@ -11,7 +11,7 @@ namespace vehicle {
 
 class VehicleConfiguration {
 public:
-	const uint32_t version = 2;
+	uint32_t version = 2;
 
 	PDUConfig pduConfig;
 	PedalsConfig pedalsConfig;
