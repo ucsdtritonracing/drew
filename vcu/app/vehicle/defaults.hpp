@@ -1,6 +1,6 @@
 #pragma once
 
-#include "vehicle/types/configuration_types.hpp"
+#include "vehicle/types/threshold_types.hpp"
 #include "vehicle/types/mode_types.hpp"
 
 

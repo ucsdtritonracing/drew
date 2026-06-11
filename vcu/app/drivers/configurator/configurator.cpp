@@ -1,11 +1,11 @@
 #include "drivers/configurator/configurator.hpp"
 #include "drivers/configurator/configurator_can.hpp"
 #include "drivers/storage/storage.hpp"
-#include "vehicle/vehicle_state.hpp"
-#include "vehicle/vehicle_configuration.hpp"
-#include "vehicle/types/configuration_types.hpp"
 #include "vehicle/pedal_map.hpp"
 #include "vehicle/torque.hpp"
+#include "vehicle/types/threshold_types.hpp"
+#include "vehicle/vehicle_state.hpp"
+#include "vehicle/vehicle_configuration.hpp"
 #include <string.h>
 
 
