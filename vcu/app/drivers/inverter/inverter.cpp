@@ -140,6 +140,9 @@ namespace drivers::inverter {
 										(static_cast<uint32_t>(message.data[5]) << 8)  |
 										(static_cast<uint32_t>(message.data[4]));
 		std::memcpy(&runFaults, &runFaultsBitField, sizeof(runFaults));
+
+		vehicle::inverter::FaultFlags faultFlags = {postFaults, runFaults};
+		vehicle::vehicleState.setInverterFaultFlags(faultFlags);
 	}
 
 	void Inverter::processInternalStatesMessage(const can::Message &message) {
